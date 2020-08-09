@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.utils.song;
+package ru.spliterash.musicbox.song;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.xxmicloxx.NoteBlockAPI.model.Song;
@@ -6,25 +6,31 @@ import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ru.spliterash.musicbox.utils.exceptions.SongInitializationException;
-import ru.spliterash.musicbox.utils.utils.FileUtils;
-import ru.spliterash.musicbox.utils.utils.StringUtils;
+import ru.spliterash.musicbox.utils.ArrayUtils;
+import ru.spliterash.musicbox.utils.FileUtils;
+import ru.spliterash.musicbox.Lang;
+import ru.spliterash.musicbox.utils.StringUtils;
+import ru.spliterash.musicbox.exceptions.SongInitializationException;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 @Getter
 public class MusicBoxSong {
     private final File file;
     private final String name;
-    private final String author;
+    private final HashMap<String, String> hoverMap;
     private WeakReference<Song> songReference;
 
     MusicBoxSong(File songFile) throws SongInitializationException {
         this.file = songFile;
         Song song = getSongException();
         this.name = StringUtils.getOrEmpty(song.getTitle(), () -> FileUtils.getFilename(file.getName()));
-        this.author = song.getAuthor();
+        this.hoverMap = new HashMap<>();
+        hoverMap.put("{length}", String.valueOf((int) Math.floor(song.getLength() / 20D)));
+        hoverMap.put("{author}", song.getAuthor());
+        hoverMap.put("{original_author}", song.getOriginalAuthor());
     }
 
     public Song getSong() {
@@ -38,7 +44,10 @@ public class MusicBoxSong {
     public ItemStack getSongStack(XMaterial material) {
         ItemStack stack = material.parseItem();
         ItemMeta meta = stack.getItemMeta();
-        meta.setDisplayName(Lang);
+        meta.setDisplayName(Lang.SONG_NAME.toString("{song}", getName()));
+        meta.setLore(ArrayUtils.replaceOrRemove(Lang.SONG_LORE.toList(), hoverMap));
+        stack.setItemMeta(meta);
+        return stack;
     }
 
     /**

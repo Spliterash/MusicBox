@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.utils.utils;
+package ru.spliterash.musicbox.utils;
 
 public class FileUtils {
     public static String getFilename(String fileName) {

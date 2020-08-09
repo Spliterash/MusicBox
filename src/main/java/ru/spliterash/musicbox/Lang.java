@@ -1,15 +1,16 @@
-package ru.spliterash.musicbox.utils;
+package ru.spliterash.musicbox;
 
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
-import ru.spliterash.musicbox.utils.utils.StringUtils;
+import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +20,16 @@ import java.util.stream.Collectors;
 public enum Lang {
     NO_PEX(
             "&6Sry no perms",
-            "&6Похоже у тебя нет прав(прямо как в России)");
+            "&6Похоже у тебя нет разрешения на это действие"),
+    // В консоли русский вариант будет смотреться, да никак не будет, UTF-8 👍👍👍
+    ONLY_PLAYERS(
+            "Sry, but only players can execute this command"),
+    SONG_NAME("&6{song}"),
+    SONG_LORE(Arrays.asList(
+            "&7Length: {lenght}",
+            "&7Author - &6{author}",
+            "&7Original author - &6{original_author}"
+    ));
     /**
      * Оригинальные переводы
      * 0 индекс - англиский

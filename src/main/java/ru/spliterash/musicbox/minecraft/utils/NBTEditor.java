@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.utils.minecraft.utils;
+package ru.spliterash.musicbox.minecraft.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

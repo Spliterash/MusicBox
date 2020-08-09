@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.utils.song;
+package ru.spliterash.musicbox.song;
 
 import lombok.experimental.UtilityClass;
 

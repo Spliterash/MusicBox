@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.utils.utils;
+package ru.spliterash.musicbox.utils;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;

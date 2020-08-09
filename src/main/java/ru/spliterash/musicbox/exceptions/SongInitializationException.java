@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.utils.exceptions;
+package ru.spliterash.musicbox.exceptions;
 
 public class SongInitializationException extends Throwable {
 }
