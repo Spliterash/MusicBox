@@ -1,0 +1,4 @@
+name: MusicBox
+version: @version@
+main: ru.spliterash.musicbox.MusicBox
+api-version: 1.16

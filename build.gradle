@@ -1,0 +1,43 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "5.1.1"
+}
+
+group = 'ru.spliterash'
+version = '3.0'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://jitpack.io'
+    }
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+dependencies {
+// https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+
+
+    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+    compile 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
+    compile 'com.github.cryptomorin:XSeries:7.1.1'
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}
