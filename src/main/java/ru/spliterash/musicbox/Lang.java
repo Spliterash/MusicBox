@@ -21,15 +21,18 @@ public enum Lang {
     NO_PEX(
             "&6Sry no perms",
             "&6Похоже у тебя нет разрешения на это действие"),
-    // В консоли русский вариант будет смотреться, да никак не будет, UTF-8 👍👍👍
-    ONLY_PLAYERS(
-            "Sry, but only players can execute this command"),
+    // В консоли русский вариант будет смотреться... да никак не будет, UTF-8 👍👍👍
+    ONLY_PLAYERS("Sry, but only players can execute this command"),
     SONG_NAME("&6{song}"),
     SONG_LORE(Arrays.asList(
             "&7Length: {lenght}",
-            "&7Author - &6{author}",
-            "&7Original author - &6{original_author}"
-    ));
+            "&7Author: &6{author}",
+            "&7Original author: &6{original_author}",
+            "",
+            "&7Price: {price}"
+    )),
+    GUI_TITLE("&6MusicBox {container} &b{page}&6/&b{last_page}"),
+    FOLDER_FORMAT("&e{folder}");
     /**
      * Оригинальные переводы
      * 0 индекс - англиский

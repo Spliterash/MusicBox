@@ -1,0 +1,22 @@
+economy:
+  # Enable song sold by /musicbox shop
+  # Включает продажу пластинок
+  enable: true
+  # Price for disc
+  # Цена за диск в магазине
+  price: 500
+# Maximum sound distance in speaker mode
+# Максимальная длина звука в режиме колонки
+speaker-radius: 10
+# Hologram settings above the player in column mode
+# Настройки голограммы над игроком в режиме колонки
+holo:
+  # Enable or disable hologram(change requires server restart, not /musicbox reload)
+  # Включает или выключает голограммы(для изменения нужно перезапустить сервер, а не просто перезагрузить плагин)
+  enable: true
+  # How high will the hologram be
+  # Как высоко будет надпись над игроком
+  holo-height: 1.30
+# Radius in which disc's will be heard from this plugin
+# Как далеко будет слышно пластинки из этого плагина
+jukebox-radius: 64

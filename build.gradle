@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
     id "io.freefair.lombok" version "5.1.1"
 }
 
@@ -17,6 +18,9 @@ repositories {
         url = 'https://jitpack.io'
     }
     maven {
+        url = 'https://repo.codemc.org/repository/maven-public'
+    }
+    maven {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
@@ -27,13 +31,13 @@ repositories {
 }
 
 dependencies {
-// https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
-    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-
+    // https://mvnrepository.com/artifact/org.jetbrains/annotations
+    compileOnly group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
 
     compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compile 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
     compile 'com.github.cryptomorin:XSeries:7.1.1'
+    compile 'io.github.bananapuncher714:NBTEditor:7.16'
 }
 
 processResources {
@@ -41,3 +45,17 @@ processResources {
         filter ReplaceTokens, tokens: [version: version]
     }
 }
+shadowJar {
+    minimize()
+}
+
+// Скидываем либы в папку
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "ru.spliterash.musicbox.shadow" // Default value is "shadow"
+
+}
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
+tasks.assemble.dependsOn tasks.shadowJar
