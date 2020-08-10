@@ -11,6 +11,7 @@ import ru.spliterash.musicbox.minecraft.GUI;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.classes.PeekList;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 @Getter
@@ -37,6 +38,7 @@ public class SongContainerGUI {
      */
     public void openPage(int page, boolean showControls, GUI.InventoryAction onSongClick, @Nullable Consumer<Player> onContainerRight) {
         //А терь говнокод
+        open();
         gui.changeTitle(Lang.GUI_TITLE.toString(
                 "{container}", container.getName(),
                 "{page}", String.valueOf(page + 1),
@@ -45,9 +47,13 @@ public class SongContainerGUI {
         //Проще в начале цикла сразу плюсовать, так что минус один чтобы началось с 0
         int inventoryIndex = -1;
         int indexLimit = 45;
+        //Сколько элементов надо пропустить, чувствую тут надо +1 написать, но потом затестим
+        int skipElements = page * indexLimit;
         inventoryFill:
         {
-            for (MusicBoxSongContainer subContainer : container.getSubContainers()) {
+            List<MusicBoxSongContainer> subContainers = container.getSubContainers();
+            for (int i = skipElements; i < subContainers.size(); i++, skipElements++) {
+                MusicBoxSongContainer subContainer = subContainers.get(i);
                 if (inventoryIndex++ >= indexLimit)
                     break inventoryFill;
                 ItemStack containerStack = subContainer.getItemStack();
@@ -58,7 +64,9 @@ public class SongContainerGUI {
                 gui.addItem(inventoryIndex, containerStack, containerAction);
             }
             PeekList<XMaterial> list = new PeekList<>(BukkitUtils.DISCS);
-            for (MusicBoxSong song : container.getSongs()) {
+            List<MusicBoxSong> songs = container.getSongs();
+            for (int i = skipElements; i < songs.size(); i++) {
+                MusicBoxSong song = songs.get(i);
                 if (inventoryIndex++ >= indexLimit)
                     break inventoryFill;
                 ItemStack stack = song.getSongStack(list.peek());
@@ -66,8 +74,6 @@ public class SongContainerGUI {
             }
         }
         //TODO Добавить кнопки управления
-
-        gui.open(player);
     }
 
     private int getPageCount() {

@@ -38,9 +38,9 @@ public class MusicBoxSongContainer {
             } catch (IOException ex) {
                 tempLore = JavaUtils.stackTraceToList(ex.getStackTrace());
             }
-            lore = tempLore;
+            lore = Collections.unmodifiableList(tempLore);
         } else {
-            lore = null;
+            lore = Collections.emptyList();
         }
         loadSongs(Objects.requireNonNull(folder.listFiles(f -> f.getName().endsWith(".nbs"))));
         loadSubContainers(Objects.requireNonNull(folder.listFiles(File::isDirectory)));
@@ -74,6 +74,10 @@ public class MusicBoxSongContainer {
         songs = Collections.unmodifiableList(songsTemp);
     }
 
+    /**
+     * Возращает всю музыку с учётом саб контейнеров и в них и в них
+     * Рекурсивная крч фигня
+     */
     public List<MusicBoxSong> getAllSongs() {
         List<MusicBoxSong> list = new LinkedList<>(songs);
         for (MusicBoxSongContainer container : subContainers) {

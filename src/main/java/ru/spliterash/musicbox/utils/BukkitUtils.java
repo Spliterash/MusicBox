@@ -3,6 +3,9 @@ package ru.spliterash.musicbox.utils;
 import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 import ru.spliterash.musicbox.MusicBox;
 
 import java.util.Arrays;
@@ -33,5 +36,17 @@ public class BukkitUtils {
             runnable.run();
         else
             Bukkit.getScheduler().runTask(MusicBox.getInstance(), runnable);
+    }
+
+    public <T> T getMobMeta(Class<T> metaType, Entity player, String key) {
+        List<MetadataValue> meta = player.getMetadata(key);
+        for (MetadataValue value : meta) {
+            Object valueObj = value.value();
+            try {
+                return metaType.cast(valueObj);
+            } catch (ClassCastException ignored) {
+            }
+        }
+        return null;
     }
 }
