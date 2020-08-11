@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 @UtilityClass
-@Getter
-public class SongManager {
+public class MusicBoxSongManager {
     /**
      * NBT тег чтобы определить является ли пластинка кастомной
      */
     public final String NBT_NAME = "musicBoxSongHash";
     // Для быстрого поиска
     private List<MusicBoxSong> allSongs;
+    @Getter
     private MusicBoxSongContainer rootContainer;
 
     public void reload(File rootFolder) {

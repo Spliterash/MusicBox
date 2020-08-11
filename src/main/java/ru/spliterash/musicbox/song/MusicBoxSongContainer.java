@@ -65,7 +65,7 @@ public class MusicBoxSongContainer {
         ArrayList<MusicBoxSong> songsTemp = new ArrayList<>(songFiles.length);
         for (File file : songFiles) {
             try {
-                MusicBoxSong song = new MusicBoxSong(file);
+                MusicBoxSong song = new MusicBoxSong(file, this);
                 songsTemp.add(song);
             } catch (SongNullException e) {
                 MusicBox.getInstance().getLogger().warning("Can't load " + file);
@@ -87,17 +87,27 @@ public class MusicBoxSongContainer {
     }
 
     /**
-     * Сгенерировать GUI для этого контейнера
+     * Создать GUI для этого контейнера
      */
-    public SongContainerGUI generateGUI(Player player) {
+    public SongContainerGUI createGUI(Player player) {
         return new SongContainerGUI(this, player);
     }
 
     public ItemStack getItemStack() {
+        return getItemStack(Collections.emptyList());
+    }
+
+    public ItemStack getItemStack(List<String> extraLines) {
         ItemStack chest = XMaterial.CHEST.parseItem();
         ItemMeta meta = chest.getItemMeta();
         meta.setDisplayName(Lang.FOLDER_FORMAT.toString("{folder}", getName()));
-        meta.setLore(lore);
+        List<String> tempLore;
+        if (extraLines.size() > 0) {
+            tempLore = new ArrayList<>(lore);
+            tempLore.addAll(extraLines);
+        } else
+            tempLore = lore;
+        meta.setLore(tempLore);
         chest.setItemMeta(meta);
         return chest;
     }

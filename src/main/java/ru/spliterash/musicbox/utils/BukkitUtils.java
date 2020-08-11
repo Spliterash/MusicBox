@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
 import ru.spliterash.musicbox.MusicBox;
 
 import java.util.Arrays;
@@ -38,8 +39,8 @@ public class BukkitUtils {
             Bukkit.getScheduler().runTask(MusicBox.getInstance(), runnable);
     }
 
-    public <T> T getMobMeta(Class<T> metaType, Entity player, String key) {
-        List<MetadataValue> meta = player.getMetadata(key);
+    public <T> T extractMetadata(Class<T> metaType, Metadatable metadatable, String key) {
+        List<MetadataValue> meta = metadatable.getMetadata(key);
         for (MetadataValue value : meta) {
             Object valueObj = value.value();
             try {

@@ -32,7 +32,18 @@ public enum Lang {
             "&7Price: {price}"
     )),
     GUI_TITLE("&6MusicBox {container} &b{page}&6/&b{last_page}"),
-    FOLDER_FORMAT("&e{folder}");
+    FOLDER_FORMAT("&e{folder}"),
+    CURRENT_PLAYNING(
+            "&eСейчас играет &b{song}",
+            "&eNow playing &b{song}"),
+    ADD_CONTAINER_TO_PLAYLIST(
+            Arrays.asList("&bRight click&7 to add your playlist"),
+            Arrays.asList("&bПравый клик&7 чтобы добавить в своей плейлист музыку отсюда")
+    ),
+    ADD_MUSIC_TO_PLAYLIST(
+            Arrays.asList("&bRightClick&7 to add this song to playlist"),
+            Arrays.asList("&bПравый клик&7 чтобы добавить эту мелодию в плейлист")
+    );
     /**
      * Оригинальные переводы
      * 0 индекс - англиский
@@ -125,7 +136,10 @@ public enum Lang {
 
     public List<String> toList(String... replace) {
         if (isString()) {
-            return Collections.singletonList(StringUtils.replace(selected.toString(), replace));
+            ArrayList<String> list = new ArrayList<>();
+            String text = StringUtils.replace(selected.toString(), replace);
+            list.add(text);
+            return list;
         } else if (replace.length > 0) {
             //noinspection unchecked
             return ((List<String>) selected)

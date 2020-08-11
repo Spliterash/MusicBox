@@ -11,8 +11,11 @@ import ru.spliterash.musicbox.minecraft.GUI;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.classes.PeekList;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Getter
 public class SongContainerGUI {
@@ -32,18 +35,31 @@ public class SongContainerGUI {
     }
 
     /**
-     * Поменять содержимое инвентаря на страницу
+     * Открывает инвентарь игркоу
      *
-     * @param page номер страницы
+     * @param page                  Страница инвентаря
+     * @param showControls          Показывать кнопки остановки, паузы, настройки звука и тд
+     * @param musicLore             Какой лор добавлять к иконке звука
+     * @param onSongLeftClick       Действие при клике на левую кнопку мыши
+     * @param onSongRightClick      Действие при клике на правую кнопку мыши
+     * @param containerLore         Какой лор добавлять в контейнерам
+     * @param onContainerRightClick Действие при левом клике на сундук
      */
-    public void openPage(int page, boolean showControls, GUI.InventoryAction onSongClick, @Nullable Consumer<Player> onContainerRight) {
-        //А терь говнокод
-        open();
+    public void openPage(
+            int page,
+            boolean showControls,
+            @Nullable Function<MusicBoxSong, List<String>> musicLore,
+            @Nullable BiConsumer<Player, MusicBoxSong> onSongLeftClick,
+            @Nullable BiConsumer<Player, MusicBoxSong> onSongRightClick,
+            @Nullable Function<MusicBoxSongContainer, List<String>> containerLore,
+            @Nullable BiConsumer<Player, MusicBoxSongContainer> onContainerRightClick
+    ) {
         gui.changeTitle(Lang.GUI_TITLE.toString(
                 "{container}", container.getName(),
                 "{page}", String.valueOf(page + 1),
                 "{last_page}", String.valueOf(getPageCount())
         ));
+        open();
         //Проще в начале цикла сразу плюсовать, так что минус один чтобы началось с 0
         int inventoryIndex = -1;
         int indexLimit = 45;
@@ -56,11 +72,29 @@ public class SongContainerGUI {
                 MusicBoxSongContainer subContainer = subContainers.get(i);
                 if (inventoryIndex++ >= indexLimit)
                     break inventoryFill;
-                ItemStack containerStack = subContainer.getItemStack();
+                List<String> extraLines;
+                if (containerLore != null)
+                    extraLines = containerLore.apply(subContainer);
+                else
+                    extraLines = Collections.emptyList();
+                ItemStack containerStack = subContainer.getItemStack(extraLines);
+                Consumer<Player> containerConsumer;
+                if (onContainerRightClick != null)
+                    containerConsumer = player -> onContainerRightClick.accept(player, subContainer);
+                else
+                    containerConsumer = null;
                 GUI.InventoryAction containerAction = new GUI.InventoryAction(
                         p -> new SongContainerGUI(subContainer, player)
-                                .openPage(page, showControls, onSongClick, onContainerRight),
-                        onContainerRight, null);
+                                .openPage(
+                                        page,
+                                        showControls,
+                                        musicLore,
+                                        onSongLeftClick,
+                                        onSongRightClick,
+                                        containerLore,
+                                        onContainerRightClick),
+                        containerConsumer,
+                        null);
                 gui.addItem(inventoryIndex, containerStack, containerAction);
             }
             PeekList<XMaterial> list = new PeekList<>(BukkitUtils.DISCS);
@@ -69,8 +103,24 @@ public class SongContainerGUI {
                 MusicBoxSong song = songs.get(i);
                 if (inventoryIndex++ >= indexLimit)
                     break inventoryFill;
-                ItemStack stack = song.getSongStack(list.peek());
-                gui.addItem(inventoryIndex, stack, onSongClick);
+                List<String> extraLines;
+                if (musicLore != null)
+                    extraLines = musicLore.apply(song);
+                else
+                    extraLines = Collections.emptyList();
+                ItemStack stack = song.getSongStack(list.peek(), extraLines);
+                gui.addItem(inventoryIndex, stack,
+                        new GUI.InventoryAction(
+                                p -> {
+                                    if (onSongLeftClick != null)
+                                        onSongLeftClick.accept(p, song);
+                                },
+                                p -> {
+                                    if (onSongRightClick != null)
+                                        onSongRightClick.accept(p, song);
+                                },
+                                null
+                        ));
             }
         }
         //TODO Добавить кнопки управления

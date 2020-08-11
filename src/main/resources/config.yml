@@ -8,6 +8,15 @@ economy:
 # Maximum sound distance in speaker mode
 # Максимальная длина звука в режиме колонки
 speaker-radius: 10
+# Music bossbar setting
+# Настройки музыкального боссбара
+bossbar:
+  # Enable or disable bossbar
+  # Включает или выключает боссбар
+  enable: true
+  color: GREEN
+  style: SEGMENTED_20
+
 # Hologram settings above the player in column mode
 # Настройки голограммы над игроком в режиме колонки
 holo:

@@ -15,7 +15,9 @@ import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 @Getter
 public class MusicBoxSong {
@@ -23,10 +25,12 @@ public class MusicBoxSong {
     private final File file;
     private final String name;
     private final HashMap<String, String> hoverMap;
+    private final MusicBoxSongContainer container;
     private WeakReference<Song> songReference;
 
-    MusicBoxSong(File songFile) {
+    MusicBoxSong(File songFile, MusicBoxSongContainer container) {
         this.file = songFile;
+        this.container = container;
         Song song = getSong();
         this.name = StringUtils.getOrEmpty(song.getTitle(), () -> FileUtils.getFilename(file.getName()));
         this.hoverMap = new HashMap<>();
@@ -35,17 +39,23 @@ public class MusicBoxSong {
         hoverMap.put("{original_author}", song.getOriginalAuthor());
     }
 
+    public ItemStack getSongStack(XMaterial material) {
+        return getSongStack(material, Collections.emptyList());
+    }
+
     /**
      * @param material Какой материал использовать
      * @return Айтем с этим материалом
      */
-    public ItemStack getSongStack(XMaterial material) {
+    public ItemStack getSongStack(XMaterial material, List<String> extraLines) {
         ItemStack stack = material.parseItem();
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(Lang.SONG_NAME.toString("{song}", getName()));
-        meta.setLore(ArrayUtils.replaceOrRemove(Lang.SONG_LORE.toList(), hoverMap));
+        List<String> list = ArrayUtils.replaceOrRemove(Lang.SONG_LORE.toList(), hoverMap);
+        list.addAll(extraLines);
+        meta.setLore(list);
         stack.setItemMeta(meta);
-        NBTEditor.set(stack, getHash(), SongManager.NBT_NAME);
+        NBTEditor.set(stack, getHash(), MusicBoxSongManager.NBT_NAME);
         return stack;
     }
 
@@ -53,7 +63,7 @@ public class MusicBoxSong {
      * Смотрит есть ли Song в референсе
      * И если нету, то отдаёт загруженный с диска файл
      */
-    public Song getSong() throws SongNullException{
+    public Song getSong() throws SongNullException {
         if (songReference == null || songReference.get() == null) {
             Song song = loadFromDisc();
             if (song == null) {
