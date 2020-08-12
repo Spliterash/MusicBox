@@ -3,14 +3,14 @@ package ru.spliterash.musicbox;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import ru.spliterash.musicbox.players.PlayerInstance;
+import ru.spliterash.musicbox.players.PlayerWrapper;
 
 public class Handler implements Listener {
     @EventHandler
     public void onExit(PlayerQuitEvent e) {
-        PlayerInstance
+        PlayerWrapper
                 .getInstanceOptional(e.getPlayer())
-                .ifPresent(PlayerInstance::destroy);
+                .ifPresent(PlayerWrapper::destroy);
     }
 
 }

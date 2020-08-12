@@ -22,7 +22,7 @@ public class GUIMode {
      * @param musicBoxSong Музыка
      */
     public void playerPlayMusic(Player player, MusicBoxSong musicBoxSong) {
-        PlayerInstance instance = PlayerInstance.getInstance(player);
+        PlayerWrapper instance = PlayerWrapper.getInstance(player);
         instance.play(musicBoxSong);
     }
 
@@ -34,11 +34,24 @@ public class GUIMode {
         //TODO
     }
 
-    public List<String> addMusicToPlaylist(MusicBoxSong song) {
+    public List<String> addMusicToPlaylistLore(MusicBoxSong song) {
         return Lang.ADD_MUSIC_TO_PLAYLIST.toList();
     }
 
     public void addToPlaylist(Player player, MusicBoxSongContainer container) {
         //TODO
+    }
+
+    public List<String> buyMusicLore(MusicBoxSong musicBoxSong) {
+        return Lang.BUY_MUSIC_LORE.toList();
+    }
+
+    /**
+     * Процесс покупки
+     * @param player Игрок который покупает пластинку
+     * @param musicBoxSong Покупаемая мелодия
+     */
+    public void playerBuyMusic(Player player, MusicBoxSong musicBoxSong) {
+
     }
 }

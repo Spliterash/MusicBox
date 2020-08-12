@@ -7,7 +7,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
-import ru.spliterash.musicbox.players.PlayerInstance;
+import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public final class MusicBox extends JavaPlugin {
     }
 
     public void reloadPlugin() {
-        PlayerInstance.clearAll();
+        PlayerWrapper.clearAll();
 
         MusicBoxSongManager.reload(new File(getDataFolder(), "songs"));
         config = yaml.loadAs(getResource("config.yml"), MusicBoxConfig.class);

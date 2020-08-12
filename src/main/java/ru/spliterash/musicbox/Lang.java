@@ -43,7 +43,42 @@ public enum Lang {
     ADD_MUSIC_TO_PLAYLIST(
             Arrays.asList("&bRightClick&7 to add this song to playlist"),
             Arrays.asList("&bПравый клик&7 чтобы добавить эту мелодию в плейлист")
-    );
+    ),
+    COMMAND_HELP_SHOP(
+            "&b/musicbox shop (name)&6- Open disc shop or buy disc with name",
+            "&b/musicbox shop (name)&6- Открыть магазин дисков или купить пластинку с именем"),
+    COMMAND_HELP_GET(
+            "&b/musicbox get (name)&6- Open get disc GUI or get disc with name",
+            "&b/musicbox get (name)&6- Открыть инвентарь получения дисков или получить диск с именем"
+    ),
+    COMMAND_HELP(
+            Arrays.asList(
+                    "&b/musicbox &6- Open music gui",
+                    "&b/musicbox play [song_name] &6- Play song with name"
+            ),
+            Arrays.asList(
+                    "&b/musicbox &6- Открыть инвентарь с музыкой",
+                    "&b/musicbox play [имя] &6- Воспроизвести трек"
+            )
+    ),
+    BUY_MUSIC_LORE(
+            Arrays.asList(
+                    "&7==========================",
+                    "&eClick to buy this disc",
+                    "&7Price: &6100 $"
+            ),
+            Arrays.asList(
+                    "&7==========================",
+                    "&eНажми чтобы купить эту пластинку",
+                    "&7Цена: &6100 $"
+            )
+    ),
+    CANT_SWITCH(
+            "You cant switch play mode",
+            "&6Вы не можете поменять режим проигрывания"),
+    NEXT(
+            "&6Next",
+            "&6Вперёд");
     /**
      * Оригинальные переводы
      * 0 индекс - англиский

@@ -1,0 +1,3 @@
+musicbox.use - Allow command /musicbox and /musicbox play
+musicbox.shop - Allow use disc shop
+musicbox.get- Allow get any disc

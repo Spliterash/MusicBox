@@ -25,7 +25,7 @@ holo:
   enable: true
   # How high will the hologram be
   # Как высоко будет надпись над игроком
-  holo-height: 1.30
+  height: 1.30
 # Radius in which disc's will be heard from this plugin
 # Как далеко будет слышно пластинки из этого плагина
 jukebox-radius: 64

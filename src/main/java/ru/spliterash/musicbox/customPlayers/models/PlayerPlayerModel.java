@@ -4,7 +4,7 @@ import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import lombok.Getter;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
-import ru.spliterash.musicbox.players.PlayerInstance;
+import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
 /**
@@ -15,9 +15,9 @@ import ru.spliterash.musicbox.song.MusicBoxSong;
 public class PlayerPlayerModel {
     private final PlayerSongPlayer songPlayer;
     private final MusicBoxSong song;
-    private final PlayerInstance player;
+    private final PlayerWrapper player;
 
-    public PlayerPlayerModel(PlayerSongPlayer songPlayer, MusicBoxSong song, PlayerInstance player) {
+    public PlayerPlayerModel(PlayerSongPlayer songPlayer, MusicBoxSong song, PlayerWrapper player) {
         this.songPlayer = songPlayer;
         this.song = song;
         this.player = player;

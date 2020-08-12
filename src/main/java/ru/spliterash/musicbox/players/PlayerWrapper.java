@@ -8,6 +8,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.MusicBoxConfig;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
@@ -26,7 +27,7 @@ import java.util.Optional;
  * Пока он на сервере
  */
 @Getter
-public class PlayerInstance {
+public class PlayerWrapper {
     public static final String METADATA_KEY = "musicboxInstance";
     private static final File playersFolder = new File(MusicBox.getInstance().getDataFolder(), "players");
     /**
@@ -34,7 +35,12 @@ public class PlayerInstance {
      */
     private final Player player;
     private final PlayerConfig config;
-
+    /**
+     * Включен ли режим колонки
+     * Не хочу хранить это в конфиге
+     * Поскольку с этим может возникнуть много проблем
+     */
+    private boolean speaker;
     /**
      * Активный проигрыватель(если есть)
      */
@@ -49,7 +55,7 @@ public class PlayerInstance {
     /**
      * Вызывается только если игрок захочет что нибудь послушать
      */
-    private PlayerInstance(Player player) {
+    private PlayerWrapper(Player player) {
         this.player = player;
         MusicBoxConfig.BossBarSetting bossBarConfig = MusicBox.getInstance().getConfigObject().getBossbar();
         if (bossBarConfig.isEnable())
@@ -60,17 +66,17 @@ public class PlayerInstance {
     /**
      * Отдаёт не пустой {@link Optional} если игрок хоть раз включал музыку
      */
-    public static Optional<PlayerInstance> getInstanceOptional(Player player) {
-        return Optional.ofNullable(BukkitUtils.extractMetadata(PlayerInstance.class, player, METADATA_KEY));
+    public static Optional<PlayerWrapper> getInstanceOptional(Player player) {
+        return Optional.ofNullable(BukkitUtils.extractMetadata(PlayerWrapper.class, player, METADATA_KEY));
     }
 
     /**
      * Создаёт инстанц если его нет и возращает
      */
-    public static PlayerInstance getInstance(Player player) {
+    public static PlayerWrapper getInstance(Player player) {
         return getInstanceOptional(player)
                 .orElseGet(() -> {
-                    PlayerInstance instance = new PlayerInstance(player);
+                    PlayerWrapper instance = new PlayerWrapper(player);
                     player.setMetadata(METADATA_KEY, new FixedMetadataValue(MusicBox.getInstance(), instance));
                     return instance;
                 });
@@ -80,23 +86,39 @@ public class PlayerInstance {
         Bukkit
                 .getOnlinePlayers()
                 .stream()
-                .map(PlayerInstance::getInstanceOptional)
-                .forEach(o -> o.ifPresent(PlayerInstance::destroy));
+                .map(PlayerWrapper::getInstanceOptional)
+                .forEach(o -> o.ifPresent(PlayerWrapper::destroy));
     }
 
     /**
      * Открыть инвентарь для выбора музыки
      */
-    public void openPlayInventory() {
+    public void openDefaultInventory() {
         SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(player);
         gui.openPage(
                 0,
-                true,
-                GUIMode::addMusicToPlaylist,
+                null,
+                GUIMode::addMusicToPlaylistLore,
                 GUIMode::playerPlayMusic,
                 GUIMode::addToPlaylist,
                 GUIMode::addContainerToPlaylist,
                 GUIMode::addToPlaylist /*TODO написать плейлисты */
+        );
+    }
+
+    /**
+     * Открыть инвентарь для покупки пластинок
+     */
+    public void openShopInventory() {
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(player);
+        gui.openPage(
+                0,
+                null,
+                GUIMode::buyMusicLore,
+                GUIMode::playerBuyMusic,
+                null,
+                null,
+                null
         );
     }
 
@@ -112,17 +134,64 @@ public class PlayerInstance {
         config.save();
     }
 
+    public boolean isPlayNow() {
+        return activePlayer != null;
+    }
+
+    /**
+     * Может ли игрок поменять режим
+     * А именно включить режим колонки
+     */
+    public boolean canSwitch() {
+        return getPlayer().hasPermission("musicbox.speaker");
+    }
+
+    public boolean switchModeChecked() {
+        if (canSwitch()) {
+            player.sendMessage(Lang.CANT_SWITCH.toString());
+            return false;
+        } else {
+            switchMode();
+            return true;
+        }
+    }
+
+    /**
+     * Меняет режим с колонки и обратно
+     */
+    public void switchMode() {
+        speaker = !speaker;
+        if (isPlayNow()) {
+            PlayerSongPlayer oldPlayer = getActivePlayer();
+            play(oldPlayer.getMusicBoxSong(), oldPlayer.getSongPlayer().getTick());
+        }
+    }
+
     public void play(MusicBoxSong song) {
-        if (config.isSpeaker())
+        play(song, (short) -1);
+    }
+
+    /**
+     * Проигрывает игроку звук, с учётом его режима звучания
+     * <p>
+     * Внимание... Метод пересоздаёт текущий проигрыватель
+     * для перемотки юзайте метод
+     *
+     * @param song Мелодия которую нужно проиграть
+     * @param tick С какого тика (-1 если с начала)
+     */
+    public void play(MusicBoxSong song, short tick) {
+        if (speaker)
             startSpeaker(song);
         else
             startRadio(song);
+        if (tick > -1)
+            activePlayer.getSongPlayer().setTick(tick);
     }
 
     public void startSpeaker(MusicBoxSong song) {
         destroyActivePlayer();
         activePlayer = new SpeakerPlayer(song, this);
-        //TODO Режим колонки
     }
 
     public void startRadio(MusicBoxSong song) {
@@ -154,4 +223,6 @@ public class PlayerInstance {
         if (playBar != null)
             playBar.setProgress(progress);
     }
+
+
 }

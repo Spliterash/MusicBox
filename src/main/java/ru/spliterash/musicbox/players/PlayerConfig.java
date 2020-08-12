@@ -20,10 +20,6 @@ public class PlayerConfig {
      * Громкость
      */
     private byte volume = 100;
-    /**
-     * Включен ли режим колонки
-     */
-    private boolean speaker;
 
     public static PlayerConfig load(File file) {
         try {

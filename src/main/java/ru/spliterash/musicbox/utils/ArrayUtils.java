@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.utils;
 
 import lombok.experimental.UtilityClass;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,15 @@ public class ArrayUtils {
 
         }
     }
+    public <T> T[] removeFirst(Class<T> clazz, T[] source) {
+        if (source.length == 0)
+            return source;
+        //noinspection unchecked
+        T[] result = (T[]) Array.newInstance(clazz, source.length - 1);
+        System.arraycopy(source, 1, result, 0, source.length - 1);
+        return result;
+    }
+
 
     /**
      * Заменяет элементы в мапе

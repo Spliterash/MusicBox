@@ -1,6 +1,7 @@
 package ru.spliterash.musicbox.minecraft;
 
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,21 +32,20 @@ public class GUI implements InventoryHolder {
         }, MusicBox.getInstance());
     }
 
-    private Inventory inv;
+    @Getter
+    private Inventory inventory;
     private final Map<Integer, InventoryAction> runnableMap = new HashMap<>();
-    private final int rows;
 
     public GUI(String title, int rows) {
-        this.rows = rows;
         createInventory(title, rows);
     }
 
     private void createInventory(String title, int rows) {
         if (Bukkit.isPrimaryThread())
-            inv = Bukkit.createInventory(this, 9 * rows, title);
+            inventory = Bukkit.createInventory(this, 9 * rows, title);
         else {
             try {
-                inv = Bukkit
+                inventory = Bukkit
                         .getScheduler()
                         .callSyncMethod(
                                 MusicBox.getInstance(),
@@ -66,30 +66,19 @@ public class GUI implements InventoryHolder {
     }
 
     public void clear() {
-        inv.clear();
+        inventory.clear();
         runnableMap.clear();
     }
 
-    @Override
-    public Inventory getInventory() {
-        return inv;
-    }
-
     public void addItem(int slot, ItemStack item, InventoryAction runnable) {
-        inv.setItem(slot, item);
+        inventory.setItem(slot, item);
         runnableMap.put(slot, runnable);
     }
 
     public void removeItem(int slot) {
-        inv.clear(slot);
+        inventory.clear(slot);
         runnableMap.remove(slot);
     }
-
-    public void changeTitle(String newTitle) {
-        getInventory().clear();
-        inv = Bukkit.createInventory(this, rows, newTitle);
-    }
-
 
     public void onInventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
@@ -109,6 +98,20 @@ public class GUI implements InventoryHolder {
                 action.shiftClick((Player) e.getWhoClicked());
                 break;
         }
+    }
+
+    /**
+     * Поскольку у созданого инвентаря нельзя сменить титл, то только так
+     *
+     * @param title Новый титл
+     * @return Новый GUI с новым титлом
+     */
+    public GUI cloneWithNewTitle(String title) {
+        ItemStack[] content = inventory.getContents();
+        GUI gui = new GUI(title, content.length);
+        gui.runnableMap.putAll(runnableMap);
+        gui.inventory.setContents(content);
+        return gui;
     }
 
     public static class InventoryAction {

@@ -1,14 +1,16 @@
 package ru.spliterash.musicbox.song;
 
 import com.cryptomorin.xseries.XMaterial;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.minecraft.GUI;
+import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.BukkitUtils;
+import ru.spliterash.musicbox.utils.ItemUtils;
+import ru.spliterash.musicbox.utils.classes.Pair;
 import ru.spliterash.musicbox.utils.classes.PeekList;
 
 import java.util.Collections;
@@ -20,47 +22,40 @@ import java.util.function.Function;
 @Getter
 public class SongContainerGUI {
     private final MusicBoxSongContainer container;
-    private final Player player;
-    @Getter(AccessLevel.NONE)
-    private final GUI gui;
+    private final PlayerWrapper wrapper;
 
-    public SongContainerGUI(MusicBoxSongContainer container, Player player) {
+    public SongContainerGUI(MusicBoxSongContainer container, PlayerWrapper wrapper) {
         this.container = container;
-        this.player = player;
-        this.gui = new GUI(container.getName());
-    }
-
-    public void open() {
-        gui.open(player);
+        this.wrapper = wrapper;
     }
 
     /**
      * Открывает инвентарь игркоу
      *
      * @param page                  Страница инвентаря
-     * @param showControls          Показывать кнопки остановки, паузы, настройки звука и тд
-     * @param musicLore             Какой лор добавлять к иконке звука
+     * @param bottomBar             Наполнение полосы снизу не считая кнопок управления(не больше 7 элементов)
+     * @param extraMusicLore        Какой лор добавлять к иконке звука
      * @param onSongLeftClick       Действие при клике на левую кнопку мыши
      * @param onSongRightClick      Действие при клике на правую кнопку мыши
-     * @param containerLore         Какой лор добавлять в контейнерам
+     * @param extraContainerLore    Какой лор добавлять в контейнерам
      * @param onContainerRightClick Действие при левом клике на сундук
      */
     public void openPage(
             int page,
-            boolean showControls,
-            @Nullable Function<MusicBoxSong, List<String>> musicLore,
+            @Nullable Pair<ItemStack, GUI.InventoryAction>[] bottomBar,
+            @Nullable Function<MusicBoxSong, List<String>> extraMusicLore,
             @Nullable BiConsumer<Player, MusicBoxSong> onSongLeftClick,
             @Nullable BiConsumer<Player, MusicBoxSong> onSongRightClick,
-            @Nullable Function<MusicBoxSongContainer, List<String>> containerLore,
+            @Nullable Function<MusicBoxSongContainer, List<String>> extraContainerLore,
             @Nullable BiConsumer<Player, MusicBoxSongContainer> onContainerRightClick
     ) {
-        gui.changeTitle(Lang.GUI_TITLE.toString(
+        int pageCount = getPageCount();
+        GUI gui = createGUI(Lang.GUI_TITLE.toString(
                 "{container}", container.getName(),
                 "{page}", String.valueOf(page + 1),
-                "{last_page}", String.valueOf(getPageCount())
+                "{last_page}", String.valueOf(pageCount)
         ));
-        open();
-        //Проще в начале цикла сразу плюсовать, так что минус один чтобы началось с 0
+        gui.open(wrapper.getPlayer());
         int inventoryIndex = -1;
         int indexLimit = 45;
         //Сколько элементов надо пропустить, чувствую тут надо +1 написать, но потом затестим
@@ -73,8 +68,8 @@ public class SongContainerGUI {
                 if (inventoryIndex++ >= indexLimit)
                     break inventoryFill;
                 List<String> extraLines;
-                if (containerLore != null)
-                    extraLines = containerLore.apply(subContainer);
+                if (extraContainerLore != null)
+                    extraLines = extraContainerLore.apply(subContainer);
                 else
                     extraLines = Collections.emptyList();
                 ItemStack containerStack = subContainer.getItemStack(extraLines);
@@ -84,14 +79,14 @@ public class SongContainerGUI {
                 else
                     containerConsumer = null;
                 GUI.InventoryAction containerAction = new GUI.InventoryAction(
-                        p -> new SongContainerGUI(subContainer, player)
+                        p -> new SongContainerGUI(subContainer, wrapper)
                                 .openPage(
                                         page,
-                                        showControls,
-                                        musicLore,
+                                        bottomBar,
+                                        extraMusicLore,
                                         onSongLeftClick,
                                         onSongRightClick,
-                                        containerLore,
+                                        extraContainerLore,
                                         onContainerRightClick),
                         containerConsumer,
                         null);
@@ -99,16 +94,22 @@ public class SongContainerGUI {
             }
             PeekList<XMaterial> list = new PeekList<>(BukkitUtils.DISCS);
             List<MusicBoxSong> songs = container.getSongs();
+            MusicBoxSong playerSong = wrapper.getActivePlayer() != null ? wrapper.getActivePlayer().getMusicBoxSong() : null;
             for (int i = skipElements; i < songs.size(); i++) {
                 MusicBoxSong song = songs.get(i);
                 if (inventoryIndex++ >= indexLimit)
                     break inventoryFill;
                 List<String> extraLines;
-                if (musicLore != null)
-                    extraLines = musicLore.apply(song);
+                if (extraMusicLore != null)
+                    extraLines = extraMusicLore.apply(song);
                 else
                     extraLines = Collections.emptyList();
-                ItemStack stack = song.getSongStack(list.peek(), extraLines);
+                boolean enchanted;
+                if (playerSong != null)
+                    enchanted = song.equals(playerSong);
+                else
+                    enchanted = false;
+                ItemStack stack = song.getSongStack(list.peek(), extraLines, enchanted);
                 gui.addItem(inventoryIndex, stack,
                         new GUI.InventoryAction(
                                 p -> {
@@ -123,7 +124,47 @@ public class SongContainerGUI {
                         ));
             }
         }
-        //TODO Добавить кнопки управления
+        // Возможно криво что в методе столько параметров
+        // но по другому хз как
+        if (bottomBar != null) {
+            if (bottomBar.length > 7)
+                throw new RuntimeException("Length bigger 7");
+            int startIndex = 46;
+            for (int i = 0; i < bottomBar.length; i++) {
+                @Nullable Pair<ItemStack, GUI.InventoryAction> pair = bottomBar[i];
+                if (pair == null)
+                    continue;
+                gui.addItem(i + startIndex, pair.getKey(), pair.getValue());
+            }
+        }
+        // Пагинация
+        // Согласен, параметром метода много
+        if (pageCount > page)
+            gui.addItem(
+                    53,
+                    ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
+                    new GUI.InventoryAction(p -> openPage(
+                            page + 1, bottomBar,
+                            extraMusicLore,
+                            onSongLeftClick,
+                            onSongRightClick,
+                            extraContainerLore,
+                            onContainerRightClick)));
+        if (page > 0)
+            gui.addItem(
+                    45,
+                    ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
+                    new GUI.InventoryAction(p -> openPage(
+                            page - 1, bottomBar,
+                            extraMusicLore,
+                            onSongLeftClick,
+                            onSongRightClick,
+                            extraContainerLore,
+                            onContainerRightClick)));
+    }
+
+    private GUI createGUI(String title) {
+        return new GUI(title);
     }
 
     private int getPageCount() {

@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import ru.spliterash.musicbox.utils.ArrayUtils;
 import ru.spliterash.musicbox.utils.FileUtils;
 import ru.spliterash.musicbox.Lang;
+import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.File;
@@ -40,14 +41,14 @@ public class MusicBoxSong {
     }
 
     public ItemStack getSongStack(XMaterial material) {
-        return getSongStack(material, Collections.emptyList());
+        return getSongStack(material, Collections.emptyList(), false);
     }
 
     /**
      * @param material Какой материал использовать
      * @return Айтем с этим материалом
      */
-    public ItemStack getSongStack(XMaterial material, List<String> extraLines) {
+    public ItemStack getSongStack(XMaterial material, List<String> extraLines, boolean glow) {
         ItemStack stack = material.parseItem();
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(Lang.SONG_NAME.toString("{song}", getName()));
@@ -55,7 +56,9 @@ public class MusicBoxSong {
         list.addAll(extraLines);
         meta.setLore(list);
         stack.setItemMeta(meta);
-        NBTEditor.set(stack, getHash(), MusicBoxSongManager.NBT_NAME);
+        stack = NBTEditor.set(stack, getHash(), MusicBoxSongManager.NBT_NAME);
+        if (glow)
+            stack = ItemUtils.glow(stack);
         return stack;
     }
 

@@ -17,6 +17,7 @@ public class MusicBoxSongManager {
      */
     public final String NBT_NAME = "musicBoxSongHash";
     // Для быстрого поиска
+    @Getter
     private List<MusicBoxSong> allSongs;
     @Getter
     private MusicBoxSongContainer rootContainer;
