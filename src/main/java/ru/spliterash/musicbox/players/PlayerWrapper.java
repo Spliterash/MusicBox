@@ -97,12 +97,12 @@ public class PlayerWrapper {
         SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(player);
         gui.openPage(
                 0,
-                null,
+                GUIMode.DEFAULT_BAR,
                 GUIMode::addMusicToPlaylistLore,
                 GUIMode::playerPlayMusic,
                 GUIMode::addToPlaylist,
                 GUIMode::addContainerToPlaylist,
-                GUIMode::addToPlaylist /*TODO написать плейлисты */
+                GUIMode::addToPlaylist
         );
     }
 
@@ -114,11 +114,11 @@ public class PlayerWrapper {
         gui.openPage(
                 0,
                 null,
-                GUIMode::buyMusicLore,
+                GUIMode::playerBuyMusicLore,
                 GUIMode::playerBuyMusic,
                 null,
-                null,
-                null
+                GUIMode::buyAllContainerLore,
+                GUIMode::buyAllContainer
         );
     }
 

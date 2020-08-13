@@ -1,4 +1,9 @@
 name: MusicBox
 version: @version@
 main: ru.spliterash.musicbox.MusicBox
+depends:
+  - NoteBlockAPI
+softpend:
+  - Vault
+  - ProtocolLib
 api-version: 1.16

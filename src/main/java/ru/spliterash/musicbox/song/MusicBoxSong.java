@@ -8,11 +8,8 @@ import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ru.spliterash.musicbox.utils.ArrayUtils;
-import ru.spliterash.musicbox.utils.FileUtils;
+import ru.spliterash.musicbox.utils.*;
 import ru.spliterash.musicbox.Lang;
-import ru.spliterash.musicbox.utils.ItemUtils;
-import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -33,7 +30,7 @@ public class MusicBoxSong {
         this.file = songFile;
         this.container = container;
         Song song = getSong();
-        this.name = StringUtils.getOrEmpty(song.getTitle(), () -> FileUtils.getFilename(file.getName()));
+        this.name = StringUtils.t(StringUtils.getOrEmpty(song.getTitle(), () -> FileUtils.getFilename(file.getName())));
         this.hoverMap = new HashMap<>();
         hoverMap.put("{length}", String.valueOf((int) Math.floor(song.getLength() / 20D)));
         hoverMap.put("{author}", song.getAuthor());
@@ -97,5 +94,9 @@ public class MusicBoxSong {
                 hoverMap.get("{author}"),
                 hoverMap.get("{original_author}")
         );
+    }
+
+    public ItemStack getSongStack() {
+        return getSongStack(BukkitUtils.getRandomDisc());
     }
 }

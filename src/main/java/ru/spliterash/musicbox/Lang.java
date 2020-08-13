@@ -24,13 +24,18 @@ public enum Lang {
     // В консоли русский вариант будет смотреться... да никак не будет, UTF-8 👍👍👍
     ONLY_PLAYERS("Sry, but only players can execute this command"),
     SONG_NAME("&6{song}"),
-    SONG_LORE(Arrays.asList(
-            "&7Length: {lenght}",
-            "&7Author: &6{author}",
-            "&7Original author: &6{original_author}",
-            "",
-            "&7Price: {price}"
-    )),
+    SONG_LORE(
+            Arrays.asList(
+                    "&7Length: {lenght}",
+                    "&7Author: &6{author}",
+                    "&7Original author: &6{original_author}"
+            ),
+            Arrays.asList(
+                    "&7Длина: {lenght}",
+                    "&7Автор: &6{author}",
+                    "&7Оригинальный автор: &6{original_author}"
+            )
+    ),
     GUI_TITLE("&6MusicBox {container} &b{page}&6/&b{last_page}"),
     FOLDER_FORMAT("&e{folder}"),
     CURRENT_PLAYNING(
@@ -65,12 +70,12 @@ public enum Lang {
             Arrays.asList(
                     "&7==========================",
                     "&eClick to buy this disc",
-                    "&7Price: &6100 $"
+                    "&7Price: &6{price} $"
             ),
             Arrays.asList(
                     "&7==========================",
                     "&eНажми чтобы купить эту пластинку",
-                    "&7Цена: &6100 $"
+                    "&7Цена: &6{price} $"
             )
     ),
     CANT_SWITCH(
@@ -78,7 +83,27 @@ public enum Lang {
             "&6Вы не можете поменять режим проигрывания"),
     NEXT(
             "&6Next",
-            "&6Вперёд");
+            "&6Вперёд"),
+    BUY_CONTAINER_LORE(
+            Arrays.asList(
+                    "&7==========================",
+                    "&ePress &cright&e to buy this box",
+                    "&7Price: &6{price} $"
+            ),
+            Arrays.asList(
+                    "&7==========================",
+                    "&eНажми &cправой кнопкой&e чтобы купить весь этот сундук",
+                    "&7Цена: &6{price} $"
+            )),
+    NO_HAS_MONEY(
+            "&6You don't have enough &b{amount}&6 to buy this",
+            "&6Вам не хватает &b{amount}&6 чтобы купить это"),
+    NO_INVENTORY_SPACE(
+            "&6You dont have space in your inventory",
+            "&6У вас нет места в инвентаре"),
+    DISC_BUYED(
+            "&6You have successfully purchased a disc &b{disc}",
+            "&6Вы успешно купили диск &b{disc}");
     /**
      * Оригинальные переводы
      * 0 индекс - англиский

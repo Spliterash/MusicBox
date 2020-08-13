@@ -1,10 +1,12 @@
 package ru.spliterash.musicbox.utils;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @UtilityClass
 public class ArrayUtils {
@@ -22,6 +24,7 @@ public class ArrayUtils {
 
         }
     }
+
     public <T> T[] removeFirst(Class<T> clazz, T[] source) {
         if (source.length == 0)
             return source;
@@ -73,4 +76,10 @@ public class ArrayUtils {
         }
         return list;
     }
+
+    public <T> T getRandom(List<T> list) {
+        Random rand = new Random();
+        return list.get(rand.nextInt(list.size()));
+    }
+
 }

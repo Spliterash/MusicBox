@@ -31,6 +31,9 @@ public class BukkitUtils {
                     XMaterial.MUSIC_DISC_WARD
             )
     );
+    public XMaterial getRandomDisc(){
+        return ArrayUtils.getRandom(DISCS);
+    }
 
     public void runSyncTask(Runnable runnable) {
         if (Bukkit.isPrimaryThread())

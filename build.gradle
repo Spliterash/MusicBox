@@ -33,7 +33,7 @@ repositories {
 dependencies {
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
-
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compile 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
     compile 'com.github.cryptomorin:XSeries:7.1.1'
