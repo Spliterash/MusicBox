@@ -103,7 +103,11 @@ public enum Lang {
             "&6У вас нет места в инвентаре"),
     DISC_BUYED(
             "&6You have successfully purchased a disc &b{disc}",
-            "&6Вы успешно купили диск &b{disc}");
+            "&6Вы успешно купили диск &b{disc}"),
+    PARENT_CONTAINER(
+            "&6Return to parent folder",
+            "&6Вернуться на уровень выше");
+
     /**
      * Оригинальные переводы
      * 0 индекс - англиский

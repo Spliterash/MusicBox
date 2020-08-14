@@ -34,8 +34,9 @@ public class GUIMode {
      * @param musicBoxSong Музыка
      */
     public void playerPlayMusic(Player player, MusicBoxSong musicBoxSong) {
-        PlayerWrapper instance = PlayerWrapper.getInstance(player);
-        instance.play(musicBoxSong);
+        PlayerWrapper
+                .getInstance(player)
+                .play(musicBoxSong);
     }
 
     public List<String> addContainerToPlaylist(MusicBoxSongContainer container) {

@@ -33,7 +33,7 @@ public class SongContainerGUI {
      * Открывает инвентарь игркоу
      *
      * @param page                  Страница инвентаря
-     * @param bottomBar             Наполнение полосы снизу не считая кнопок управления(не больше 7 элементов)
+     * @param bottomBar             Наполнение полосы снизу не считая кнопок управления(не больше 6 элементов)
      * @param extraMusicLore        Какой лор добавлять к иконке звука
      * @param onSongLeftClick       Действие при клике на левую кнопку мыши
      * @param onSongRightClick      Действие при клике на правую кнопку мыши
@@ -79,9 +79,9 @@ public class SongContainerGUI {
                 else
                     containerConsumer = null;
                 GUI.InventoryAction containerAction = new GUI.InventoryAction(
-                        p -> new SongContainerGUI(subContainer, wrapper)
+                        p -> subContainer.createGUI(wrapper)
                                 .openPage(
-                                        page,
+                                        0,
                                         bottomBar,
                                         extraMusicLore,
                                         onSongLeftClick,
@@ -128,8 +128,8 @@ public class SongContainerGUI {
         // но по другому хз как
         if (bottomBar != null) {
             if (bottomBar.length > 7)
-                throw new RuntimeException("Length bigger 7");
-            int startIndex = 46;
+                throw new RuntimeException("Length bigger 6");
+            int startIndex = 47;
             for (int i = 0; i < bottomBar.length; i++) {
                 @Nullable Pair<ItemStack, GUI.InventoryAction> pair = bottomBar[i];
                 if (pair == null)
@@ -137,19 +137,28 @@ public class SongContainerGUI {
                 gui.addItem(i + startIndex, pair.getKey(), pair.getValue());
             }
         }
-        // Пагинация
-        // Согласен, параметром метода много
-        if (pageCount > page)
+        //Добавление выхода на уровень выше, если он есть
+        parentContainer:
+        {
+            MusicBoxSongContainer parentContainer = container.getParent();
+            if (parentContainer == null)
+                break parentContainer;
             gui.addItem(
-                    53,
-                    ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
-                    new GUI.InventoryAction(p -> openPage(
-                            page + 1, bottomBar,
-                            extraMusicLore,
-                            onSongLeftClick,
-                            onSongRightClick,
-                            extraContainerLore,
-                            onContainerRightClick)));
+                    46,
+                    ItemUtils.createStack(XMaterial.TORCH, Lang.PARENT_CONTAINER.toString(), null),
+                    new GUI.InventoryAction(p -> parentContainer
+                            .createGUI(wrapper)
+                            .openPage(
+                                    0,
+                                    bottomBar,
+                                    extraMusicLore,
+                                    onSongLeftClick,
+                                    onSongRightClick,
+                                    extraContainerLore,
+                                    onContainerRightClick))
+            );
+        }
+        // Пагинация
         if (page > 0)
             gui.addItem(
                     45,
@@ -161,6 +170,18 @@ public class SongContainerGUI {
                             onSongRightClick,
                             extraContainerLore,
                             onContainerRightClick)));
+        if (pageCount > page)
+            gui.addItem(
+                    53,
+                    ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
+                    new GUI.InventoryAction(p -> openPage(
+                            page + 1, bottomBar,
+                            extraMusicLore,
+                            onSongLeftClick,
+                            onSongRightClick,
+                            extraContainerLore,
+                            onContainerRightClick)));
+
     }
 
     private GUI createGUI(String title) {

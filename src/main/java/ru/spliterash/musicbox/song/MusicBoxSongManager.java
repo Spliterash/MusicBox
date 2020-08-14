@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,8 @@ public class MusicBoxSongManager {
     public void reload(File rootFolder) {
         allSongs.clear();
         rootContainer = new MusicBoxSongContainer(rootFolder, null);
-        allSongs = Collections.unmodifiableList(rootContainer.getAllSongs());
+        // ArrayList так как по нему быстрее искать переменные
+        allSongs = Collections.unmodifiableList(new ArrayList<>(rootContainer.getAllSongs()));
     }
 
     public Optional<MusicBoxSong> findByName(String name) {

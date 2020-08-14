@@ -2,11 +2,11 @@ package ru.spliterash.musicbox.song;
 
 import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
+import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.FileUtils;
 import ru.spliterash.musicbox.utils.JavaUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
@@ -79,6 +79,7 @@ public class MusicBoxSongContainer {
      * Рекурсивная крч фигня
      */
     public List<MusicBoxSong> getAllSongs() {
+        // Так как мы будем очень часто добавлять в него переменные
         List<MusicBoxSong> list = new LinkedList<>(songs);
         for (MusicBoxSongContainer container : subContainers) {
             list.addAll(container.getAllSongs());
@@ -89,7 +90,7 @@ public class MusicBoxSongContainer {
     /**
      * Создать GUI для этого контейнера
      */
-    public SongContainerGUI createGUI(Player player) {
+    public SongContainerGUI createGUI(PlayerWrapper player) {
         return new SongContainerGUI(this, player);
     }
 

@@ -94,7 +94,7 @@ public class PlayerWrapper {
      * Открыть инвентарь для выбора музыки
      */
     public void openDefaultInventory() {
-        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(player);
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
         gui.openPage(
                 0,
                 GUIMode.DEFAULT_BAR,
@@ -110,7 +110,7 @@ public class PlayerWrapper {
      * Открыть инвентарь для покупки пластинок
      */
     public void openShopInventory() {
-        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(player);
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
         gui.openPage(
                 0,
                 null,

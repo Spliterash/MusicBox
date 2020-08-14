@@ -13,7 +13,6 @@ import ru.spliterash.musicbox.song.MusicBoxSong;
 /**
  * Проигрыватель для игрока
  * Но его слышат все вокруг
- * TODO После того как разработчик добавит нужную мне фичу
  */
 @Getter
 public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer {
