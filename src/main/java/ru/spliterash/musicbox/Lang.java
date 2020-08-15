@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,24 +25,36 @@ public enum Lang {
     SONG_NAME("&6{song}"),
     SONG_LORE(
             Arrays.asList(
-                    "&7Length: {lenght}",
-                    "&7Author: &6{author}",
-                    "&7Original author: &6{original_author}"
+                    "&7Duration: &b{length}",
+                    "&7Author: &b{author}",
+                    "&7Original author: &b{original_author}"
             ),
             Arrays.asList(
-                    "&7Длина: {lenght}",
-                    "&7Автор: &6{author}",
-                    "&7Оригинальный автор: &6{original_author}"
+                    "&7Продолжительность: &b{length}",
+                    "&7Автор: &b{author}",
+                    "&7Оригинальный автор: &b{original_author}"
             )
     ),
-    GUI_TITLE("&6MusicBox {container} &b{page}&6/&b{last_page}"),
+    NEW_INSTRUMENT(
+            "&cThis song contains instrument, available in 1.14",
+            "&cЭта музыка содержит инструменты, доступные только в 1.14"),
+    GUI_TITLE("&l&3MusicBox &8{container} &0{page}&7/&0{last_page}"),
     FOLDER_FORMAT("&e{folder}"),
     CURRENT_PLAYNING(
-            "&eСейчас играет &b{song}",
-            "&eNow playing &b{song}"),
+            "&eNow playing &b{song}",
+            "&eСейчас играет &b{song}"),
+
     ADD_CONTAINER_TO_PLAYLIST(
-            Arrays.asList("&bRight click&7 to add your playlist"),
-            Arrays.asList("&bПравый клик&7 чтобы добавить в своей плейлист музыку отсюда")
+            Arrays.asList(
+                    "",
+                    "",
+                    "&bRight click&7 to add your playlist"
+            ),
+            Arrays.asList(
+                    "",
+                    "",
+                    "&bПравый клик&7 чтобы добавить в своей плейлист музыку отсюда"
+            )
     ),
     ADD_MUSIC_TO_PLAYLIST(
             Arrays.asList("&bRightClick&7 to add this song to playlist"),
@@ -84,6 +95,9 @@ public enum Lang {
     NEXT(
             "&6Next",
             "&6Вперёд"),
+    BACK(
+            "&6Back",
+            "&6Назад"),
     BUY_CONTAINER_LORE(
             Arrays.asList(
                     "&7==========================",
@@ -106,7 +120,36 @@ public enum Lang {
             "&6Вы успешно купили диск &b{disc}"),
     PARENT_CONTAINER(
             "&6Return to parent folder",
-            "&6Вернуться на уровень выше");
+            "&6Вернуться на уровень выше"),
+    HUMAN_TIME_MINUTE(
+            "{value}m.",
+            "{value}м."
+    ),
+    HUMAN_TIME_SECOND(
+            "{value}s.",
+            "{value}с."),
+    SONG_STOP(
+            "&cStop",
+            "&cСтоп"),
+    REWIND_BUTTON(
+            "&6Rewind",
+            "&6Перемотка"),
+    NOT_PLAY(
+            "&6Music currently does not play",
+            "&6В данный момент вы не слушаете музыку"),
+    REWIND_GUI_TITLE(
+            "Rewind &8{song}",
+            "Перемотка &8{song}"),
+    REWIND_TO(
+            "&6Rewind to &b{time}&e({percent}%)",
+            "&6Перемотать на &b{time}&e({percent}%)"),
+    REWINDED(
+            "&6You are rewind song to &b{time}&e({percent}%)",
+            "&6Вы перемотали проигрыватель на &b{time}&e({percent}%)"),
+    CLOSE(
+            "&cClose",
+            "&cЗакрыть");
+
 
     /**
      * Оригинальные переводы
@@ -200,7 +243,7 @@ public enum Lang {
 
     public List<String> toList(String... replace) {
         if (isString()) {
-            ArrayList<String> list = new ArrayList<>();
+            ArrayList<String> list = new ArrayList<>(1);
             String text = StringUtils.replace(selected.toString(), replace);
             list.add(text);
             return list;

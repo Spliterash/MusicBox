@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
+import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.FileUtils;
 import ru.spliterash.musicbox.utils.JavaUtils;
@@ -24,11 +25,18 @@ public class MusicBoxSongContainer {
     private final List<String> lore;
 
     public MusicBoxSongContainer(File folder, MusicBoxSongContainer parent) {
+        this(folder, parent, true);
+    }
+
+    public MusicBoxSongContainer(File folder, MusicBoxSongContainer parent, boolean keepFolderName) {
         if (!folder.isDirectory()) {
             throw new RuntimeException("File is not folder");
         }
         this.parent = parent;
-        name = StringUtils.t(folder.getName());
+        if (keepFolderName)
+            name = StringUtils.t(folder.getName());
+        else
+            name = "";
         File infoFile = new File(folder, "info.txt");
         if (infoFile.isFile()) {
             List<String> tempLore;
@@ -38,7 +46,7 @@ public class MusicBoxSongContainer {
             } catch (IOException ex) {
                 tempLore = JavaUtils.stackTraceToList(ex.getStackTrace());
             }
-            lore = Collections.unmodifiableList(tempLore);
+            lore = Collections.unmodifiableList(StringUtils.t(tempLore));
         } else {
             lore = Collections.emptyList();
         }

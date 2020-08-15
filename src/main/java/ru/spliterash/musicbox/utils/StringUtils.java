@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.utils;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
+import ru.spliterash.musicbox.Lang;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,5 +43,16 @@ public class StringUtils {
             return source;
         }
 
+    }
+
+    public String toHumanTime(int second) {
+        int min = (int) Math.floor((double) second / 60D);
+        int sec = second % 60;
+        String result = "";
+        if (min > 0) {
+            result = Lang.HUMAN_TIME_MINUTE.toString("{value}", String.valueOf(min)) + " ";
+        }
+        result += Lang.HUMAN_TIME_SECOND.toString("{value}", String.valueOf(sec));
+        return result;
     }
 }

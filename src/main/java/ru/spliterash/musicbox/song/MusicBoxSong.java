@@ -24,17 +24,28 @@ public class MusicBoxSong {
     private final String name;
     private final HashMap<String, String> hoverMap;
     private final MusicBoxSongContainer container;
+    private final short length;
+    private final float speed;
     private WeakReference<Song> songReference;
+    private boolean newInstruments = false;
 
     MusicBoxSong(File songFile, MusicBoxSongContainer container) {
         this.file = songFile;
         this.container = container;
         Song song = getSong();
+        this.newInstruments = SongUtils.containsNewInstrument(song);
         this.name = StringUtils.t(StringUtils.getOrEmpty(song.getTitle(), () -> FileUtils.getFilename(file.getName())));
         this.hoverMap = new HashMap<>();
-        hoverMap.put("{length}", String.valueOf((int) Math.floor(song.getLength() / 20D)));
+        this.length = song.getLength();
+        this.speed = song.getSpeed();
+        String time = StringUtils.toHumanTime(getDuration());
+        hoverMap.put("{length}", time);
         hoverMap.put("{author}", song.getAuthor());
         hoverMap.put("{original_author}", song.getOriginalAuthor());
+    }
+
+    public int getDuration() {
+        return (int) Math.floor(length / speed);
     }
 
     public ItemStack getSongStack(XMaterial material) {
@@ -50,6 +61,9 @@ public class MusicBoxSong {
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(Lang.SONG_NAME.toString("{song}", getName()));
         List<String> list = ArrayUtils.replaceOrRemove(Lang.SONG_LORE.toList(), hoverMap);
+        if (newInstruments) {
+            list.add(Lang.NEW_INSTRUMENT.toString());
+        }
         list.addAll(extraLines);
         meta.setLore(list);
         stack.setItemMeta(meta);
@@ -90,13 +104,13 @@ public class MusicBoxSong {
     public int getHash() {
         return Objects.hashCode(
                 name,
-                hoverMap.get("{length}"),
-                hoverMap.get("{author}"),
-                hoverMap.get("{original_author}")
+                length,
+                speed
         );
     }
 
     public ItemStack getSongStack() {
         return getSongStack(BukkitUtils.getRandomDisc());
     }
+
 }

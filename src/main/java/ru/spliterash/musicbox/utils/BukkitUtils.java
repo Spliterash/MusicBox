@@ -17,7 +17,6 @@ import java.util.List;
 public class BukkitUtils {
     public final List<XMaterial> DISCS = Collections.unmodifiableList(
             Arrays.asList(
-                    XMaterial.MUSIC_DISC_11,
                     XMaterial.MUSIC_DISC_13,
                     XMaterial.MUSIC_DISC_BLOCKS,
                     XMaterial.MUSIC_DISC_CAT,

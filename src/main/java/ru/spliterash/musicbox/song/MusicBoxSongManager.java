@@ -24,8 +24,7 @@ public class MusicBoxSongManager {
     private MusicBoxSongContainer rootContainer;
 
     public void reload(File rootFolder) {
-        allSongs.clear();
-        rootContainer = new MusicBoxSongContainer(rootFolder, null);
+        rootContainer = new MusicBoxSongContainer(rootFolder, null, false);
         // ArrayList так как по нему быстрее искать переменные
         allSongs = Collections.unmodifiableList(new ArrayList<>(rootContainer.getAllSongs()));
     }
@@ -45,6 +44,8 @@ public class MusicBoxSongManager {
     }
 
     public Optional<MusicBoxSong> findByItem(ItemStack stack) {
+        if (stack == null)
+            return Optional.empty();
         int hash = NBTEditor.getInt(stack, NBT_NAME);
         if (hash != 0)
             return findSongByHash(hash);

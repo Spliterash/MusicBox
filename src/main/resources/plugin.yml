@@ -6,4 +6,6 @@ depends:
 softpend:
   - Vault
   - ProtocolLib
-api-version: 1.16
+api-version: 1.13
+commands:
+  musicbox: null

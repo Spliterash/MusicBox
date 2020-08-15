@@ -1,8 +1,10 @@
 package ru.spliterash.musicbox.minecraft;
 
 
+import com.cryptomorin.xseries.XSound;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -116,28 +118,43 @@ public class GUI implements InventoryHolder {
 
     public static class InventoryAction {
         private final Consumer<Player> click, rightClick, shiftClick;
+        private final XSound sound;
 
         public InventoryAction(Consumer<Player> click) {
             this(click, null, null);
         }
 
         public InventoryAction(Consumer<Player> click, Consumer<Player> rightClick, Consumer<Player> shiftClick) {
+            this(click, rightClick, shiftClick, XSound.UI_BUTTON_CLICK);
+        }
+
+        public InventoryAction(Consumer<Player> click, Consumer<Player> rightClick, Consumer<Player> shiftClick, XSound sound) {
             this.click = click;
             this.rightClick = rightClick;
             this.shiftClick = shiftClick;
+            this.sound = sound;
         }
 
         public void click(Player p) {
+            playSound(p);
             click.accept(p);
         }
 
+        private void playSound(Player p) {
+            if (sound != null) {
+                sound.play(p);
+            }
+        }
+
         public void rightClick(Player p) {
+            playSound(p);
             if (rightClick != null) {
                 rightClick.accept(p);
             }
         }
 
         public void shiftClick(Player p) {
+            playSound(p);
             if (shiftClick != null) {
                 shiftClick.accept(p);
             }

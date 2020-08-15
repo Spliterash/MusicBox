@@ -14,9 +14,10 @@ import ru.spliterash.musicbox.MusicBoxConfig;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.RadioPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
+import ru.spliterash.musicbox.gui.song.GUIMode;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
-import ru.spliterash.musicbox.song.SongContainerGUI;
+import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 
 import java.io.File;
@@ -58,8 +59,11 @@ public class PlayerWrapper {
     private PlayerWrapper(Player player) {
         this.player = player;
         MusicBoxConfig.BossBarSetting bossBarConfig = MusicBox.getInstance().getConfigObject().getBossbar();
-        if (bossBarConfig.isEnable())
+        if (bossBarConfig.isEnable()) {
             this.playBar = Bukkit.createBossBar("", BarColor.valueOf(bossBarConfig.getColor()), BarStyle.valueOf(bossBarConfig.getStyle()));
+            this.playBar.setVisible(false);
+            this.playBar.addPlayer(player);
+        }
         this.config = PlayerConfig.load(new File(playersFolder, player.getUniqueId() + ".yml"));
     }
 
@@ -95,15 +99,7 @@ public class PlayerWrapper {
      */
     public void openDefaultInventory() {
         SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
-        gui.openPage(
-                0,
-                GUIMode.DEFAULT_BAR,
-                GUIMode::addMusicToPlaylistLore,
-                GUIMode::playerPlayMusic,
-                GUIMode::addToPlaylist,
-                GUIMode::addContainerToPlaylist,
-                GUIMode::addToPlaylist
-        );
+        gui.openPage(0, GUIMode.DEFAULT_MODE);
     }
 
     /**
@@ -111,15 +107,7 @@ public class PlayerWrapper {
      */
     public void openShopInventory() {
         SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
-        gui.openPage(
-                0,
-                null,
-                GUIMode::playerBuyMusicLore,
-                GUIMode::playerBuyMusic,
-                null,
-                GUIMode::buyAllContainerLore,
-                GUIMode::buyAllContainer
-        );
+        gui.openPage(0, GUIMode.SHOP_MODE);
     }
 
 
@@ -128,9 +116,10 @@ public class PlayerWrapper {
      * И удаляет инстанц из игрока
      */
     public void destroy() {
-        destroyActivePlayer();
+        stopPlay();
         player.removeMetadata(METADATA_KEY, MusicBox.getInstance());
-        playBar.removeAll();
+        if (playBar != null)
+            playBar.removeAll();
         config.save();
     }
 
@@ -224,5 +213,11 @@ public class PlayerWrapper {
             playBar.setProgress(progress);
     }
 
-
+    /**
+     * Полностью офает проигрывание
+     * Метод на будущее если будут плейлисты
+     */
+    public void stopPlay() {
+        destroyActivePlayer();
+    }
 }

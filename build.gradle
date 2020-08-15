@@ -35,27 +35,27 @@ dependencies {
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-    compile 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
-    compile 'com.github.cryptomorin:XSeries:7.1.1'
+    compileOnly 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
+    compile 'com.github.cryptomorin:XSeries:7.2.0'
     compile 'io.github.bananapuncher714:NBTEditor:7.16'
 }
 
 processResources {
-    from(sourceSets.main.resources.srcDirs) {
+    filesMatching("*.yml") {
         filter ReplaceTokens, tokens: [version: version]
     }
 }
+
 shadowJar {
     minimize()
 }
 
-// Скидываем либы в папку
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+/*import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 
 task relocateShadowJar(type: ConfigureShadowRelocation) {
     target = tasks.shadowJar
-    prefix = "ru.spliterash.musicbox.shadow" // Default value is "shadow"
+    prefix = "ru.spliterash.musicbox.shadow"
 
 }
-tasks.shadowJar.dependsOn tasks.relocateShadowJar
+tasks.shadowJar.dependsOn tasks.relocateShadowJar*/
 tasks.assemble.dependsOn tasks.shadowJar

@@ -1,3 +1,7 @@
+# Enable or disable inscription about 1.14 instruments
+# Включает или выключает надпись о новых инструментах из 1.14
+printNewInstrument: true
+
 economy:
   # Enable song sold by /musicbox shop
   # Включает продажу пластинок
@@ -7,7 +11,7 @@ economy:
   price: 500
 # Maximum sound distance in speaker mode
 # Максимальная длина звука в режиме колонки
-speaker-radius: 10
+speakerRadius: 10
 # Music bossbar setting
 # Настройки музыкального боссбара
 bossbar:
@@ -19,6 +23,9 @@ bossbar:
 
 # Hologram settings above the player in column mode
 # Настройки голограммы над игроком в режиме колонки
+# Language setting
+# Настройки языка, есть ru и en
+lang: en
 holo:
   # Enable or disable hologram(change requires server restart, not /musicbox reload)
   # Включает или выключает голограммы(для изменения нужно перезапустить сервер, а не просто перезагрузить плагин)
@@ -28,4 +35,4 @@ holo:
   height: 1.30
 # Radius in which disc's will be heard from this plugin
 # Как далеко будет слышно пластинки из этого плагина
-jukebox-radius: 64
+jukeboxRadius: 64
