@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Небольшая имплементация плейлиста
  * Содерижит только одну музыку и то, отдаст её только один раз
@@ -20,5 +23,19 @@ public class SingletonPlayList implements IPlayList {
             return song;
         } else
             return null;
+    }
+
+    @Override
+    public List<MusicBoxSong> getNextFiveSong() {
+        if (giveSong)
+            return Collections.singletonList(song);
+        else
+            return Collections.emptyList();
+
+    }
+
+    @Override
+    public boolean hasNext() {
+        return giveSong;
     }
 }

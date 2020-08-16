@@ -4,7 +4,7 @@ import org.intellij.lang.annotations.Language;
 import ru.spliterash.musicbox.db.utils.NamedParamStatement;
 import ru.spliterash.musicbox.db.utils.ResultSetRow;
 import ru.spliterash.musicbox.players.PlayerConfig;
-import ru.spliterash.musicbox.customPlayers.playlist.PlayerPlayList;
+import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.StringUtils;
 
@@ -144,7 +144,7 @@ public abstract class AbstractBase {
     /**
      * Сохраняет PlayList в базе
      */
-    public void savePlayList(PlayerPlayList list) {
+    public void savePlayList(PlayerPlayListModel list) {
         @Language("SQL")
         String query;
         try (Connection connection = getConnection()) {

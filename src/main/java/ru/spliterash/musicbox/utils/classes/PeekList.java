@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.utils.classes;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,6 +15,16 @@ public class PeekList<T> {
     }
 
     int last = 0;
+
+    public List<T> getNextElements(int size) {
+        int currentLast = last;
+        List<T> list = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(peek());
+        }
+        last = currentLast;
+        return list;
+    }
 
     public T peek() {
         if (last < list.size() - 1) {
