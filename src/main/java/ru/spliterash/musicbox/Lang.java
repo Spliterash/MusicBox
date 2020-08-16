@@ -148,7 +148,36 @@ public enum Lang {
             "&6Вы перемотали проигрыватель на &b{time}&e({percent}%)"),
     CLOSE(
             "&cClose",
-            "&cЗакрыть");
+            "&cЗакрыть"),
+    ENABLE(
+            "&aEnable",
+            "&aВключено"),
+    DISABLE(
+            "&cDisable",
+            "&cВыключено"),
+
+    SWITH_MODE_LORE(
+            Arrays.asList(
+                    "&7Status: {status}",
+                    "&7Speaker mode allow nearby players hear you music"
+            ),
+            Arrays.asList(
+                    "&7Статус: {status}",
+                    "&7Режим колонки позволит игрокам рядом с вами слышать вашу музыку"
+            )
+    ),
+
+    SWITH_MODE_NO_PEX_LORE(
+            Arrays.asList(
+                    "&7You need &bmusicbox.speaker to change mode"
+            ),
+            Arrays.asList(
+                    "&7Вам необходимо иметь &bmusicbox.speaker чтобы включить колонку"
+            )
+    ),
+    SPEAKER_MODE(
+            "&6Speaker mode",
+            "&6Режим колонки");
 
 
     /**

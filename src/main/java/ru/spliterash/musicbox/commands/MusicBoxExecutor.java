@@ -1,10 +1,12 @@
 package ru.spliterash.musicbox.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.Lang;
+import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.commands.subcommands.ShopExecutor;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.ArrayUtils;
@@ -20,6 +22,10 @@ public class MusicBoxExecutor implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!MusicBox.getInstance().isLoaded()) {
+            sender.sendMessage(ChatColor.RED + "Plugin not loaded, please wait or check console if wait too long");
+            return true;
+        }
         if (!(sender instanceof Player)) {
             sender.sendMessage(Lang.ONLY_PLAYERS.toString());
             return true;

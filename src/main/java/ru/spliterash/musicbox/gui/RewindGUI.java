@@ -52,7 +52,7 @@ public class RewindGUI {
                     ),
                     new GUI.InventoryAction(
                             p -> {
-                                musicPlayer.getSongPlayer().setTick(chunkStart);
+                                musicPlayer.getApiPlayer().setTick(chunkStart);
                                 p.sendMessage(Lang.REWINDED.toString(rewindReplaceArray));
                                 refreshInventory();
                             }

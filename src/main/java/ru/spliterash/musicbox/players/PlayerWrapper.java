@@ -11,16 +11,17 @@ import org.bukkit.metadata.FixedMetadataValue;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.MusicBoxConfig;
+import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.RadioPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
-import ru.spliterash.musicbox.gui.song.GUIMode;
+import ru.spliterash.musicbox.db.DatabaseLoader;
+import ru.spliterash.musicbox.gui.song.GUIActions;
+import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
-import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 
-import java.io.File;
 import java.util.Optional;
 
 /**
@@ -30,7 +31,6 @@ import java.util.Optional;
 @Getter
 public class PlayerWrapper {
     public static final String METADATA_KEY = "musicboxInstance";
-    private static final File playersFolder = new File(MusicBox.getInstance().getDataFolder(), "players");
     /**
      * Игрок которому принадлежит этот инстанц
      */
@@ -64,7 +64,7 @@ public class PlayerWrapper {
             this.playBar.setVisible(false);
             this.playBar.addPlayer(player);
         }
-        this.config = PlayerConfig.load(new File(playersFolder, player.getUniqueId() + ".yml"));
+        this.config = DatabaseLoader.getBase().loadConfig(player.getUniqueId());
     }
 
     /**
@@ -99,7 +99,7 @@ public class PlayerWrapper {
      */
     public void openDefaultInventory() {
         SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
-        gui.openPage(0, GUIMode.DEFAULT_MODE);
+        gui.openPage(0, GUIActions.DEFAULT_MODE);
     }
 
     /**
@@ -107,7 +107,7 @@ public class PlayerWrapper {
      */
     public void openShopInventory() {
         SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
-        gui.openPage(0, GUIMode.SHOP_MODE);
+        gui.openPage(0, GUIActions.SHOP_MODE);
     }
 
 
@@ -116,7 +116,7 @@ public class PlayerWrapper {
      * И удаляет инстанц из игрока
      */
     public void destroy() {
-        stopPlay();
+        destroyActivePlayer();
         player.removeMetadata(METADATA_KEY, MusicBox.getInstance());
         if (playBar != null)
             playBar.removeAll();
@@ -136,7 +136,7 @@ public class PlayerWrapper {
     }
 
     public boolean switchModeChecked() {
-        if (canSwitch()) {
+        if (!canSwitch()) {
             player.sendMessage(Lang.CANT_SWITCH.toString());
             return false;
         } else {
@@ -152,13 +152,18 @@ public class PlayerWrapper {
         speaker = !speaker;
         if (isPlayNow()) {
             PlayerSongPlayer oldPlayer = getActivePlayer();
-            play(oldPlayer.getMusicBoxSong(), oldPlayer.getSongPlayer().getTick());
+            play(oldPlayer.getMusicBoxSong(), oldPlayer.getPlayList(), oldPlayer.getApiPlayer().getTick());
         }
     }
 
-    public void play(MusicBoxSong song) {
+    public void play(IPlayList song) {
         play(song, (short) -1);
     }
+
+    public void play(IPlayList playList, short tick) {
+        play(playList.getNext(), playList, tick);
+    }
+
 
     /**
      * Проигрывает игроку звук, с учётом его режима звучания
@@ -166,34 +171,37 @@ public class PlayerWrapper {
      * Внимание... Метод пересоздаёт текущий проигрыватель
      * для перемотки юзайте метод
      *
-     * @param song Мелодия которую нужно проиграть
-     * @param tick С какого тика (-1 если с начала)
+     * @param song     С какой мелодии начать
+     * @param playList Поставщик следующей мелодии
+     * @param tick     С какого тика (-1 если с начала)
      */
-    public void play(MusicBoxSong song, short tick) {
-        if (speaker)
-            startSpeaker(song);
-        else
-            startRadio(song);
-        if (tick > -1)
-            activePlayer.getSongPlayer().setTick(tick);
+    public void play(MusicBoxSong song, IPlayList playList, short tick) {
+        if (song != null) {
+            if (speaker)
+                startSpeaker(song, playList);
+            else
+                startRadio(song, playList);
+            if (tick > -1)
+                activePlayer.getApiPlayer().setTick(tick);
+        }
     }
 
-    public void startSpeaker(MusicBoxSong song) {
+    public void startSpeaker(MusicBoxSong song, IPlayList playList) {
         destroyActivePlayer();
-        activePlayer = new SpeakerPlayer(song, this);
+        activePlayer = new SpeakerPlayer(song, playList, this);
     }
 
-    public void startRadio(MusicBoxSong song) {
+    public void startRadio(MusicBoxSong song, IPlayList playList) {
         destroyActivePlayer();
-        activePlayer = new RadioPlayer(song, this);
+        activePlayer = new RadioPlayer(song, playList, this);
     }
 
     /**
-     * Останавливает активный проигрыватель
+     * Полная остановка
      */
     public synchronized void destroyActivePlayer() {
         if (activePlayer != null) {
-            activePlayer.destroy();
+            activePlayer.totalDestroy();
             activePlayer = null;
         }
     }
@@ -211,13 +219,5 @@ public class PlayerWrapper {
     public void setBarProgress(double progress) {
         if (playBar != null)
             playBar.setProgress(progress);
-    }
-
-    /**
-     * Полностью офает проигрывание
-     * Метод на будущее если будут плейлисты
-     */
-    public void stopPlay() {
-        destroyActivePlayer();
     }
 }

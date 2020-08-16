@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
-import ru.spliterash.musicbox.gui.RewindGUI;
+import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
@@ -16,43 +16,69 @@ import ru.spliterash.musicbox.utils.ItemUtils;
 import java.util.HashMap;
 import java.util.List;
 
+import static ru.spliterash.musicbox.gui.song.SongContainerGUI.*;
+
 /**
  * Класс для больших кусков кода связанных с GUI
  */
 @UtilityClass
-public class GUIMode {
+public class GUIActions {
 
 
-    public final SongContainerGUI.SongGUIParams DEFAULT_MODE;
-    public final SongContainerGUI.SongGUIParams SHOP_MODE;
+    public final SongGUIParams DEFAULT_MODE;
+    public final SongGUIParams SHOP_MODE;
 
     static {
         // Стандартный режим
         {
-            SongContainerGUI.BarButton[] defaultBar = new SongContainerGUI.BarButton[6];
+            BarButton[] defaultBar = new BarButton[6];
             defaultBar[0] = rewindButton();
-            //Кнопка остановки
+            // Кнопка остановки
             defaultBar[2] = stopButton();
-            DEFAULT_MODE = SongContainerGUI.SongGUIParams
+            // Смена режима проигрывания
+            defaultBar[5] = switchPlayMode();
+            DEFAULT_MODE = SongGUIParams
                     .builder()
-                    .onSongLeftClick(GUIMode::playerPlayMusic)
+                    .onSongLeftClick(GUIActions::playerPlayMusic)
                     .bottomBar(defaultBar)
                     .build();
         }
         // Покупка пластинок
         {
-            SHOP_MODE = SongContainerGUI.SongGUIParams
+            SHOP_MODE = SongGUIParams
                     .builder()
-                    .onSongLeftClick(GUIMode::playerBuyMusic)
-                    .extraSongLore(GUIMode::playerBuySongLore)
-                    .extraContainerLore(GUIMode::playerBuyAllContainerLore)
-                    .onContainerRightClick(GUIMode::buyAllContainer)
+                    .onSongLeftClick(GUIActions::playerBuyMusic)
+                    .extraSongLore(GUIActions::playerBuySongLore)
+                    .extraContainerLore(GUIActions::playerBuyAllContainerLore)
+                    .onContainerRightClick(GUIActions::buyAllContainer)
                     .build();
         }
     }
 
-    private static SongContainerGUI.BarButton rewindButton() {
-        return new SongContainerGUI.BarButton() {
+    private BarButton switchPlayMode() {
+        return new BarButton() {
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                List<String> lore;
+                if (wrapper.canSwitch()) {
+                    String status = wrapper.isSpeaker() ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
+                    lore = Lang.SWITH_MODE_LORE.toList("{status}", status);
+                } else
+                    lore = Lang.SWITH_MODE_NO_PEX_LORE.toList();
+                return ItemUtils.createStack(XMaterial.NOTE_BLOCK, Lang.SPEAKER_MODE.toString(), lore);
+            }
+
+            @Override
+            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                if (wrapper.switchModeChecked()) {
+                    data.refreshInventory();
+                }
+            }
+        };
+    }
+
+    private BarButton rewindButton() {
+        return new BarButton() {
             private final ItemStack rewindItem = ItemUtils.createStack(XMaterial.REPEATER, Lang.REWIND_BUTTON.toString(), null);
 
             @Override
@@ -72,8 +98,8 @@ public class GUIMode {
         };
     }
 
-    private SongContainerGUI.BarButton stopButton() {
-        return new SongContainerGUI.BarButton() {
+    private BarButton stopButton() {
+        return new BarButton() {
             private final ItemStack stopItem = ItemUtils.createStack(XMaterial.BARRIER, Lang.SONG_STOP.toString(), null);
 
             @Override
@@ -83,7 +109,7 @@ public class GUIMode {
 
             @Override
             public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                wrapper.stopPlay();
+                wrapper.destroyActivePlayer();
                 data.refreshInventory();
             }
         };
@@ -97,7 +123,7 @@ public class GUIMode {
      * @param data   Данные в которых есть музыка
      */
     public void playerPlayMusic(PlayerWrapper player, SongContainerGUI.SongGUIData<MusicBoxSong> data) {
-        player.play(data.getData());
+        player.play(new SingletonPlayList(data.getData()));
         data.refreshInventory();
     }
 

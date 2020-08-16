@@ -1,6 +1,7 @@
 package ru.spliterash.musicbox.customPlayers.interfaces;
 
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
+import ru.spliterash.musicbox.customPlayers.models.AllPlayerModel;
 import ru.spliterash.musicbox.gui.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
@@ -22,7 +23,17 @@ public interface MusicBoxSongPlayer {
     /**
      * Получить музыку которая сейчас играет
      */
-    MusicBoxSong getMusicBoxSong();
+    default MusicBoxSong getMusicBoxSong() {
+        return getMusicBoxModel().getCurrentSong();
+    }
+
+    /**
+     * Полное уничтожение
+     * Не запускает следующую музыку если вызвать
+     */
+    default void totalDestroy() {
+        getMusicBoxModel().totalDestroy();
+    }
 
     /**
      * Уничтожает проигрыватель
@@ -31,11 +42,12 @@ public interface MusicBoxSongPlayer {
      */
     void destroy();
 
+    AllPlayerModel getMusicBoxModel();
 
     /**
      * Для сокращения кода
      */
-    default SongPlayer getSongPlayer() {
+    default SongPlayer getApiPlayer() {
         return (SongPlayer) this;
     }
 
@@ -43,4 +55,8 @@ public interface MusicBoxSongPlayer {
      * Получить тик который играет в данный момент
      */
     short getTick();
+
+    default IPlayList getPlayList() {
+        return getMusicBoxModel().getPlayList();
+    }
 }

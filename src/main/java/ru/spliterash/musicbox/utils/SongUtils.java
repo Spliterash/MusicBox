@@ -4,6 +4,8 @@ import com.xxmicloxx.NoteBlockAPI.model.Note;
 import com.xxmicloxx.NoteBlockAPI.model.Song;
 import lombok.experimental.UtilityClass;
 import ru.spliterash.musicbox.MusicBox;
+import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
+import ru.spliterash.musicbox.players.PlayerWrapper;
 
 import java.util.Collection;
 
@@ -18,5 +20,10 @@ public class SongUtils {
                 .flatMap(Collection::stream)
                 .map(Note::getInstrument)
                 .anyMatch(n -> n >= 10);
+    }
+
+
+    public Runnable getRunNextRunnable(PlayerWrapper wrapper, IPlayList list) {
+        return () -> wrapper.play(list);
     }
 }

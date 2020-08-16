@@ -3,7 +3,13 @@ package ru.spliterash.musicbox.utils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
 import ru.spliterash.musicbox.Lang;
+import sun.security.util.IOUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
@@ -54,5 +60,20 @@ public class StringUtils {
         }
         result += Lang.HUMAN_TIME_SECOND.toString("{value}", String.valueOf(sec));
         return result;
+    }
+
+    public String getString(InputStream stream) throws IOException {
+        final int bufferSize = 1024;
+        final char[] buffer = new char[bufferSize];
+        final StringBuilder out = new StringBuilder();
+        try (Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+            while (true) {
+                int rsz = in.read(buffer, 0, buffer.length);
+                if (rsz < 0)
+                    break;
+                out.append(buffer, 0, rsz);
+            }
+            return out.toString();
+        }
     }
 }

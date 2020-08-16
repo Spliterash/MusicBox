@@ -76,6 +76,8 @@ public class MusicBoxSong {
     /**
      * Смотрит есть ли Song в референсе
      * И если нету, то отдаёт загруженный с диска файл
+     * <p>
+     * Немного подвиснет сервак кнч, но зато оперативка чистая
      */
     public Song getSong() throws SongNullException {
         if (songReference == null || songReference.get() == null) {

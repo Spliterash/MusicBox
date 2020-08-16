@@ -6,6 +6,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
+import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
 
@@ -24,8 +25,11 @@ public final class MusicBox extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveDefaultValues();
         instance = this;
+        saveDefaultValues();
+        //Поскольку нужно прогрузить базу
+        //noinspection ResultOfMethodCallIgnored
+        DatabaseLoader.getBase();
         registerCommand("musicbox", new MusicBoxExecutor());
         Bukkit.getPluginManager().registerEvents(new Handler(), this);
         Bukkit.getScheduler().runTaskAsynchronously(this, this::reloadPlugin);

@@ -5,9 +5,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.minecraft.GUI;
@@ -42,12 +42,12 @@ public class SongContainerGUI {
      * @param params Параметры инвентаря
      */
     public void openPage(int page, SongGUIParams params) {
-        long a = System.currentTimeMillis();
         int inventoryIndex = -1;
         int indexLimit = 45;
         //Сколько элементов надо пропустить, чувствую тут надо +1 написать, но потом затестим
         int skipElements = page * indexLimit;
         int pageCount = getPageCount();
+
         GUI gui = createGUI(Lang.GUI_TITLE.toString(
                 "{container}", container.getName(),
                 "{page}", String.valueOf(page + 1),
@@ -130,6 +130,8 @@ public class SongContainerGUI {
                 if (button == null)
                     continue;
                 ItemStack stack = button.getItemStack(wrapper);
+                if (stack == null)
+                    continue;
                 GUI.InventoryAction action = new GUI.InventoryAction(p ->
                         button.processClick(
                                 wrapper,
@@ -164,8 +166,6 @@ public class SongContainerGUI {
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
                     new GUI.InventoryAction(p -> openPage(
                             page + 1, params)));
-        long passed = System.currentTimeMillis() - a;
-        Bukkit.broadcastMessage("Passed: " + passed);
 
     }
 
