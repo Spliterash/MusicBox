@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.gui;
+package ru.spliterash.musicbox.gui.song;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.HumanEntity;
@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.minecraft.GUI;
+import ru.spliterash.musicbox.minecraft.GUI.InventoryAction;
 import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 
@@ -26,6 +27,10 @@ public class RewindGUI {
 
     public void refreshInventory() {
         gui.clear();
+        if (closed) {
+            fillEmpty();
+            return;
+        }
         short allTicks = musicPlayer.getMusicBoxSong().getLength();
         short currentTick = musicPlayer.getTick();
         float speed = musicPlayer.getMusicBoxSong().getSpeed();
@@ -50,7 +55,7 @@ public class RewindGUI {
                             Lang.REWIND_TO.toString(rewindReplaceArray),
                             null
                     ),
-                    new GUI.InventoryAction(
+                    new InventoryAction(
                             p -> {
                                 musicPlayer.getApiPlayer().setTick(chunkStart);
                                 p.sendMessage(Lang.REWINDED.toString(rewindReplaceArray));
@@ -60,15 +65,17 @@ public class RewindGUI {
             );
         }
         // Заполнить всё остальное выходом
-        {
-            ItemStack close = ItemUtils.createStack(XMaterial.RED_STAINED_GLASS_PANE, Lang.CLOSE.toString(), null);
-            GUI.InventoryAction action = new GUI.InventoryAction(HumanEntity::closeInventory);
-            for (int i = 0; i < gui.getInventory().getSize(); i++) {
-                ItemStack item = gui.getInventory().getItem(i);
-                if (item != null)
-                    continue;
-                gui.addItem(i, close, action);
-            }
+        fillEmpty();
+    }
+
+    private void fillEmpty() {
+        ItemStack close = ItemUtils.createStack(XMaterial.RED_STAINED_GLASS_PANE, Lang.CLOSE.toString(), null);
+        InventoryAction action = new InventoryAction(HumanEntity::closeInventory);
+        for (int i = 0; i < gui.getInventory().getSize(); i++) {
+            ItemStack item = gui.getInventory().getItem(i);
+            if (item != null)
+                continue;
+            gui.addItem(i, close, action);
         }
     }
 
@@ -80,4 +87,10 @@ public class RewindGUI {
         gui.open(player);
     }
 
+    boolean closed = false;
+
+    public void close() {
+        closed = true;
+        refreshInventory();
+    }
 }

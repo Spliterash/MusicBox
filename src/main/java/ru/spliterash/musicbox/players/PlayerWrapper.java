@@ -15,8 +15,9 @@ import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.RadioPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
+import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.db.DatabaseLoader;
-import ru.spliterash.musicbox.gui.song.GUIActions;
+import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
@@ -219,5 +220,9 @@ public class PlayerWrapper {
     public void setBarProgress(double progress) {
         if (playBar != null)
             playBar.setProgress(progress);
+    }
+
+    public void play(MusicBoxSong song) {
+        play(new SingletonPlayList(song));
     }
 }

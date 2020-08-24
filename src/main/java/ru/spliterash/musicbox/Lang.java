@@ -56,6 +56,10 @@ public enum Lang {
                     "&bПравый клик&7 чтобы добавить в своей плейлист музыку отсюда"
             )
     ),
+    CURRENT_IN_PLAYLIST(
+            "&aIn playlist",
+            "&aВ плейлисте"
+    ),
     ADD_MUSIC_TO_PLAYLIST(
             Arrays.asList("&bRightClick&7 to add this song to playlist"),
             Arrays.asList("&bПравый клик&7 чтобы добавить эту мелодию в плейлист")
@@ -177,7 +181,89 @@ public enum Lang {
     ),
     SPEAKER_MODE(
             "&6Speaker mode",
-            "&6Режим колонки");
+            "&6Режим колонки"),
+    PLAYLIST_EDITOR(
+            "&6Playlist editor",
+            "&6Редактор плейлистов"),
+    PLAYLIST_NAME("&6{name}"),
+    GO_BACK_TO_PLAYLIST(
+            "&6Go back to playlist",
+            "&6Вернуться к плейлисту"
+    ),
+    PLAYLIST_LORE(
+            Arrays.asList(
+                    "",
+                    "&7Track count: &b{count}",
+                    "&7Duration: &b{duration}"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7Количество треков: &b{count}",
+                    "&7Продолжительность: &b{duration}"
+            )
+    ),
+    PLAYLIST_ITEM_LORE(
+            Arrays.asList(
+                    "",
+                    "&7Press &bthe left mouse button&7 to listen",
+                    "&7To delete, press &bthe right mouse button"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7Чтобы прослушать нажми &bлевую кнопку",
+                    "&7Чтобы удалить нажми &bправую кнопку"
+            )
+    ),
+    PLAYLIST_LIST_TITLE(
+            "&l&3Playlist list &0{page}&7/&0{last_page}",
+            "&l&3Список плейлистов &0{page}&7/&0{last_page}"
+    ),
+    PLAYLIST_EDITOR_LIST_TITLE(
+            "&l&3Edit {playlist}&f &0{page}&7/&0{last_page}",
+            "&l&3Редактирование {playlist}&f &0{page}&7/&0{last_page}"
+    ),
+    CREATE_NEW_PLAYLIST(
+            "&6Create new playlist",
+            "&6Создать новый плейлист"),
+    NEW_PLAYLIST_NAME(
+            "New playlist",
+            "Новый плейлист"),
+    SAVE_PLAYLIST_CHANGE(
+            "&6Save changes",
+            "&6Сохранить изменения"),
+    PLAYLIST_SAVED(
+            "&6Playlist &b{playlist}&6 saved",
+            "&6Плейлист &b{playlist}&6 успешно сохранён"),
+    DELETE_PLAYLIST(
+            "&6Delete playlist",
+            "&6Удалить плейлист"),
+    PLAYLIST_DELETED(
+            "&6You delete playlist &b{playlist}",
+            "&6Вы удалили плейлист &b{playlist}"
+    ),
+    SHUFFLE_PLAYLIST(
+            "&6Shuffle playlist",
+            "&6Перемешать плейлист"),
+    RENAME_PLAYLIST(
+            "&6Rename playlist",
+            "&6Переименовать плейлист"),
+    DONT_FORGET_TO_SAVE(
+            Arrays.asList(
+                    "&cDO NOT FORGET&7 to save"
+            ),
+            Arrays.asList(
+                    "&cНЕ ЗАБУДЬ&7 сохранить"
+            )
+    ),
+    ADD_MUSIC_TO_PLAYLIST_ITEM(
+            "&6Add music to this playlist",
+            "&6Добавить музыку в этот плейлист"),
+    PLAYLIST_ZERO_SIZE(
+            "&cYou can't save empty playlist",
+            "&cВы не можете сохранить пустой плейлист"),
+    CHILL_CHILL_MAN(
+            "&cChill man, chill, save in progress",
+            "&cОстынь чел, сохранение в процессе");
 
 
     /**

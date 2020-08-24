@@ -16,18 +16,20 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class MusicBoxSong {
 
     private final File file;
     private final String name;
-    private final HashMap<String, String> hoverMap;
+    private final Map<String, String> hoverMap = new HashMap<>();
     private final MusicBoxSongContainer container;
     private final short length;
     private final float speed;
     private WeakReference<Song> songReference;
-    private boolean newInstruments = false;
+    private final boolean newInstruments;
+    private final int hash;
 
     MusicBoxSong(File songFile, MusicBoxSongContainer container) {
         this.file = songFile;
@@ -35,9 +37,9 @@ public class MusicBoxSong {
         Song song = getSong();
         this.newInstruments = SongUtils.containsNewInstrument(song);
         this.name = StringUtils.t(StringUtils.getOrEmpty(song.getTitle(), () -> FileUtils.getFilename(file.getName())));
-        this.hoverMap = new HashMap<>();
         this.length = song.getLength();
         this.speed = song.getSpeed();
+        this.hash = file.getPath().hashCode();
         String time = StringUtils.toHumanTime(getDuration());
         hoverMap.put("{length}", time);
         hoverMap.put("{author}", song.getAuthor());
@@ -97,18 +99,6 @@ public class MusicBoxSong {
      */
     private Song loadFromDisc() {
         return NBSDecoder.parse(file);
-    }
-
-    /**
-     * Хеш для сонга
-     * Нужен для табличек, так как на них не поместится всё название
-     */
-    public int getHash() {
-        return Objects.hashCode(
-                name,
-                length,
-                speed
-        );
     }
 
     public ItemStack getSongStack() {

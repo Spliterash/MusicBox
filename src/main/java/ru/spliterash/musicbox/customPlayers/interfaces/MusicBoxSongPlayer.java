@@ -2,22 +2,20 @@ package ru.spliterash.musicbox.customPlayers.interfaces;
 
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import ru.spliterash.musicbox.customPlayers.models.AllPlayerModel;
-import ru.spliterash.musicbox.gui.RewindGUI;
+import ru.spliterash.musicbox.gui.song.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
-import java.util.function.Function;
 
 /**
  * Все проигрыватели созданные этим плагином
  */
 public interface MusicBoxSongPlayer {
 
-    Map<MusicBoxSongPlayer, RewindGUI> rewindMap = new WeakHashMap<>();
-
     default RewindGUI getRewind() {
-        return rewindMap.computeIfAbsent(this, RewindGUI::new);
+       return getMusicBoxModel().getRewind();
     }
 
     /**

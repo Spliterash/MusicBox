@@ -4,7 +4,10 @@ import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import lombok.Getter;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
+import ru.spliterash.musicbox.gui.song.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
+
+import java.lang.ref.WeakReference;
 
 @Getter
 public class AllPlayerModel {
@@ -35,6 +38,8 @@ public class AllPlayerModel {
      * Вызывается при вызове {@link SongPlayer#destroy()}
      */
     public void destroy() {
+        if (rewindGUI != null)
+            rewindGUI.close();
         if (nextSongRunnable != null && continuePlaylist)
             nextSongRunnable.run();
     }
@@ -45,5 +50,16 @@ public class AllPlayerModel {
     public void totalDestroy() {
         continuePlaylist = false;
         musicBoxSongPlayer.destroy();
+    }
+
+    private RewindGUI rewindGUI;
+
+    /**
+     * Создаёт GUI для перемотки этого плеера
+     */
+    public RewindGUI getRewind() {
+        if (rewindGUI == null)
+            rewindGUI = new RewindGUI(musicBoxSongPlayer);
+        return rewindGUI;
     }
 }

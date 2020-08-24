@@ -21,7 +21,7 @@ public class ResultSetRow {
     public Integer getInt(int i) {
         int k = -1;
         for (Map.Entry<String, Object> entry : result.entrySet()) {
-            if (k++ == i) {
+            if (++k == i) {
                 return (Integer) entry.getValue();
             }
         }

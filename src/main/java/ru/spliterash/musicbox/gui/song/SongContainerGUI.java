@@ -7,10 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.MapMeta;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.minecraft.GUI;
+import ru.spliterash.musicbox.minecraft.GUI.InventoryAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
@@ -78,7 +78,7 @@ public class SongContainerGUI {
                     containerConsumer = player -> params.getOnContainerRightClick().accept(wrapper, data);
                 else
                     containerConsumer = null;
-                GUI.InventoryAction containerAction = new GUI.InventoryAction(
+                InventoryAction containerAction = new InventoryAction(
                         p -> subContainer.createGUI(wrapper)
                                 .openPage(0, params),
                         containerConsumer,
@@ -105,7 +105,7 @@ public class SongContainerGUI {
                     enchanted = false;
                 ItemStack stack = song.getSongStack(list.peek(), extraLines, enchanted);
                 gui.addItem(inventoryIndex, stack,
-                        new GUI.InventoryAction(
+                        new InventoryAction(
                                 p -> {
                                     if (params.getOnSongLeftClick() != null)
                                         params.getOnSongLeftClick().accept(wrapper, data);
@@ -132,7 +132,7 @@ public class SongContainerGUI {
                 ItemStack stack = button.getItemStack(wrapper);
                 if (stack == null)
                     continue;
-                GUI.InventoryAction action = new GUI.InventoryAction(p ->
+                InventoryAction action = new InventoryAction(p ->
                         button.processClick(
                                 wrapper,
                                 new SongGUIData<>(this, null, params, page))
@@ -149,7 +149,7 @@ public class SongContainerGUI {
             gui.addItem(
                     46,
                     ItemUtils.createStack(XMaterial.TORCH, Lang.PARENT_CONTAINER.toString(), null),
-                    new GUI.InventoryAction(p -> parentContainer
+                    new InventoryAction(p -> parentContainer
                             .createGUI(wrapper)
                             .openPage(0, params))
             );
@@ -159,12 +159,12 @@ public class SongContainerGUI {
             gui.addItem(
                     45,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.BACK.toString(), null),
-                    new GUI.InventoryAction(p -> openPage(page - 1, params)));
-        if (getPageCount() > page && page > 0)
+                    new InventoryAction(p -> openPage(page - 1, params)));
+        if (pageCount > page && page > 0)
             gui.addItem(
                     53,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
-                    new GUI.InventoryAction(p -> openPage(
+                    new InventoryAction(p -> openPage(
                             page + 1, params)));
 
     }
@@ -178,12 +178,11 @@ public class SongContainerGUI {
         return (int) Math.ceil(containerElementSize / 45D);
     }
 
-    @Getter
-    @AllArgsConstructor
-    public abstract static class BarButton {
-        public abstract ItemStack getItemStack(PlayerWrapper wrapper);
 
-        public abstract void processClick(PlayerWrapper wrapper, SongGUIData<Void> data);
+    public interface BarButton {
+        ItemStack getItemStack(PlayerWrapper wrapper);
+
+        void processClick(PlayerWrapper wrapper, SongGUIData<Void> data);
     }
 
 

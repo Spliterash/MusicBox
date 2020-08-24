@@ -1,5 +1,6 @@
 package ru.spliterash.musicbox;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -7,6 +8,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
 import ru.spliterash.musicbox.db.DatabaseLoader;
+import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
 
@@ -59,6 +61,7 @@ public final class MusicBox extends JavaPlugin {
         Lang.reload(new File(getDataFolder(), "lang"), configObject.getLang());
         PlayerWrapper.clearAll();
         MusicBoxSongManager.reload(new File(getDataFolder(), "songs"));
+        GUIActions.reloadGUI();
         loaded = true;
     }
 

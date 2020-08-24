@@ -3,8 +3,6 @@ package ru.spliterash.musicbox.utils;
 import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 import ru.spliterash.musicbox.MusicBox;
@@ -30,7 +28,8 @@ public class BukkitUtils {
                     XMaterial.MUSIC_DISC_WARD
             )
     );
-    public XMaterial getRandomDisc(){
+
+    public XMaterial getRandomDisc() {
         return ArrayUtils.getRandom(DISCS);
     }
 
@@ -52,4 +51,5 @@ public class BukkitUtils {
         }
         return null;
     }
+
 }

@@ -4,6 +4,8 @@ import ru.spliterash.musicbox.db.AbstractBase;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,5 +36,6 @@ public class SQLite extends AbstractBase {
     @Override
     protected Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:sqlite:" + file);
+
     }
 }

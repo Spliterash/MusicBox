@@ -1,15 +1,21 @@
-package ru.spliterash.musicbox.gui.song;
+package ru.spliterash.musicbox.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
+import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
+import ru.spliterash.musicbox.gui.playlist.PlayListEditorGUI;
+import ru.spliterash.musicbox.gui.playlist.PlayListListGUI;
+import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
+import ru.spliterash.musicbox.song.MusicBoxSongManager;
 import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
 
@@ -25,14 +31,17 @@ import static ru.spliterash.musicbox.gui.song.SongContainerGUI.*;
 public class GUIActions {
 
 
-    public final SongGUIParams DEFAULT_MODE;
-    public final SongGUIParams SHOP_MODE;
+    public SongGUIParams DEFAULT_MODE;
+    public SongGUIParams SHOP_MODE;
 
-    static {
+    public void reloadGUI() {
         // Стандартный режим
         {
             BarButton[] defaultBar = new BarButton[6];
+            // Перемотка
             defaultBar[0] = rewindButton();
+            // Редактор плейлистов
+            defaultBar[1] = playListEditor();
             // Кнопка остановки
             defaultBar[2] = stopButton();
             // Смена режима проигрывания
@@ -53,6 +62,33 @@ public class GUIActions {
                     .onContainerRightClick(GUIActions::buyAllContainer)
                     .build();
         }
+    }
+
+    private BarButton playListEditor() {
+        return new BarButton() {
+            private final ItemStack item = ItemUtils.createStack(XMaterial.MAP, Lang.PLAYLIST_EDITOR.toString(), null);
+
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                return item;
+            }
+
+            @Override
+            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                new PlayListListGUI(wrapper).openPage(0, GUIActions::openPlaylistEditor, null);
+            }
+        };
+    }
+
+    /**
+     * TODO
+     * Открывает редактор плейлиста
+     *
+     * @param wrapper Игрок
+     * @param model   Его плейлист
+     */
+    public void openPlaylistEditor(PlayerWrapper wrapper, PlayerPlayListModel model) {
+        new PlayListEditorGUI(wrapper, model).open(0);
     }
 
     private BarButton switchPlayMode() {
@@ -181,5 +217,44 @@ public class GUIActions {
         for (MusicBoxSong song : container.getData().getAllSongs()) {
             playerBuyMusic(player, song);
         }
+    }
+
+    /**
+     * Открывает инвентарь для добавления новых мелодий в плейлист
+     */
+    public void openPlayListAdder(PlayerWrapper wrapper, PlayListEditorGUI editorGUI) {
+        @Nullable BarButton[] bar = new BarButton[3];
+        bar[2] = new BarButton() {
+            private final ItemStack stack = ItemUtils.createStack(XMaterial.BEACON, Lang.GO_BACK_TO_PLAYLIST.toString(), null);
+
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                return stack;
+            }
+
+            @Override
+            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                editorGUI.open(0);
+            }
+        };
+        SongGUIParams params = SongGUIParams.builder()
+                .extraContainerLore(s -> Lang.ADD_CONTAINER_TO_PLAYLIST.toList())
+                .extraSongLore(s -> {
+                    if (editorGUI.hasSong(s.getData()))
+                        return Lang.CURRENT_IN_PLAYLIST.toList();
+                    else
+                        return Lang.ADD_MUSIC_TO_PLAYLIST.toList();
+                })
+                .onSongLeftClick((w, s) -> {
+                    editorGUI.addSong(s.getData());
+                    s.refreshInventory();
+                })
+                .onContainerRightClick((w, c) -> {
+                    c.getData().getAllSongs().forEach(editorGUI::addSong);
+                    c.refreshInventory();
+                })
+                .bottomBar(bar)
+                .build();
+        new SongContainerGUI(MusicBoxSongManager.getRootContainer(), wrapper).openPage(0, params);
     }
 }

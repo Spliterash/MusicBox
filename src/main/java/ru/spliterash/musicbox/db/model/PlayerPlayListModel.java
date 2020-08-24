@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,14 +21,24 @@ public class PlayerPlayListModel {
     private int id;
     private final UUID owner;
     private String name;
-    private final List<MusicBoxSong> songs;
+    private final List<MusicBoxSong> songs = new LinkedList<>();
 
-
+    /**
+     * Возращает владельца если тот в сети
+     */
     public Optional<PlayerWrapper> getOwnerWrapper() {
         Player player = Bukkit.getPlayer(owner);
         if (player == null)
             return Optional.empty();
         else
             return Optional.of(PlayerWrapper.getInstance(player));
+    }
+
+    public void save() {
+        DatabaseLoader.getBase().savePlayList(this);
+    }
+
+    public void delete() {
+        DatabaseLoader.getBase().deleteMe(this);
     }
 }
