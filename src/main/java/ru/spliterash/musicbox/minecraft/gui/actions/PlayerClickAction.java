@@ -1,22 +1,23 @@
-package ru.spliterash.musicbox.minecraft.gui;
+package ru.spliterash.musicbox.minecraft.gui.actions;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public class ClickAction implements InventoryAction {
+public class PlayerClickAction implements InventoryAction {
     private final Optional<Consumer<Player>> left;
     private final Optional<Consumer<Player>> right;
 
-    public ClickAction(Consumer<Player> onLeftClick, Consumer<Player> onRightClick) {
+    public PlayerClickAction(Consumer<Player> onLeftClick, Consumer<Player> onRightClick) {
         this.left = Optional.ofNullable(onLeftClick);
         this.right = Optional.ofNullable(onRightClick);
     }
 
-    public ClickAction(Consumer<Player> onLeftClick) {
+    public PlayerClickAction(Consumer<Player> onLeftClick) {
         this(onLeftClick, null);
     }
 
@@ -29,6 +30,7 @@ public class ClickAction implements InventoryAction {
                 break;
             case RIGHT:
                 right.ifPresent(r -> r.accept(p));
+                break;
         }
     }
 }

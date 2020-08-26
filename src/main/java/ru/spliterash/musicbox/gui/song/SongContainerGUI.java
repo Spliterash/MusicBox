@@ -5,12 +5,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
-import ru.spliterash.musicbox.minecraft.gui.ClickAction;
 import ru.spliterash.musicbox.minecraft.gui.GUI;
+import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
@@ -21,7 +20,6 @@ import ru.spliterash.musicbox.utils.classes.PeekList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Getter
@@ -73,13 +71,13 @@ public class SongContainerGUI {
                 else
                     extraLines = Collections.emptyList();
                 ItemStack containerStack = subContainer.getItemStack(extraLines);
-                Consumer<Player> containerConsumer;
+                Runnable containerConsumer;
                 if (params.getOnContainerRightClick() != null)
-                    containerConsumer = player -> params.getOnContainerRightClick().accept(wrapper, data);
+                    containerConsumer = () -> params.getOnContainerRightClick().accept(wrapper, data);
                 else
                     containerConsumer = null;
                 ClickAction containerAction = new ClickAction(
-                        p -> subContainer.createGUI(wrapper)
+                        () -> subContainer.createGUI(wrapper)
                                 .openPage(0, params),
                         containerConsumer);
                 gui.addItem(inventoryIndex, containerStack, containerAction);
@@ -105,11 +103,11 @@ public class SongContainerGUI {
                 ItemStack stack = song.getSongStack(list.peek(), extraLines, enchanted);
                 gui.addItem(inventoryIndex, stack,
                         new ClickAction(
-                                p -> {
+                                () -> {
                                     if (params.getOnSongLeftClick() != null)
                                         params.getOnSongLeftClick().accept(wrapper, data);
                                 },
-                                p -> {
+                                () -> {
                                     if (params.getOnSongRightClick() != null)
                                         params.getOnSongRightClick().accept(wrapper, data);
                                 }
@@ -130,7 +128,7 @@ public class SongContainerGUI {
                 ItemStack stack = button.getItemStack(wrapper);
                 if (stack == null)
                     continue;
-                ClickAction action = new ClickAction(p ->
+                ClickAction action = new ClickAction(() ->
                         button.processClick(
                                 wrapper,
                                 new SongGUIData<>(this, null, params, page))
@@ -147,7 +145,7 @@ public class SongContainerGUI {
             gui.addItem(
                     46,
                     ItemUtils.createStack(XMaterial.TORCH, Lang.PARENT_CONTAINER.toString(), null),
-                    new ClickAction(p -> parentContainer
+                    new ClickAction(() -> parentContainer
                             .createGUI(wrapper)
                             .openPage(0, params))
             );
@@ -157,12 +155,12 @@ public class SongContainerGUI {
             gui.addItem(
                     45,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.BACK.toString(), null),
-                    new ClickAction(p -> openPage(page - 1, params)));
+                    new ClickAction(() -> openPage(page - 1, params)));
         if (pageCount > page && page > 0)
             gui.addItem(
                     53,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
-                    new ClickAction(p -> openPage(
+                    new ClickAction(() -> openPage(
                             page + 1, params)));
 
     }
