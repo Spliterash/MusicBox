@@ -7,10 +7,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
-import ru.spliterash.musicbox.commands.subcommands.GetExecutor;
-import ru.spliterash.musicbox.commands.subcommands.PlayExecutor;
-import ru.spliterash.musicbox.commands.subcommands.PlaylistExecutor;
-import ru.spliterash.musicbox.commands.subcommands.ShopExecutor;
+import ru.spliterash.musicbox.commands.subcommands.*;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.ArrayUtils;
 
@@ -24,6 +21,7 @@ public class MusicBoxExecutor implements TabExecutor {
         subs.put("get", new GetExecutor());
         subs.put("playlist", new PlaylistExecutor(this));
         subs.put("play", new PlayExecutor(this));
+        subs.put("admin", new AdminExecutor(this));
     }
 
     @Override
@@ -64,6 +62,9 @@ public class MusicBoxExecutor implements TabExecutor {
         if (player.hasPermission("musicbox.get")) {
             player.sendMessage(Lang.COMMAND_HELP_GET.toString());
         }
+        if(player.hasPermission("musicbox.admin")){
+            player.sendMessage(Lang.ADMIN_HELP.toArray());
+        }
     }
 
     @Override
@@ -82,6 +83,9 @@ public class MusicBoxExecutor implements TabExecutor {
                 tabComplete.add("shop");
             if (player.hasPermission("musicbox.get"))
                 tabComplete.add("get");
+            if (player.hasPermission("musicbox.admin"))
+                tabComplete.add("admin");
+
             return tabComplete;
         } else {
             SubCommand executor = subs.get(args[0].toLowerCase());

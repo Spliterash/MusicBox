@@ -187,8 +187,8 @@ public enum Lang {
             "&6Speaker mode",
             "&6Режим колонки"),
     PLAYLIST_EDITOR(
-            "&6Playlist editor",
-            "&6Редактор плейлистов"),
+            "&6Playlist list",
+            "&6Список плейлистов"),
     PLAYLIST_NAME("&6{name}"),
     GO_BACK_TO_PLAYLIST(
             "&6Go back to playlist",
@@ -235,8 +235,8 @@ public enum Lang {
                     "&aAlways&7 random"
             ),
             Arrays.asList(
-                    "&7Включает в себя &cВСЕ&7 треки",
-                    "&aВсегда&7 рандомный"
+                    "&7Включает в себя &aВСЕ&7 треки",
+                    "&cВсегда&7 рандомный"
             )
     ),
     CREATE_NEW_PLAYLIST(
@@ -344,7 +344,21 @@ public enum Lang {
             )),
     INPUT_NAME(
             "&6Input name &b/musicbox playlist create name",
-            "&6Введи имя &b/musicbox playlist create имя");
+            "&6Введи имя &b/musicbox playlist create имя"),
+    PLAYER_OFLLINE(
+            "&6Player &b{player}&6 offline",
+            "&6Игрок &b{player}&6 не в сети"),
+    SHUT_UPPED(
+            "&6Player &b{player}&6 has ben muted",
+            "&6Игрок &b{player}&6 больше не воспроизводит музыку"),
+    ADMIN_HELP(
+            Arrays.asList(
+                    "&b/musicbox admin shutup [player] &6- off player SongPlayer"
+            ),
+            Arrays.asList(
+                    "&b/musicbox admin shutup [player] &6- выключить проигрыватель игрока"
+            )
+    );
 
 
     /**
