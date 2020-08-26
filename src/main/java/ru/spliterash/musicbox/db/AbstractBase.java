@@ -252,6 +252,14 @@ public abstract class AbstractBase {
                     .findSongByHash(row.getInt("song_hash"))
                     .ifPresent(s -> model.getSongs().add(s));
         }
+        playLists
+                .removeIf(l -> {
+                    if (l.getSongs().size() == 0) {
+                        l.delete();
+                        return true;
+                    } else
+                        return false;
+                });
         return new ArrayList<>(playLists);
     }
 

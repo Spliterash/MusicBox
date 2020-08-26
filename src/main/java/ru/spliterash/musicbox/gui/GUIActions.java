@@ -6,12 +6,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
+import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
+import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.gui.playlist.PlayListEditorGUI;
 import ru.spliterash.musicbox.gui.playlist.PlayListListGUI;
 import ru.spliterash.musicbox.gui.song.SongContainerGUI;
+import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
@@ -19,10 +22,12 @@ import ru.spliterash.musicbox.song.MusicBoxSongManager;
 import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static ru.spliterash.musicbox.gui.song.SongContainerGUI.*;
+import static ru.spliterash.musicbox.gui.song.SongContainerGUI.BarButton;
+import static ru.spliterash.musicbox.gui.song.SongContainerGUI.SongGUIParams;
 
 /**
  * Класс для больших кусков кода связанных с GUI
@@ -44,6 +49,8 @@ public class GUIActions {
             defaultBar[1] = playListEditor();
             // Кнопка остановки
             defaultBar[2] = stopButton();
+            // Кнопка для следующей песни
+            defaultBar[4] = nextPlaylistSong();
             // Смена режима проигрывания
             defaultBar[5] = switchPlayMode();
             DEFAULT_MODE = SongGUIParams
@@ -64,9 +71,45 @@ public class GUIActions {
         }
     }
 
+    private BarButton nextPlaylistSong() {
+        return new BarButton() {
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                PlayerSongPlayer player = wrapper.getActivePlayer();
+                if (player == null)
+                    return null;
+                IPlayList playlist = player.getPlayList();
+                @Nullable MusicBoxSong next = playlist.silentGetNext();
+                if (next == null)
+                    return null;
+                List<String> lore = new ArrayList<>(7);
+                for (MusicBoxSong song : playlist.getPreviousSong(3)) {
+                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString("{song}", song.getName()));
+                }
+                lore.add(Lang.CURRENT_PLAYLIST_SONG.toString("{song}", playlist.getCurrent().getName()));
+                for (MusicBoxSong song : playlist.getNextSongs(3)) {
+                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString("{song}", song.getName()));
+                }
+                return ItemUtils.createStack(
+                        XMaterial.REDSTONE, Lang.NEXT_PLAYLIST_SONG_TITLE.toString(),
+                        lore
+                );
+            }
+
+            @Override
+            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                PlayerSongPlayer player = wrapper.getActivePlayer();
+                if (player == null)
+                    return;
+                player.destroy();
+                data.refreshInventory();
+            }
+        };
+    }
+
     private BarButton playListEditor() {
         return new BarButton() {
-            private final ItemStack item = ItemUtils.createStack(XMaterial.MAP, Lang.PLAYLIST_EDITOR.toString(), null);
+            private final ItemStack item = ItemUtils.createStack(XMaterial.PAPER, Lang.PLAYLIST_EDITOR.toString(), null);
 
             @Override
             public ItemStack getItemStack(PlayerWrapper wrapper) {
@@ -75,7 +118,13 @@ public class GUIActions {
 
             @Override
             public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                new PlayListListGUI(wrapper).openPage(0, GUIActions::openPlaylistEditor, null);
+                List<String> list = Lang.DEFAULT_PLAYLIST_LORE.toList();
+                new PlayListListGUI(wrapper).openPage(0,
+                        model -> new ClickAction(
+                                () -> wrapper.play(new ListPlaylist(model)),
+                                () -> openPlaylistEditor(wrapper, model)
+                        ),
+                        model -> list);
             }
         };
     }
@@ -192,7 +241,7 @@ public class GUIActions {
      * @param wrapper      Игрок который покупает пластинку
      * @param musicBoxSong Сама музыка которую он покупает
      */
-    private void playerBuyMusic(PlayerWrapper wrapper, MusicBoxSong musicBoxSong) {
+    public void playerBuyMusic(PlayerWrapper wrapper, MusicBoxSong musicBoxSong) {
         double price = EconomyUtils.getDiscPrice();
         Player player = wrapper.getPlayer();
         if (EconomyUtils.canBuy(player, price)) {

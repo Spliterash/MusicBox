@@ -22,7 +22,7 @@ public class RadioPlayer extends RadioSongPlayer implements PlayerSongPlayer {
 
     public RadioPlayer(MusicBoxSong song, IPlayList list, PlayerWrapper wrapper) {
         super(song.getSong());
-        this.musicBoxModel = new AllPlayerModel(this, song, list, SongUtils.getRunNextRunnable(wrapper, list));
+        this.musicBoxModel = new AllPlayerModel(this, song, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         musicBoxModel.runPlayer();
 

@@ -47,12 +47,12 @@ public enum Lang {
     ADD_CONTAINER_TO_PLAYLIST(
             Arrays.asList(
                     "",
-                    "",
+                    "&7==========================",
                     "&bRight click&7 to add your playlist"
             ),
             Arrays.asList(
                     "",
-                    "",
+                    "&7==========================",
                     "&bПравый клик&7 чтобы добавить в своей плейлист музыку отсюда"
             )
     ),
@@ -83,11 +83,13 @@ public enum Lang {
     ),
     BUY_MUSIC_LORE(
             Arrays.asList(
+                    "",
                     "&7==========================",
                     "&eClick to buy this disc",
                     "&7Price: &6{price} $"
             ),
             Arrays.asList(
+                    "",
                     "&7==========================",
                     "&eНажми чтобы купить эту пластинку",
                     "&7Цена: &6{price} $"
@@ -104,11 +106,13 @@ public enum Lang {
             "&6Назад"),
     BUY_CONTAINER_LORE(
             Arrays.asList(
+                    "",
                     "&7==========================",
                     "&ePress &cright&e to buy this box",
                     "&7Price: &6{price} $"
             ),
             Arrays.asList(
+                    "",
                     "&7==========================",
                     "&eНажми &cправой кнопкой&e чтобы купить весь этот сундук",
                     "&7Цена: &6{price} $"
@@ -192,12 +196,10 @@ public enum Lang {
     ),
     PLAYLIST_LORE(
             Arrays.asList(
-                    "",
                     "&7Track count: &b{count}",
                     "&7Duration: &b{duration}"
             ),
             Arrays.asList(
-                    "",
                     "&7Количество треков: &b{count}",
                     "&7Продолжительность: &b{duration}"
             )
@@ -205,11 +207,13 @@ public enum Lang {
     PLAYLIST_ITEM_LORE(
             Arrays.asList(
                     "",
+                    "&7==========================",
                     "&7Press &bthe left mouse button&7 to listen",
                     "&7To delete, press &bthe right mouse button"
             ),
             Arrays.asList(
                     "",
+                    "&7==========================",
                     "&7Чтобы прослушать нажми &bлевую кнопку",
                     "&7Чтобы удалить нажми &bправую кнопку"
             )
@@ -263,7 +267,29 @@ public enum Lang {
             "&cВы не можете сохранить пустой плейлист"),
     CHILL_CHILL_MAN(
             "&cChill man, chill, save in progress",
-            "&cОстынь чел, сохранение в процессе");
+            "&cОстынь чел, сохранение в процессе"),
+    NEXT_PLAYLIST_SONG_TITLE(
+            "&6Play next playlist song",
+            "&6Следующая мелодия"),
+    CURRENT_PLAYLIST_SONG("&a{song}"),
+    ANOTHER_PLAYLIST_SONG("&7{song}"),
+    DEFAULT_PLAYLIST_LORE(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&bLeft click&7 to play",
+                    "&bRight click&7 to edit"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&bЛевый клик для прослушивания",
+                    "&bПравый клик для редактирования"
+            )
+    ),
+    SONG_NOT_FOUND(
+            "&cSong not found",
+            "&Мелодия не найдена");
 
 
     /**

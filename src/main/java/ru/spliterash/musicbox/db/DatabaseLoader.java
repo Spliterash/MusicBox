@@ -8,7 +8,7 @@ import java.io.File;
 
 
 public class DatabaseLoader {
-    private static DatabaseLoader instance = new DatabaseLoader();
+    private static DatabaseLoader instance;
     private final AbstractBase base;
 
     public static void reload() {

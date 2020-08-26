@@ -1,6 +1,7 @@
 name: MusicBox
 version: @version@
 main: ru.spliterash.musicbox.MusicBox
+author: Spliterash
 depends:
   - NoteBlockAPI
 softpend:

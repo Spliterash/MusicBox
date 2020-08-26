@@ -6,15 +6,15 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.gui.GUIActions;
-import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.minecraft.gui.GUI;
+import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
+import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -32,7 +32,7 @@ public class PlayListListGUI {
     /**
      * Собсна открывает игроку инвентарь
      */
-    public void openPage(int page, BiConsumer<PlayerWrapper, PlayerPlayListModel> onSelect, Function<PlayerPlayListModel, List<String>> extraLore) {
+    public void openPage(int page, Function<PlayerPlayListModel, InventoryAction> onSelect, Function<PlayerPlayListModel, List<String>> extraLore) {
         int offset = page * 45;
         int lastPage = getLastPage();
         GUI gui = new GUI(Lang.PLAYLIST_LIST_TITLE.toString(
@@ -59,7 +59,7 @@ public class PlayListListGUI {
                     XMaterial.PAPER,
                     Lang.PLAYLIST_NAME.toString("{name}", element.getName()),
                     lore);
-            gui.addItem(i, stack, new ClickAction(() -> onSelect.accept(wrapper, element)));
+            gui.addItem(i, stack, onSelect.apply(element));
         }
         // Создать и открыть новый плейлист
         gui.addItem(

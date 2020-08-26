@@ -7,18 +7,18 @@ import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.gui.song.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
-import java.lang.ref.WeakReference;
+import java.util.function.Consumer;
 
 @Getter
 public class AllPlayerModel {
     private final MusicBoxSongPlayer musicBoxSongPlayer;
     private final MusicBoxSong currentSong;
     private final IPlayList playList;
-    private final Runnable nextSongRunnable;
+    private final Consumer<IPlayList> nextSongRunnable;
     private boolean continuePlaylist = true;
     private boolean run = false;
 
-    public AllPlayerModel(MusicBoxSongPlayer songPlayer, MusicBoxSong currentSong, IPlayList playList, Runnable nextSongRunnable) {
+    public AllPlayerModel(MusicBoxSongPlayer songPlayer, MusicBoxSong currentSong, IPlayList playList, Consumer<IPlayList> nextSongRunnable) {
         this.musicBoxSongPlayer = songPlayer;
         this.currentSong = currentSong;
         this.playList = playList;
@@ -41,7 +41,7 @@ public class AllPlayerModel {
         if (rewindGUI != null)
             rewindGUI.close();
         if (nextSongRunnable != null && continuePlaylist)
-            nextSongRunnable.run();
+            nextSongRunnable.accept(playList);
     }
 
     /**

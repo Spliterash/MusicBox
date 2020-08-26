@@ -30,9 +30,6 @@ public final class MusicBox extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultValues();
-        //Поскольку нужно прогрузить базу
-        //noinspection ResultOfMethodCallIgnored
-        DatabaseLoader.getBase();
         registerCommand("musicbox", new MusicBoxExecutor());
         Bukkit.getPluginManager().registerEvents(new Handler(), this);
         Bukkit.getScheduler().runTaskAsynchronously(this, this::reloadPlugin);
@@ -68,6 +65,7 @@ public final class MusicBox extends JavaPlugin {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+        DatabaseLoader.reload();
         Lang.reload(new File(getDataFolder(), "lang"), configObject.getLang());
         PlayerWrapper.clearAll();
         MusicBoxSongManager.reload(new File(getDataFolder(), "songs"));

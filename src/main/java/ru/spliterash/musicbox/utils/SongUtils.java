@@ -8,6 +8,7 @@ import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 @UtilityClass
 public class SongUtils {
@@ -23,7 +24,7 @@ public class SongUtils {
     }
 
 
-    public Runnable getRunNextRunnable(PlayerWrapper wrapper, IPlayList list) {
-        return () -> wrapper.play(list);
+    public Consumer<IPlayList> nextPlayerSong(PlayerWrapper wrapper) {
+        return wrapper::play;
     }
 }

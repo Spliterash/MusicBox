@@ -26,7 +26,7 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
 
     public SpeakerPlayer(MusicBoxSong song, IPlayList list, PlayerWrapper wrapper) {
         super(song.getSong());
-        this.musicBoxModel = new AllPlayerModel(this, song, list, SongUtils.getRunNextRunnable(wrapper, list));
+        this.musicBoxModel = new AllPlayerModel(this, song, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         setEntity(wrapper.getPlayer());
         musicBoxModel.runPlayer();
