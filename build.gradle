@@ -38,7 +38,7 @@ dependencies {
     compileOnly 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
     compile 'com.github.cryptomorin:XSeries:7.2.0'
     compile 'io.github.bananapuncher714:NBTEditor:7.16'
-    compile 'com.github.WesJD.AnvilGUI:anvilgui:-SNAPSHOT'
+//    compile 'fr.minuskube.inv:smart-invs:1.2.7'
 }
 
 processResources {

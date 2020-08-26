@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
-import ru.spliterash.musicbox.minecraft.GUI;
-import ru.spliterash.musicbox.minecraft.GUI.InventoryAction;
+import ru.spliterash.musicbox.minecraft.gui.ClickAction;
+import ru.spliterash.musicbox.minecraft.gui.GUI;
 import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 
@@ -55,7 +55,7 @@ public class RewindGUI {
                             Lang.REWIND_TO.toString(rewindReplaceArray),
                             null
                     ),
-                    new InventoryAction(
+                    new ClickAction(
                             p -> {
                                 musicPlayer.getApiPlayer().setTick(chunkStart);
                                 p.sendMessage(Lang.REWINDED.toString(rewindReplaceArray));
@@ -70,7 +70,7 @@ public class RewindGUI {
 
     private void fillEmpty() {
         ItemStack close = ItemUtils.createStack(XMaterial.RED_STAINED_GLASS_PANE, Lang.CLOSE.toString(), null);
-        InventoryAction action = new InventoryAction(HumanEntity::closeInventory);
+        ClickAction action = new ClickAction(HumanEntity::closeInventory);
         for (int i = 0; i < gui.getInventory().getSize(); i++) {
             ItemStack item = gui.getInventory().getItem(i);
             if (item != null)

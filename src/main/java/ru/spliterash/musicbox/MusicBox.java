@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
 import ru.spliterash.musicbox.db.DatabaseLoader;
@@ -35,6 +36,15 @@ public final class MusicBox extends JavaPlugin {
         registerCommand("musicbox", new MusicBoxExecutor());
         Bukkit.getPluginManager().registerEvents(new Handler(), this);
         Bukkit.getScheduler().runTaskAsynchronously(this, this::reloadPlugin);
+    }
+
+    public void sendMessage(String pex, String noPexMessage, String message) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if(player.hasPermission(pex))
+                player.sendMessage(message);
+            else
+                player.sendMessage(noPexMessage);
+        }
     }
 
     private void saveDefaultValues() {

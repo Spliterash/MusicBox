@@ -3,12 +3,11 @@ package ru.spliterash.musicbox.gui.playlist;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.Lang;
-import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.gui.GUIActions;
-import ru.spliterash.musicbox.minecraft.GUI;
-import ru.spliterash.musicbox.minecraft.GUI.InventoryAction;
+import ru.spliterash.musicbox.minecraft.gui.ClickAction;
+import ru.spliterash.musicbox.minecraft.gui.GUI;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.ItemUtils;
@@ -60,13 +59,13 @@ public class PlayListListGUI {
                     XMaterial.PAPER,
                     Lang.PLAYLIST_NAME.toString("{name}", element.getName()),
                     lore);
-            gui.addItem(i, stack, new InventoryAction(p -> onSelect.accept(wrapper, element)));
+            gui.addItem(i, stack, new ClickAction(p -> onSelect.accept(wrapper, element)));
         }
         // Создать и открыть новый плейлист
         gui.addItem(
                 49,
                 ItemUtils.createStack(XMaterial.SUGAR, Lang.CREATE_NEW_PLAYLIST.toString(), null),
-                new InventoryAction(p -> GUIActions.openPlaylistEditor(
+                new ClickAction(p -> GUIActions.openPlaylistEditor(
                         wrapper,
                         new PlayerPlayListModel(
                                 -1,
@@ -81,12 +80,12 @@ public class PlayListListGUI {
             gui.addItem(
                     45,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.BACK.toString(), null),
-                    new InventoryAction(p -> openPage(page - 1, onSelect, extraLore)));
+                    new ClickAction(p -> openPage(page - 1, onSelect, extraLore)));
         if (lastPage > page && page > 0)
             gui.addItem(
                     53,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
-                    new InventoryAction(p -> openPage(
+                    new ClickAction(p -> openPage(
                             page + 1, onSelect, extraLore)));
     }
 

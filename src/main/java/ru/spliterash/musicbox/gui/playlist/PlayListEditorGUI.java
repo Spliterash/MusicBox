@@ -7,8 +7,8 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.gui.GUIActions;
-import ru.spliterash.musicbox.minecraft.GUI;
-import ru.spliterash.musicbox.minecraft.GUI.InventoryAction;
+import ru.spliterash.musicbox.minecraft.gui.ClickAction;
+import ru.spliterash.musicbox.minecraft.gui.GUI;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.BukkitUtils;
@@ -43,19 +43,18 @@ public class PlayListEditorGUI {
             int arrayIndex = i + start;
             MusicBoxSong song = songs.get(arrayIndex);
             ItemStack stack = song.getSongStack(list.peek(), Lang.PLAYLIST_ITEM_LORE.toList(), false);
-            gui.addItem(i, stack, new InventoryAction(
+            gui.addItem(i, stack, new ClickAction(
                     p -> wrapper.play(song),
                     p -> {
                         model.getSongs().remove(arrayIndex);
                         open(page);
-                    },
-                    null
+                    }
             ));
         }
         gui.addItem(
                 47,
                 ItemUtils.createStack(XMaterial.PISTON, Lang.SHUFFLE_PLAYLIST.toString(), null),
-                new InventoryAction(
+                new ClickAction(
                         p -> {
                             Collections.shuffle(model.getSongs());
                             open(page);
@@ -65,7 +64,7 @@ public class PlayListEditorGUI {
         gui.addItem(
                 48,
                 ItemUtils.createStack(XMaterial.SUNFLOWER, Lang.ADD_MUSIC_TO_PLAYLIST_ITEM.toString(), Lang.DONT_FORGET_TO_SAVE.toList()),
-                new InventoryAction(
+                new ClickAction(
                         p -> GUIActions.openPlayListAdder(wrapper, this)
                 )
         );
@@ -76,7 +75,7 @@ public class PlayListEditorGUI {
         gui.addItem(
                 49,
                 ItemUtils.createStack(XMaterial.PAPER, Lang.SAVE_PLAYLIST_CHANGE.toString(), lore),
-                new InventoryAction(
+                new ClickAction(
                         p -> {
                             if (model.getSongs().size() > 0) {
                                 if (saveInProgress) {
@@ -100,7 +99,7 @@ public class PlayListEditorGUI {
         gui.addItem(
                 51,
                 ItemUtils.createStack(XMaterial.BARRIER, Lang.DELETE_PLAYLIST.toString("{playlist}", model.getName()), null),
-                new InventoryAction(
+                new ClickAction(
                         p -> {
                             model.delete();
                             p.sendMessage(Lang.PLAYLIST_DELETED.toString("{playlist}", model.getName()));
@@ -114,12 +113,12 @@ public class PlayListEditorGUI {
             gui.addItem(
                     45,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.BACK.toString(), null),
-                    new InventoryAction(p -> open(page - 1)));
+                    new ClickAction(p -> open(page - 1)));
         if (last > page && page > 0)
             gui.addItem(
                     53,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
-                    new InventoryAction(p -> open(page + 1)));
+                    new ClickAction(p -> open(page + 1)));
     }
 
     private boolean saveInProgress = false;
