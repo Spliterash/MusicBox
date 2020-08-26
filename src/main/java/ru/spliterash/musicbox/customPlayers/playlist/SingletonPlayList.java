@@ -48,4 +48,9 @@ public class SingletonPlayList implements IPlayList {
     public MusicBoxSong getCurrent() {
         return song;
     }
+
+    @Override
+    public void back(int count) {
+       // NONE
+    }
 }

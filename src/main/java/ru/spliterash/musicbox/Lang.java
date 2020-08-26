@@ -226,12 +226,25 @@ public enum Lang {
             "&l&3Edit {playlist}&f &0{page}&7/&0{last_page}",
             "&l&3Редактирование {playlist}&f &0{page}&7/&0{last_page}"
     ),
+    MASTER_PLAYLIST(
+            "&6Master playlist",
+            "&6Главный плейлист"),
+    MASTER_PLAYLIST_LORE(
+            Arrays.asList(
+                    "&7Include &cALL&7 tracks",
+                    "&aAlways&7 random"
+            ),
+            Arrays.asList(
+                    "&7Включает в себя &cВСЕ&7 треки",
+                    "&aВсегда&7 рандомный"
+            )
+    ),
     CREATE_NEW_PLAYLIST(
             "&6Create new playlist",
             "&6Создать новый плейлист"),
-    NEW_PLAYLIST_NAME(
-            "New playlist",
-            "Новый плейлист"),
+    NEW_PLAYLIST_MESSAGE(
+            "&6To create a new playlist write &b/musicbox playlist create playlist name ",
+            "&6Чтобы создать новый плейлист напиши &b/musicbox playlist create Имя плейлиста"),
     SAVE_PLAYLIST_CHANGE(
             "&6Save changes",
             "&6Сохранить изменения"),
@@ -315,7 +328,23 @@ public enum Lang {
                     "",
                     "&7==========================",
                     "&7Нажми правой кнопкой чтобы получить всё из этого сундука"
-            ));
+            )),
+    PLAYLIST_CONTROL(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&bLeft click&7 to next",
+                    "&bRight click&7 to prev"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&bЛевый клик&7 следующая",
+                    "&bПравый клик&7 предыдущая"
+            )),
+    INPUT_NAME(
+            "&6Input name &b/musicbox playlist create name",
+            "&6Введи имя &b/musicbox playlist create имя");
 
 
     /**

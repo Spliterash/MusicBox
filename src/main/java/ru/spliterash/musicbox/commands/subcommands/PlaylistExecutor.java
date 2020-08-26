@@ -1,0 +1,67 @@
+package ru.spliterash.musicbox.commands.subcommands;
+
+import org.bukkit.entity.Player;
+import ru.spliterash.musicbox.Lang;
+import ru.spliterash.musicbox.commands.MusicBoxExecutor;
+import ru.spliterash.musicbox.commands.SubCommand;
+import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
+import ru.spliterash.musicbox.gui.GUIActions;
+import ru.spliterash.musicbox.players.PlayerWrapper;
+import ru.spliterash.musicbox.utils.StringUtils;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class PlaylistExecutor implements SubCommand {
+    private final MusicBoxExecutor parent;
+
+    public PlaylistExecutor(MusicBoxExecutor parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public void execute(Player player, String[] args) {
+        if (args.length == 0) {
+            GUIActions.openPlaylistListEditor(PlayerWrapper.getInstance(player));
+            return;
+        }
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (args[0].toLowerCase()) {
+            case "create":
+                createPlaylist(player, args);
+                break;
+            default:
+                parent.sendHelp(player);
+                break;
+        }
+    }
+
+    private void createPlaylist(Player player, String[] args) {
+        if (args.length <= 1) {
+            player.sendMessage(Lang.INPUT_NAME.toString());
+            return;
+        }
+        String name = StringUtils.t(StringUtils.concat(args, 1, args.length));
+        GUIActions.openPlaylistEditor(
+                PlayerWrapper.getInstance(player),
+                new PlayerPlayListModel(-1, player.getUniqueId(), name)
+        );
+    }
+
+    @Override
+    public String getPex() {
+        return "musicbox.use";
+    }
+
+    @Override
+    public List<String> tabComplete(Player player, String[] args) {
+        if (args.length <= 1) {
+            //noinspection ArraysAsListWithZeroOrOneArgument
+            return Arrays.asList("create");
+        }
+        return Collections.emptyList();
+    }
+
+
+}

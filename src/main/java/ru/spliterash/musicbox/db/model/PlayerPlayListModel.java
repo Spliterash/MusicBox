@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
+import ru.spliterash.musicbox.utils.classes.SongContainer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PlayerPlayListModel {
+public class PlayerPlayListModel implements SongContainer {
     private int id;
     private final UUID owner;
     private String name;

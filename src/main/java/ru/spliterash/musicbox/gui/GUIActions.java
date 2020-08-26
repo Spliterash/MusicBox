@@ -14,6 +14,7 @@ import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.gui.playlist.PlayListEditorGUI;
 import ru.spliterash.musicbox.gui.playlist.PlayListListGUI;
 import ru.spliterash.musicbox.gui.song.SongContainerGUI;
+import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
 import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
@@ -121,19 +122,33 @@ public class GUIActions {
                 for (MusicBoxSong song : playlist.getNextSongs(3)) {
                     lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString("{song}", song.getName()));
                 }
+                lore.addAll(Lang.PLAYLIST_CONTROL.toList());
                 return ItemUtils.createStack(
-                        XMaterial.REDSTONE, Lang.NEXT_PLAYLIST_SONG_TITLE.toString(),
+                        XMaterial.REDSTONE,
+                        Lang.NEXT_PLAYLIST_SONG_TITLE.toString(),
                         lore
                 );
             }
 
             @Override
-            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                PlayerSongPlayer player = wrapper.getActivePlayer();
-                if (player == null)
-                    return;
-                player.destroy();
-                data.refreshInventory();
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e -> {
+                    PlayerSongPlayer player = wrapper.getActivePlayer();
+                    if (player == null)
+                        return;
+                    switch (e.getClick()) {
+                        case LEFT:
+                            player.destroy();
+                            data.refreshInventory();
+                            break;
+                        case RIGHT:
+                            player.getPlayList().back(2);
+                            player.destroy();
+                            data.refreshInventory();
+                            break;
+                    }
+
+                };
             }
         };
     }
@@ -148,16 +163,25 @@ public class GUIActions {
             }
 
             @Override
-            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                List<String> list = Lang.DEFAULT_PLAYLIST_LORE.toList();
-                new PlayListListGUI(wrapper).openPage(0,
-                        model -> new ClickAction(
-                                () -> wrapper.play(new ListPlaylist(model)),
-                                () -> openPlaylistEditor(wrapper, model)
-                        ),
-                        model -> list);
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e -> openPlaylistListEditor(wrapper);
             }
+
         };
+    }
+
+    public void openPlaylistListEditor(PlayerWrapper wrapper) {
+        List<String> list = Lang.DEFAULT_PLAYLIST_LORE.toList();
+        new PlayListListGUI(wrapper).openPage(0,
+                model -> new ClickAction(
+                        () -> wrapper.play(new ListPlaylist(model)),
+                        () -> {
+                            if (model instanceof PlayerPlayListModel) {
+                                openPlaylistEditor(wrapper, (PlayerPlayListModel) model);
+                            }
+                        }
+                ),
+                model -> list);
     }
 
     /**
@@ -185,10 +209,12 @@ public class GUIActions {
             }
 
             @Override
-            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                if (wrapper.switchModeChecked()) {
-                    data.refreshInventory();
-                }
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e -> {
+                    if (wrapper.switchModeChecked()) {
+                        data.refreshInventory();
+                    }
+                };
             }
         };
     }
@@ -203,14 +229,18 @@ public class GUIActions {
             }
 
             @Override
-            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                PlayerSongPlayer active = wrapper.getActivePlayer();
-                if (active == null) {
-                    wrapper.getPlayer().sendMessage(Lang.NOT_PLAY.toString());
-                } else {
-                    active.getRewind().openForPlayer(wrapper.getPlayer());
-                }
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e -> {
+                    PlayerSongPlayer active = wrapper.getActivePlayer();
+                    if (active == null) {
+                        wrapper.getPlayer().sendMessage(Lang.NOT_PLAY.toString());
+                    } else {
+                        active.getRewind().openForPlayer(wrapper.getPlayer());
+                    }
+                };
             }
+
+
         };
     }
 
@@ -224,10 +254,13 @@ public class GUIActions {
             }
 
             @Override
-            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                wrapper.destroyActivePlayer();
-                data.refreshInventory();
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e -> {
+                    wrapper.destroyActivePlayer();
+                    data.refreshInventory();
+                };
             }
+
         };
     }
 
@@ -304,8 +337,8 @@ public class GUIActions {
             }
 
             @Override
-            public void processClick(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                editorGUI.open(0);
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e -> editorGUI.open(0);
             }
         };
         SongGUIParams params = SongGUIParams.builder()

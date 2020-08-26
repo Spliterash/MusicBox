@@ -1,9 +1,9 @@
 package ru.spliterash.musicbox.customPlayers.playlist;
 
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
-import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.classes.PeekList;
+import ru.spliterash.musicbox.utils.classes.SongContainer;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 public class ListPlaylist implements IPlayList {
     private final PeekList<MusicBoxSong> peekList;
 
-    public ListPlaylist(PlayerPlayListModel model) {
+    public ListPlaylist(SongContainer model) {
         this(model.getSongs());
     }
 
@@ -47,5 +47,12 @@ public class ListPlaylist implements IPlayList {
     @Override
     public MusicBoxSong getCurrent() {
         return peekList.current();
+    }
+
+    @Override
+    public void back(int count) {
+        for (int i = 0; i < count; i++) {
+            peekList.peekPrev();
+        }
     }
 }

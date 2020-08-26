@@ -29,5 +29,7 @@ public interface IPlayList {
 
     List<MusicBoxSong> getPreviousSong(int count);
 
-     MusicBoxSong getCurrent();
+    MusicBoxSong getCurrent();
+
+    void back(int count);
 }

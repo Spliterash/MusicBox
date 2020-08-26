@@ -76,4 +76,16 @@ public class StringUtils {
             return out.toString();
         }
     }
+
+    public String concat(String[] array, int start, int end) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            String element = array[i];
+            builder.append(element);
+            if (i < end - 1) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
 }

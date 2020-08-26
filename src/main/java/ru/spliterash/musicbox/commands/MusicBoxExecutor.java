@@ -9,6 +9,7 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.commands.subcommands.GetExecutor;
 import ru.spliterash.musicbox.commands.subcommands.PlayExecutor;
+import ru.spliterash.musicbox.commands.subcommands.PlaylistExecutor;
 import ru.spliterash.musicbox.commands.subcommands.ShopExecutor;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.ArrayUtils;
@@ -21,6 +22,7 @@ public class MusicBoxExecutor implements TabExecutor {
     public MusicBoxExecutor() {
         subs.put("shop", new ShopExecutor());
         subs.put("get", new GetExecutor());
+        subs.put("playlist", new PlaylistExecutor(this));
         subs.put("play", new PlayExecutor(this));
     }
 
@@ -72,8 +74,10 @@ public class MusicBoxExecutor implements TabExecutor {
         Player player = (Player) sender;
         if (args.length <= 1) {
             List<String> tabComplete = new LinkedList<>();
-            if (player.hasPermission("musicbox.use"))
+            if (player.hasPermission("musicbox.use")) {
                 tabComplete.add("play");
+                tabComplete.add("playlist");
+            }
             if (player.hasPermission("musicbox.shop"))
                 tabComplete.add("shop");
             if (player.hasPermission("musicbox.get"))

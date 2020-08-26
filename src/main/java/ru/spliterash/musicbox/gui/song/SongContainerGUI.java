@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.minecraft.gui.GUI;
+import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
 import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
@@ -128,11 +129,7 @@ public class SongContainerGUI {
                 ItemStack stack = button.getItemStack(wrapper);
                 if (stack == null)
                     continue;
-                ClickAction action = new ClickAction(() ->
-                        button.processClick(
-                                wrapper,
-                                new SongGUIData<>(this, null, params, page))
-                );
+                InventoryAction action = button.getAction(wrapper, new SongGUIData<>(this, null, params, page));
                 gui.addItem(i + startIndex, stack, action);
             }
         }
@@ -178,7 +175,7 @@ public class SongContainerGUI {
     public interface BarButton {
         ItemStack getItemStack(PlayerWrapper wrapper);
 
-        void processClick(PlayerWrapper wrapper, SongGUIData<Void> data);
+        InventoryAction getAction(PlayerWrapper wrapper, SongGUIData<Void> data);
     }
 
 
@@ -213,7 +210,7 @@ public class SongContainerGUI {
         private final int page;
 
         /**
-         * Обновляет подсвеченный айтем
+         * Обновляет открытый инвентарь
          * Возможно кривовато, но ничего лучше я не придумал
          */
         public void refreshInventory() {
