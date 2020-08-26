@@ -36,6 +36,7 @@ import static ru.spliterash.musicbox.gui.song.SongContainerGUI.SongGUIParams;
 public class GUIActions {
 
 
+    public SongGUIParams GET_MODE;
     public SongGUIParams DEFAULT_MODE;
     public SongGUIParams SHOP_MODE;
 
@@ -45,11 +46,13 @@ public class GUIActions {
             BarButton[] defaultBar = new BarButton[6];
             // Перемотка
             defaultBar[0] = rewindButton();
-            // Редактор плейлистов
-            defaultBar[1] = playListEditor();
             // Кнопка остановки
-            defaultBar[2] = stopButton();
-            // Кнопка для следующей песни
+            defaultBar[1] = stopButton();
+            // Место для паузы
+
+            // Редактор плейлистов
+            defaultBar[3] = playListEditor();
+            // Кнопка для следующей музыки из плейлиста
             defaultBar[4] = nextPlaylistSong();
             // Смена режима проигрывания
             defaultBar[5] = switchPlayMode();
@@ -69,6 +72,34 @@ public class GUIActions {
                     .onContainerRightClick(GUIActions::buyAllContainer)
                     .build();
         }
+        // Получение пластинок
+        {
+            GET_MODE = SongGUIParams
+                    .builder()
+                    .onSongLeftClick(GUIActions::giveDisc)
+                    .extraSongLore(GUIActions::playerGetSongLore)
+                    .onContainerRightClick(GUIActions::getAllContainer)
+                    .extraContainerLore(GUIActions::playerGetAllContainerLore)
+                    .build();
+        }
+    }
+
+    private List<String> playerGetAllContainerLore(SongContainerGUI.SongGUIData<MusicBoxSongContainer> musicBoxSongContainerSongGUIData) {
+        return Lang.GET_ALL_CONTAINER_LORE.toList();
+    }
+
+    private List<String> playerGetSongLore(SongContainerGUI.SongGUIData<MusicBoxSong> data) {
+        return Lang.GET_DISC_LORE.toList();
+    }
+
+    private void getAllContainer(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer> data) {
+        for (MusicBoxSong song : data.getData().getAllSongs()) {
+            giveDisc(wrapper, song);
+        }
+    }
+
+    private void giveDisc(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<MusicBoxSong> data) {
+        giveDisc(wrapper, data.getData());
     }
 
     private BarButton nextPlaylistSong() {
@@ -212,15 +243,6 @@ public class GUIActions {
         data.refreshInventory();
     }
 
-    public List<String> addContainerToPlaylist(SongContainerGUI.SongGUIData<MusicBoxSongContainer> container) {
-        return Lang.ADD_CONTAINER_TO_PLAYLIST.toList();
-    }
-
-
-    public List<String> addMusicToPlaylistLore(SongContainerGUI.SongGUIData<MusicBoxSong> song) {
-        return Lang.ADD_MUSIC_TO_PLAYLIST.toList();
-    }
-
 
     public List<String> playerBuySongLore(SongContainerGUI.SongGUIData<MusicBoxSong> musicBoxSong) {
         return Lang.BUY_MUSIC_LORE.toList("{price}", String.valueOf(EconomyUtils.getDiscPrice()));
@@ -305,5 +327,11 @@ public class GUIActions {
                 .bottomBar(bar)
                 .build();
         new SongContainerGUI(MusicBoxSongManager.getRootContainer(), wrapper).openPage(0, params);
+    }
+
+    public void giveDisc(PlayerWrapper wrapper, MusicBoxSong song) {
+        Player player = wrapper.getPlayer();
+        player.getInventory().addItem(song.getSongStack());
+        player.sendMessage(Lang.YOU_GET_DISC.toString("{disc}", song.getName()));
     }
 }

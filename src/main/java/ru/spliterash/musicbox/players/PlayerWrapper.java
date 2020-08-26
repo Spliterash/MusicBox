@@ -111,6 +111,11 @@ public class PlayerWrapper {
         gui.openPage(0, GUIActions.SHOP_MODE);
     }
 
+    public void openGetInventory() {
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
+        gui.openPage(0, GUIActions.GET_MODE);
+    }
+
 
     /**
      * Сохраняет всё на жесткий диск
@@ -225,4 +230,5 @@ public class PlayerWrapper {
     public void play(MusicBoxSong song) {
         play(new SingletonPlayList(song));
     }
+
 }

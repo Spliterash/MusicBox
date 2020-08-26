@@ -11,7 +11,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractGet implements SubCommand {
+public abstract class AbstractSelect implements SubCommand {
+
+    private final String pex;
+
+    public AbstractSelect(String pex) {
+        this.pex = pex;
+    }
+
+    @Override
+    public String getPex() {
+        return pex;
+    }
+
     @Override
     public void execute(Player player, String[] args) {
         if (args.length == 0) {

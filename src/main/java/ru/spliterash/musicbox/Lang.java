@@ -289,7 +289,33 @@ public enum Lang {
     ),
     SONG_NOT_FOUND(
             "&cSong not found",
-            "&Мелодия не найдена");
+            "&Мелодия не найдена"),
+    YOU_GET_DISC(
+            "&6You get disc &b{disc}",
+            "&6Вы получили диск &b{disc}"),
+    GET_DISC_LORE(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&7Click to get this disc"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&7Нажми чтобы получить этот диск"
+            )
+    ),
+    GET_ALL_CONTAINER_LORE(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&7Click right to get all container"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&7Нажми правой кнопкой чтобы получить всё из этого сундука"
+            ));
 
 
     /**

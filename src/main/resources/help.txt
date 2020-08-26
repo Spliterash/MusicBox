@@ -1,3 +1,4 @@
 musicbox.use - Allow command /musicbox and /musicbox play
+musicbox.speaker - Allow use speaker mode
 musicbox.shop - Allow use disc shop
-musicbox.get- Allow get any disc
+musicbox.get - Allow get any disc

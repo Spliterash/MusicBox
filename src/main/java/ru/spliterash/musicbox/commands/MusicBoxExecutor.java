@@ -7,6 +7,8 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
+import ru.spliterash.musicbox.commands.subcommands.GetExecutor;
+import ru.spliterash.musicbox.commands.subcommands.PlayExecutor;
 import ru.spliterash.musicbox.commands.subcommands.ShopExecutor;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.ArrayUtils;
@@ -18,6 +20,8 @@ public class MusicBoxExecutor implements TabExecutor {
 
     public MusicBoxExecutor() {
         subs.put("shop", new ShopExecutor());
+        subs.put("get", new GetExecutor());
+        subs.put("play", new PlayExecutor(this));
     }
 
     @Override
@@ -31,6 +35,10 @@ public class MusicBoxExecutor implements TabExecutor {
             return true;
         }
         Player player = (Player) sender;
+        if (!player.hasPermission("musicbox.use")) {
+            player.sendMessage(Lang.NO_PEX.toString());
+            return true;
+        }
         if (args.length == 0) {
             PlayerWrapper.getInstance(player).openDefaultInventory();
             return true;
@@ -38,13 +46,15 @@ public class MusicBoxExecutor implements TabExecutor {
         SubCommand executor = subs.get(args[0]);
         if (executor == null) {
             sendHelp(player);
-        } else {
+        } else if (executor.getPex() == null || player.hasPermission(executor.getPex())) {
             executor.execute(player, ArrayUtils.removeFirst(String.class, args));
+        } else {
+            player.sendMessage(Lang.NO_PEX.toString());
         }
         return true;
     }
 
-    private void sendHelp(Player player) {
+    public void sendHelp(Player player) {
         player.sendMessage(Lang.COMMAND_HELP.toArray());
         if (player.hasPermission("musicbox.shop")) {
             player.sendMessage(Lang.COMMAND_HELP_SHOP.toString());
@@ -71,8 +81,10 @@ public class MusicBoxExecutor implements TabExecutor {
             return tabComplete;
         } else {
             SubCommand executor = subs.get(args[0].toLowerCase());
-            if (executor != null)
-                return executor.tabComplete(player, ArrayUtils.removeFirst(String.class, args));
+            if (executor != null) {
+                if (executor.getPex() == null || player.hasPermission(executor.getPex()))
+                    return executor.tabComplete(player, ArrayUtils.removeFirst(String.class, args));
+            }
         }
         return Collections.emptyList();
     }
