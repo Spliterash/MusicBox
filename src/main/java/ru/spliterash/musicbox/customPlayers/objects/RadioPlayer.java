@@ -3,6 +3,9 @@ package ru.spliterash.musicbox.customPlayers.objects;
 import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
@@ -19,8 +22,9 @@ public class RadioPlayer extends RadioSongPlayer implements PlayerSongPlayer {
     private final PlayerPlayerModel model;
     private final MusicBoxSongPlayerModel musicBoxModel;
 
+
     public RadioPlayer(IPlayList list, PlayerWrapper wrapper) {
-        super(list.getNext().getSong());
+        super(list.getCurrent().getSong());
         this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         musicBoxModel.runPlayer();
@@ -33,6 +37,11 @@ public class RadioPlayer extends RadioSongPlayer implements PlayerSongPlayer {
         super.destroy();
         model.destroy();
         musicBoxModel.destroy();
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     @Override

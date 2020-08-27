@@ -384,20 +384,24 @@ public enum Lang {
 
             )
     ),
+    RANDOM_MODE_BUTTON(
+            "&6Random mode {status}",
+            "&6Рандомный режим {status}"),
+
     SIGN_CHEST_LORE(
             Arrays.asList(
-                    "",
+            "",
                     "&7==========================",
                     "&eRight click to setup this chest"
 
-            ),
+    ),
             Arrays.asList(
                     "",
                     "&7==========================",
                     "&eПравый клик чтобы установить этот сундук"
 
-            )
-    );
+                    )
+                    );
 
 
     /**

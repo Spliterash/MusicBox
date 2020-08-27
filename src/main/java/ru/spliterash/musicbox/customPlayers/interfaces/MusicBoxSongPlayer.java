@@ -5,13 +5,17 @@ import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.gui.song.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+
 /**
  * Все проигрыватели созданные этим плагином
  */
 public interface MusicBoxSongPlayer {
 
     default RewindGUI getRewind() {
-       return getMusicBoxModel().getRewind();
+        return getMusicBoxModel().getRewind();
     }
 
     /**
@@ -44,7 +48,6 @@ public interface MusicBoxSongPlayer {
     default SongPlayer getApiPlayer() {
         return (SongPlayer) this;
     }
-
     /**
      * Получить тик который играет в данный момент
      */
@@ -52,5 +55,13 @@ public interface MusicBoxSongPlayer {
 
     default IPlayList getPlayList() {
         return getMusicBoxModel().getPlayList();
+    }
+
+    boolean isDestroyed();
+
+
+
+    default Set<UUID> getPlayers() {
+        return getApiPlayer().getPlayerUUIDs();
     }
 }

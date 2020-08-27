@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.SongContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.factory.FolderContainerFactory;
-import ru.spliterash.musicbox.song.songContainers.factory.IdContainerFactory;
+import ru.spliterash.musicbox.song.songContainers.factory.SingletonContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.factory.ListContainerFactory;
 
 import java.io.File;
@@ -18,14 +18,11 @@ import java.util.*;
 
 public class MusicBoxSongManager {
     public final String MASTER_CONTAINER = "MASTER";
-    public final String PLAYER_PLAYLIST_CONTAINER = "LIST";
-    public final String SINGLETON_SONG_CONTAINER = "ID";
-    public final String FOLDER_SONG_CONTAINER = "CHEST";
     private final Set<SongContainerFactory<?>> factorySet = new HashSet<>();
 
     static {
         factorySet.add(new FolderContainerFactory());
-        factorySet.add(new IdContainerFactory());
+        factorySet.add(new SingletonContainerFactory());
         factorySet.add(new ListContainerFactory());
     }
 
@@ -73,7 +70,7 @@ public class MusicBoxSongManager {
             return Optional.empty();
     }
 
-    public Optional<SongContainer> getById(String str) {
+    public Optional<SongContainer> getContainerById(String str) {
         if (str.equals(MASTER_CONTAINER))
             return Optional.of(masterContainer);
         String[] split = str.split(":");

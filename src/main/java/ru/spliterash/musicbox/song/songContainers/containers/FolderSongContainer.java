@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
+import ru.spliterash.musicbox.song.songContainers.factory.FolderContainerFactory;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class FolderSongContainer implements SongContainer {
 
     @Override
     public String getNameId() {
-        return "CHEST:" + container.getHash();
+        return FolderContainerFactory.NAME + ":" + container.getHash();
     }
 
     @Override

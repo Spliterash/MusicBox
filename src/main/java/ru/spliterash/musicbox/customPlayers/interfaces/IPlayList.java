@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IPlayList {
 
-    MusicBoxSong getNext();
+    boolean next();
 
     List<MusicBoxSong> getNextSongs(int count);
 

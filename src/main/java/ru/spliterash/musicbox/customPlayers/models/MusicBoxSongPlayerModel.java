@@ -7,6 +7,11 @@ import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.gui.song.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
 
 @Getter
@@ -47,8 +52,10 @@ public class MusicBoxSongPlayerModel {
     public void destroy() {
         if (rewindGUI != null)
             rewindGUI.close();
-        if (nextSongRunnable != null && continuePlaylist && playList.hasNext())
+        if (nextSongRunnable != null && continuePlaylist && playList.hasNext()) {
+            playList.next();
             nextSongRunnable.accept(playList);
+        }
     }
 
     /**
@@ -68,5 +75,49 @@ public class MusicBoxSongPlayerModel {
         if (rewindGUI == null)
             rewindGUI = new RewindGUI(musicBoxSongPlayer);
         return rewindGUI;
+    }
+    // Немного чернухи
+
+    private static final Field lockField;
+
+    private static final Field playersField;
+
+    static {
+        try {
+            playersField = SongPlayer.class.getDeclaredField("playerList");
+            lockField = SongPlayer.class.getDeclaredField("lock");
+            playersField.setAccessible(true);
+            lockField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Lock getLock() throws IllegalAccessException {
+        return (Lock) lockField.get(musicBoxSongPlayer);
+    }
+
+    private Map<UUID, Boolean> getPlayers() throws IllegalAccessException {
+        //noinspection unchecked
+        return (Map<UUID, Boolean>) playersField.get(musicBoxSongPlayer);
+    }
+
+    public void setPlayers(Collection<UUID> players) {
+        try {
+            Map<UUID, Boolean> map = getPlayers();
+            if (map.keySet().containsAll(players))
+                return;
+            Lock lock = getLock();
+            lock.lock();
+            try {
+
+                map.clear();
+                players.forEach(p -> map.put(p, true));
+            } finally {
+                lock.unlock();
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

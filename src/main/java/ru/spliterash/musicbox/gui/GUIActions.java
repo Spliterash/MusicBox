@@ -188,7 +188,7 @@ public class GUIActions {
         List<String> list = Lang.DEFAULT_PLAYLIST_LORE.toList();
         new PlayListListGUI(wrapper).openPage(0,
                 model -> new ClickAction(
-                        () -> wrapper.play(new ListPlaylist(model)),
+                        () -> wrapper.play(ListPlaylist.fromContainer(model, false, false)),
                         () -> {
                             if (model instanceof PlayerPlayListModel) {
                                 openPlaylistEditor(wrapper, (PlayerPlayListModel) model);
@@ -412,17 +412,48 @@ public class GUIActions {
      */
     public void openSignSetupInventory(PlayerWrapper wrapper, Sign sign) {
         SongContainerGUI rootGUI = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
+        class RandButton implements BarButton {
+            private boolean rand = true;
+
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                String status = rand ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
+                return ItemUtils.createStack(
+                        XMaterial.REDSTONE,
+                        Lang.RANDOM_MODE_BUTTON.toString("{status}", status),
+                        null);
+            }
+
+            @Override
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e -> {
+                    rand = !rand;
+                    data.refreshInventory();
+                };
+            }
+        }
+        RandButton button = new RandButton();
+        BarButton[] buttons = new BarButton[3];
+        buttons[2] = button;
         SongGUIParams params = SongGUIParams
                 .builder()
+                .bottomBar(buttons)
                 .onSongLeftClick(
                         (wrapper1, musicBoxSongSongGUIData) ->
-                                applySign(wrapper1, sign, new SingletonContainer(musicBoxSongSongGUIData.getData())))
-                .onContainerRightClick(new BiConsumer<PlayerWrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer>>() {
-                    @Override
-                    public void accept(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer> musicBoxSongContainerSongGUIData) {
-                        applySign(wrapper, sign, new FolderSongContainer(musicBoxSongContainerSongGUIData.getData()));
-                    }
-                })
+                                applySign(
+                                        wrapper1,
+                                        sign,
+                                        new SingletonContainer(musicBoxSongSongGUIData.getData()),
+                                        button.rand)
+                )
+                .onContainerRightClick(
+                        (wrapper12, musicBoxSongContainerSongGUIData) ->
+                                applySign(
+                                        wrapper12,
+                                        sign,
+                                        new FolderSongContainer(musicBoxSongContainerSongGUIData.getData()),
+                                        button.rand)
+                )
                 .extraSongLore(nothing -> Lang.SIGN_SONG_LORE.toList())
                 .extraContainerLore(nothing -> Lang.SIGN_CHEST_LORE.toList())
                 .build();
@@ -434,7 +465,7 @@ public class GUIActions {
     }
 
 
-    private void applySign(PlayerWrapper wrapper, Sign sign, SongContainer songContainer) {
+    private void applySign(PlayerWrapper wrapper, Sign sign, SongContainer songContainer, boolean rand) {
         sign.setLine(0, ChatColor.AQUA + songContainer.getNameId());
         sign.setLine(1, String.format("%s[%sMUSIC%s]", ChatColor.GRAY, ChatColor.GREEN, ChatColor.GRAY));
         String range = sign.getLine(2);
@@ -452,6 +483,11 @@ public class GUIActions {
             }
         }
         sign.setLine(2, ChatColor.RED + range);
+        if (rand)
+            sign.setLine(3, "RAND");
+        else
+            sign.setLine(3, "");
+        sign.update(true);
         wrapper.getPlayer().closeInventory();
     }
 }

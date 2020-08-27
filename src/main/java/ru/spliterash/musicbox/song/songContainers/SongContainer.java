@@ -16,4 +16,8 @@ public interface SongContainer {
         Collections.shuffle(list);
         return list;
     }
+
+    default List<MusicBoxSong> getSongsRand(boolean rand) {
+        return rand ? getSongsShuffle() : getSongs();
+    }
 }

@@ -5,9 +5,10 @@ import ru.spliterash.musicbox.song.songContainers.SongContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.containers.FolderSongContainer;
 
 public class FolderContainerFactory implements SongContainerFactory<FolderSongContainer> {
+    public static final String NAME = "CHEST";
     @Override
     public String getKey() {
-        return "FOLDER";
+        return NAME;
     }
 
     @Override

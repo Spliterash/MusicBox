@@ -17,12 +17,8 @@ public class SingletonPlayList implements IPlayList {
     private boolean giveSong = true;
 
     @Override
-    public MusicBoxSong getNext() {
-        if (giveSong) {
-            giveSong = false;
-            return song;
-        } else
-            return null;
+    public boolean next() {
+        return false;
     }
 
     @Override

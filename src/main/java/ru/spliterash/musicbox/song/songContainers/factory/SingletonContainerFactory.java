@@ -1,14 +1,15 @@
 package ru.spliterash.musicbox.song.songContainers.factory;
 
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.SongContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
 
-public class IdContainerFactory implements SongContainerFactory<SingletonContainer> {
+public class SingletonContainerFactory implements SongContainerFactory<SingletonContainer> {
+    public static String NAME = "ID";
+
     @Override
     public String getKey() {
-        return "ID";
+        return NAME;
     }
 
     @Override

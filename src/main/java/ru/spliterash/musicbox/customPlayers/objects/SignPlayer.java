@@ -10,8 +10,7 @@ import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.customPlayers.models.RangePlayerModel;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
@@ -26,10 +25,11 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
      * @param list Плейлист который к ней привязан
      * @param sign Табличка к которой привязана эта музыка
      */
-    public SignPlayer(IPlayList list, Sign sign) {
-        super(list.getNext().getSong());
+    public SignPlayer(IPlayList list, int range, Sign sign) {
+        super(list.getCurrent().getSong());
         Location location = sign.getLocation();
-        this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, l -> new SignPlayer(l, sign));
+        setRange(range);
+        this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, l -> new SignPlayer(l, range, sign));
         this.rangePlayerModel = new RangePlayerModel(musicBoxModel);
         this.location = BukkitUtils.centerBlock(location);
         SignPlayer oldBlock = players.put(this.location, this);
@@ -44,6 +44,11 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
         players.values().remove(this);
         rangePlayerModel.destroy();
         musicBoxModel.destroy();
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     @Override

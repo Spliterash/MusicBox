@@ -15,12 +15,14 @@ import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.RadioPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
+import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 
 import java.util.Optional;
@@ -205,4 +207,7 @@ public class PlayerWrapper {
         play(new SingletonPlayList(song));
     }
 
+    public void play(SongContainer container) {
+        play(ListPlaylist.fromContainer(container,false,false));
+    }
 }

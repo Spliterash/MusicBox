@@ -11,19 +11,29 @@ import java.util.List;
 public class ListPlaylist implements IPlayList {
     private final PeekList<MusicBoxSong> peekList;
 
-    public ListPlaylist(SongContainer model) {
-        this(model.getSongs());
+    public ListPlaylist(List<MusicBoxSong> songs) {
+        this(songs, false);
     }
 
-    public ListPlaylist(List<MusicBoxSong> songs) {
+    /**
+     * Создаёт PlayList из списка
+     *
+     * @param songs  Список музыки
+     * @param hasEnd Если false то лист крутится без остановки
+     */
+    public ListPlaylist(List<MusicBoxSong> songs, boolean hasEnd) {
         if (songs.size() == 0)
             throw new RuntimeException("List can't be 0 size");
-        this.peekList = new PeekList<>(songs);
+        this.peekList = new PeekList<>(songs, hasEnd);
+    }
+
+    public static ListPlaylist fromContainer(SongContainer container, boolean rand, boolean hasEnd) {
+        return new ListPlaylist(rand ? container.getSongsShuffle() : container.getSongs(), hasEnd);
     }
 
     @Override
-    public MusicBoxSong getNext() {
-        return peekList.peek();
+    public boolean next() {
+        return peekList.next();
     }
 
     @Override
@@ -52,12 +62,12 @@ public class ListPlaylist implements IPlayList {
     @Override
     public void back(int count) {
         for (int i = 0; i < count; i++) {
-            peekList.peekPrev();
+            peekList.prev();
         }
     }
 
     @Override
     public int getSongNum(MusicBoxSong song) {
-       return peekList.getIndexOf(song);
+        return peekList.getIndexOf(song);
     }
 }

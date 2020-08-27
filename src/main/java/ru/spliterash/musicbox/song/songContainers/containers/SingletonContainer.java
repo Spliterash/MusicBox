@@ -3,7 +3,7 @@ package ru.spliterash.musicbox.song.songContainers.containers;
 import lombok.RequiredArgsConstructor;
 import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.song.songContainers.factory.SingletonContainerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,7 @@ public class SingletonContainer implements SongContainer {
 
     @Override
     public String getNameId() {
-        return MusicBoxSongManager.SINGLETON_SONG_CONTAINER + song.getHash();
+        return SingletonContainerFactory.NAME+":" + song.getHash();
     }
 
     @Override

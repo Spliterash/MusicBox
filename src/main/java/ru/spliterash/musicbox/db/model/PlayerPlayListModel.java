@@ -10,6 +10,7 @@ import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.song.songContainers.factory.ListContainerFactory;
 
 import java.util.*;
 
@@ -43,7 +44,7 @@ public class PlayerPlayListModel implements SongContainer {
 
     @Override
     public String getNameId() {
-        return MusicBoxSongManager.PLAYER_PLAYLIST_CONTAINER + id;
+        return ListContainerFactory.NAME + ":" + id;
     }
 
 }
