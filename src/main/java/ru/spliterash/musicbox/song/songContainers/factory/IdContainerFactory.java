@@ -5,14 +5,14 @@ import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.SongContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
 
-public class IdContainerFactory implements SongContainerFactory<SongContainer> {
+public class IdContainerFactory implements SongContainerFactory<SingletonContainer> {
     @Override
     public String getKey() {
         return "ID";
     }
 
     @Override
-    public SongContainer parseContainer(int id) {
+    public SingletonContainer parseContainer(int id) {
         return MusicBoxSongManager
                 .findSongByHash(id)
                 .map(SingletonContainer::new)
