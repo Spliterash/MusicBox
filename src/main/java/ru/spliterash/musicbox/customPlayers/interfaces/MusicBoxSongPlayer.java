@@ -1,13 +1,9 @@
 package ru.spliterash.musicbox.customPlayers.interfaces;
 
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
-import ru.spliterash.musicbox.customPlayers.models.AllPlayerModel;
+import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.gui.song.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.WeakHashMap;
 
 /**
  * Все проигрыватели созданные этим плагином
@@ -40,7 +36,7 @@ public interface MusicBoxSongPlayer {
      */
     void destroy();
 
-    AllPlayerModel getMusicBoxModel();
+    MusicBoxSongPlayerModel getMusicBoxModel();
 
     /**
      * Для сокращения кода

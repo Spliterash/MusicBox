@@ -95,27 +95,6 @@ public class PlayerWrapper {
                 .forEach(o -> o.ifPresent(PlayerWrapper::destroy));
     }
 
-    /**
-     * Открыть инвентарь для выбора музыки
-     */
-    public void openDefaultInventory() {
-        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
-        gui.openPage(0, GUIActions.DEFAULT_MODE);
-    }
-
-    /**
-     * Открыть инвентарь для покупки пластинок
-     */
-    public void openShopInventory() {
-        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
-        gui.openPage(0, GUIActions.SHOP_MODE);
-    }
-
-    public void openGetInventory() {
-        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(this);
-        gui.openPage(0, GUIActions.GET_MODE);
-    }
-
 
     /**
      * Сохраняет всё на жесткий диск
@@ -158,16 +137,13 @@ public class PlayerWrapper {
         speaker = !speaker;
         if (isPlayNow()) {
             PlayerSongPlayer oldPlayer = getActivePlayer();
-            play(oldPlayer.getMusicBoxSong(), oldPlayer.getPlayList(), oldPlayer.getApiPlayer().getTick());
+            oldPlayer.getPlayList().back(1);
+            play(oldPlayer.getPlayList(), oldPlayer.getApiPlayer().getTick());
         }
     }
 
     public void play(IPlayList song) {
         play(song, (short) -1);
-    }
-
-    public void play(IPlayList playList, short tick) {
-        play(playList.getNext(), playList, tick);
     }
 
 
@@ -177,29 +153,27 @@ public class PlayerWrapper {
      * Внимание... Метод пересоздаёт текущий проигрыватель
      * для перемотки юзайте метод
      *
-     * @param song     С какой мелодии начать
      * @param playList Поставщик следующей мелодии
      * @param tick     С какого тика (-1 если с начала)
      */
-    public void play(MusicBoxSong song, IPlayList playList, short tick) {
-        if (song != null) {
-            if (speaker)
-                startSpeaker(song, playList);
-            else
-                startRadio(song, playList);
-            if (tick > -1)
-                activePlayer.getApiPlayer().setTick(tick);
-        }
+    public void play(IPlayList playList, short tick) {
+        if (speaker)
+            startSpeaker(playList);
+        else
+            startRadio(playList);
+        if (tick > -1)
+            activePlayer.getApiPlayer().setTick(tick);
+
     }
 
-    public void startSpeaker(MusicBoxSong song, IPlayList playList) {
+    public void startSpeaker(IPlayList playList) {
         destroyActivePlayer();
-        activePlayer = new SpeakerPlayer(song, playList, this);
+        activePlayer = new SpeakerPlayer(playList, this);
     }
 
-    public void startRadio(MusicBoxSong song, IPlayList playList) {
+    public void startRadio(IPlayList playList) {
         destroyActivePlayer();
-        activePlayer = new RadioPlayer(song, playList, this);
+        activePlayer = new RadioPlayer(playList, this);
     }
 
     /**

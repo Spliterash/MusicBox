@@ -88,4 +88,8 @@ public class StringUtils {
         }
         return builder.toString();
     }
+
+    public String strip(String str) {
+        return ChatColor.stripColor(str);
+    }
 }

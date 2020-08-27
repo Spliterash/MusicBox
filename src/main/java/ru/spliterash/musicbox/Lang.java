@@ -284,8 +284,8 @@ public enum Lang {
     NEXT_PLAYLIST_SONG_TITLE(
             "&6Play next playlist song",
             "&6Следующая мелодия"),
-    CURRENT_PLAYLIST_SONG("&a{song}"),
-    ANOTHER_PLAYLIST_SONG("&7{song}"),
+    CURRENT_PLAYLIST_SONG("&e{num}) &a{song}"),
+    ANOTHER_PLAYLIST_SONG("&e{num}) &7{song}"),
     DEFAULT_PLAYLIST_LORE(
             Arrays.asList(
                     "",
@@ -357,6 +357,45 @@ public enum Lang {
             ),
             Arrays.asList(
                     "&b/musicbox admin shutup [player] &6- выключить проигрыватель игрока"
+            )
+    ),
+    SIGN_PLAYLIST_LORE(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eClick to setup sign playlist"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eНажми чтобы установить плейлист этой таблички"
+            )),
+    SIGN_SONG_LORE(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eClick to setup sign song"
+
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eНажми чтобы выбрать музыку для таблички"
+
+            )
+    ),
+    SIGN_CHEST_LORE(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eRight click to setup this chest"
+
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eПравый клик чтобы установить этот сундук"
+
             )
     );
 

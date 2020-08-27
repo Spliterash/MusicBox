@@ -3,6 +3,7 @@ package ru.spliterash.musicbox.utils;
 import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 import ru.spliterash.musicbox.MusicBox;
@@ -52,4 +53,12 @@ public class BukkitUtils {
         return null;
     }
 
+    public Location centerBlock(Location location) {
+        return new Location(
+                location.getWorld(),
+                location.getBlockX() + 0.5,
+                location.getBlockY() + 0.5,
+                location.getBlockZ() + 0.5
+        );
+    }
 }

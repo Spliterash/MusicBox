@@ -8,12 +8,10 @@ import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-import ru.spliterash.musicbox.utils.classes.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.MusicBoxSongManager;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -42,4 +40,10 @@ public class PlayerPlayListModel implements SongContainer {
     public void delete() {
         DatabaseLoader.getBase().deleteMe(this);
     }
+
+    @Override
+    public String getNameId() {
+        return MusicBoxSongManager.PLAYER_PLAYLIST_CONTAINER + id;
+    }
+
 }

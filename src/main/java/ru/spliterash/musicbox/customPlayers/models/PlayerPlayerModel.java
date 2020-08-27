@@ -13,9 +13,9 @@ import ru.spliterash.musicbox.players.PlayerWrapper;
 public class PlayerPlayerModel {
 
     private final PlayerWrapper wrapper;
-    private final AllPlayerModel model;
+    private final MusicBoxSongPlayerModel model;
 
-    public PlayerPlayerModel(PlayerWrapper wrapper, AllPlayerModel model) {
+    public PlayerPlayerModel(PlayerWrapper wrapper, MusicBoxSongPlayerModel model) {
         this.wrapper = wrapper;
         this.model = model;
         wrapper.setBarProgress(0);

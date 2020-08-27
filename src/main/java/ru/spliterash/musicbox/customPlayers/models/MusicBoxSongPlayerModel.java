@@ -10,19 +10,26 @@ import ru.spliterash.musicbox.song.MusicBoxSong;
 import java.util.function.Consumer;
 
 @Getter
-public class AllPlayerModel {
+public class MusicBoxSongPlayerModel {
     private final MusicBoxSongPlayer musicBoxSongPlayer;
-    private final MusicBoxSong currentSong;
     private final IPlayList playList;
     private final Consumer<IPlayList> nextSongRunnable;
     private boolean continuePlaylist = true;
     private boolean run = false;
 
-    public AllPlayerModel(MusicBoxSongPlayer songPlayer, MusicBoxSong currentSong, IPlayList playList, Consumer<IPlayList> nextSongRunnable) {
+    /**
+     * @param songPlayer       плеер который связан с этой моделью
+     * @param playList         плейлист который сейчас играет
+     * @param nextSongRunnable как ставить следующую музыку из плейлиста
+     */
+    public MusicBoxSongPlayerModel(MusicBoxSongPlayer songPlayer, IPlayList playList, Consumer<IPlayList> nextSongRunnable) {
         this.musicBoxSongPlayer = songPlayer;
-        this.currentSong = currentSong;
         this.playList = playList;
         this.nextSongRunnable = nextSongRunnable;
+    }
+
+    public MusicBoxSong getCurrentSong() {
+        return playList.getCurrent();
     }
 
     public void runPlayer() {
@@ -40,7 +47,7 @@ public class AllPlayerModel {
     public void destroy() {
         if (rewindGUI != null)
             rewindGUI.close();
-        if (nextSongRunnable != null && continuePlaylist)
+        if (nextSongRunnable != null && continuePlaylist && playList.hasNext())
             nextSongRunnable.accept(playList);
     }
 

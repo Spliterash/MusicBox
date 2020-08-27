@@ -2,9 +2,12 @@ package ru.spliterash.musicbox.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import ru.spliterash.musicbox.song.songContainers.containers.FolderSongContainer;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
@@ -20,12 +23,15 @@ import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
 import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import static ru.spliterash.musicbox.gui.song.SongContainerGUI.BarButton;
 import static ru.spliterash.musicbox.gui.song.SongContainerGUI.SongGUIParams;
@@ -111,16 +117,24 @@ public class GUIActions {
                 if (player == null)
                     return null;
                 IPlayList playlist = player.getPlayList();
-                @Nullable MusicBoxSong next = playlist.silentGetNext();
-                if (next == null)
+                if (!playlist.hasNext())
                     return null;
                 List<String> lore = new ArrayList<>(7);
                 for (MusicBoxSong song : playlist.getPreviousSong(3)) {
-                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString("{song}", song.getName()));
+                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString(
+                            "{song}", song.getName(),
+                            "{num}", String.valueOf(playlist.getSongNum(song) + 1)
+                    ));
                 }
-                lore.add(Lang.CURRENT_PLAYLIST_SONG.toString("{song}", playlist.getCurrent().getName()));
+                lore.add(Lang.CURRENT_PLAYLIST_SONG.toString(
+                        "{song}", playlist.getCurrent().getName(),
+                        "{num}", String.valueOf(playlist.getSongNum(playlist.getCurrent()) + 1)
+                ));
                 for (MusicBoxSong song : playlist.getNextSongs(3)) {
-                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString("{song}", song.getName()));
+                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString(
+                            "{song}", song.getName(),
+                            "{num}", String.valueOf(playlist.getSongNum(song) + 1)
+                    ));
                 }
                 lore.addAll(Lang.PLAYLIST_CONTROL.toList());
                 return ItemUtils.createStack(
@@ -366,5 +380,78 @@ public class GUIActions {
         Player player = wrapper.getPlayer();
         player.getInventory().addItem(song.getSongStack());
         player.sendMessage(Lang.YOU_GET_DISC.toString("{disc}", song.getName()));
+    }
+
+    /**
+     * Открыть инвентарь для выбора музыки
+     */
+    public void openDefaultInventory(PlayerWrapper wrapper) {
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
+        gui.openPage(0, GUIActions.DEFAULT_MODE);
+    }
+
+    /**
+     * Открыть инвентарь для покупки пластинок
+     */
+    public void openShopInventory(PlayerWrapper wrapper) {
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
+        gui.openPage(0, GUIActions.SHOP_MODE);
+    }
+
+    public void openGetInventory(PlayerWrapper wrapper) {
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
+        gui.openPage(0, GUIActions.GET_MODE);
+    }
+
+    /**
+     * Открывает инвентарь для настройки табличек
+     * Только плейлисты
+     *
+     * @param wrapper Игрок который настраивает
+     * @param sign    Настраиваемая табличка
+     */
+    public void openSignSetupInventory(PlayerWrapper wrapper, Sign sign) {
+        SongContainerGUI rootGUI = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
+        SongGUIParams params = SongGUIParams
+                .builder()
+                .onSongLeftClick(
+                        (wrapper1, musicBoxSongSongGUIData) ->
+                                applySign(wrapper1, sign, new SingletonContainer(musicBoxSongSongGUIData.getData())))
+                .onContainerRightClick(new BiConsumer<PlayerWrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer>>() {
+                    @Override
+                    public void accept(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer> musicBoxSongContainerSongGUIData) {
+                        applySign(wrapper, sign, new FolderSongContainer(musicBoxSongContainerSongGUIData.getData()));
+                    }
+                })
+                .extraSongLore(nothing -> Lang.SIGN_SONG_LORE.toList())
+                .extraContainerLore(nothing -> Lang.SIGN_CHEST_LORE.toList())
+                .build();
+        rootGUI.openPage(0, params);
+    }
+
+    private List<String> signLore(PlayerPlayListModel model) {
+        return Lang.SIGN_PLAYLIST_LORE.toList();
+    }
+
+
+    private void applySign(PlayerWrapper wrapper, Sign sign, SongContainer songContainer) {
+        sign.setLine(0, ChatColor.AQUA + songContainer.getNameId());
+        sign.setLine(1, String.format("%s[%sMUSIC%s]", ChatColor.GRAY, ChatColor.GREEN, ChatColor.GRAY));
+        String range = sign.getLine(2);
+        if (range.isEmpty())
+            range = "24";
+        else {
+            try {
+                int rangeInt = Integer.parseInt(range);
+                if (rangeInt > 256) {
+                    rangeInt = 256;
+                }
+                range = String.valueOf(rangeInt);
+            } catch (Exception ex) {
+                range = "24";
+            }
+        }
+        sign.setLine(2, ChatColor.RED + range);
+        wrapper.getPlayer().closeInventory();
     }
 }

@@ -12,12 +12,11 @@ public class PeekList<T> {
 
     private final List<T> list;
     private final Lock lock = new ReentrantLock();
+    int last = -1;
 
     public PeekList(List<T> source) {
         this.list = source;
     }
-
-    int last = -1;
 
     public synchronized List<T> getNextElements(int size) {
         int currentLast = last;
@@ -72,5 +71,9 @@ public class PeekList<T> {
         } finally {
             lock.unlock();
         }
+    }
+
+    public int getIndexOf(T element) {
+        return list.indexOf(element);
     }
 }

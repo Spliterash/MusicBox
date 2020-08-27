@@ -27,7 +27,7 @@ public class MusicBoxSong {
     private final MusicBoxSongContainer container;
     private final short length;
     private final float speed;
-    private WeakReference<Song> songReference;
+    private transient WeakReference<Song> songReference;
     private final boolean newInstruments;
     private final int hash;
 

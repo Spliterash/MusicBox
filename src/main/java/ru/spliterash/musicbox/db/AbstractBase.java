@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.db;
 
 import org.bukkit.Bukkit;
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.db.utils.NamedParamStatement;
 import ru.spliterash.musicbox.db.utils.ResultSetRow;
@@ -16,7 +17,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("UnusedReturnValue")
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public abstract class AbstractBase {
     private final String name;
 
@@ -227,16 +228,11 @@ public abstract class AbstractBase {
         return new PlayerConfig();
     }
 
-    public List<PlayerPlayListModel> getPlayLists(UUID playerUUID) {
-        List<ResultSetRow> result = query("SELECT p.id, p.owner,p.name, ps.song_hash\n" +
-                "from playlist_song ps\n" +
-                "join playlists p on ps.playlists_id = p.id\n" +
-                "where p.owner = ?" +
-                "order by pos ", playerUUID.toString());
-        List<PlayerPlayListModel> playLists = new LinkedList<>();
-        for (ResultSetRow row : result) {
+    private List<PlayerPlayListModel> extractPlayList(List<ResultSetRow> set) {
+        List<PlayerPlayListModel> list = new LinkedList<>();
+        for (ResultSetRow row : set) {
             int id = row.getInt("id");
-            PlayerPlayListModel model = playLists
+            PlayerPlayListModel model = list
                     .stream()
                     .filter(l -> l.getId() == id)
                     .findFirst()
@@ -245,14 +241,14 @@ public abstract class AbstractBase {
                                 id,
                                 UUID.fromString(row.getString("owner")),
                                 row.getString("name"));
-                        playLists.add(m);
+                        list.add(m);
                         return m;
                     });
             MusicBoxSongManager
                     .findSongByHash(row.getInt("song_hash"))
                     .ifPresent(s -> model.getSongs().add(s));
         }
-        playLists
+        list
                 .removeIf(l -> {
                     if (l.getSongs().size() == 0) {
                         l.delete();
@@ -260,7 +256,17 @@ public abstract class AbstractBase {
                     } else
                         return false;
                 });
-        return new ArrayList<>(playLists);
+        return list;
+    }
+
+    public List<PlayerPlayListModel> getPlayLists(UUID playerUUID) {
+        List<ResultSetRow> result = query("SELECT p.id, p.owner,p.name, ps.song_hash\n" +
+                "from playlist_song ps\n" +
+                "join playlists p on ps.playlists_id = p.id\n" +
+                "where p.owner = ?" +
+                "order by pos ", playerUUID.toString());
+
+        return extractPlayList(result);
     }
 
     public void deleteMe(PlayerPlayListModel model) {
@@ -272,5 +278,20 @@ public abstract class AbstractBase {
         } catch (SQLException throwables) {
             throw new RuntimeException(throwables);
         }
+    }
+
+    @Nullable
+    public PlayerPlayListModel getPlayListById(int id) {
+        List<ResultSetRow> result = query("SELECT p.id, p.owner,p.name, ps.song_hash\n" +
+                "from playlist_song ps\n" +
+                "join playlists p on ps.playlists_id = p.id\n" +
+                "where p.id = ?" +
+                "order by pos ", id);
+
+        List<PlayerPlayListModel> list = extractPlayList(result);
+        if (list.size() > 0)
+            return list.get(0);
+        else
+            return null;
     }
 }

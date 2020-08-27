@@ -6,7 +6,7 @@ import ru.spliterash.musicbox.song.MusicBoxSong;
 import java.util.List;
 
 public interface IPlayList {
-    @Nullable
+
     MusicBoxSong getNext();
 
     List<MusicBoxSong> getNextSongs(int count);
@@ -32,4 +32,6 @@ public interface IPlayList {
     MusicBoxSong getCurrent();
 
     void back(int count);
+
+    int getSongNum(MusicBoxSong song);
 }

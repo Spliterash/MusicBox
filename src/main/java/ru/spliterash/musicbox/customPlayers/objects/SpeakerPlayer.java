@@ -5,13 +5,14 @@ import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.PositionPlayer;
-import ru.spliterash.musicbox.customPlayers.models.AllPlayerModel;
+import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.customPlayers.models.PlayerPlayerModel;
+import ru.spliterash.musicbox.customPlayers.models.RangePlayerModel;
 import ru.spliterash.musicbox.players.PlayerWrapper;
-import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.SongUtils;
 
 /**
@@ -21,14 +22,17 @@ import ru.spliterash.musicbox.utils.SongUtils;
 @Getter
 public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer, PositionPlayer {
 
-    private final AllPlayerModel musicBoxModel;
+    private final MusicBoxSongPlayerModel musicBoxModel;
     private final PlayerPlayerModel model;
+    private final RangePlayerModel rangeModel;
 
-    public SpeakerPlayer(MusicBoxSong song, IPlayList list, PlayerWrapper wrapper) {
-        super(song.getSong());
-        this.musicBoxModel = new AllPlayerModel(this, song, list, SongUtils.nextPlayerSong(wrapper));
+    public SpeakerPlayer(IPlayList list, PlayerWrapper wrapper) {
+        super(list.getNext().getSong());
+        this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
+        this.rangeModel = new RangePlayerModel(musicBoxModel);
         setEntity(wrapper.getPlayer());
+        setRange(MusicBox.getInstance().getConfigObject().getSpeakerRadius());
         musicBoxModel.runPlayer();
 
     }
@@ -36,6 +40,7 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
     @Override
     public void destroy() {
         super.destroy();
+        rangeModel.destroy();
         model.destroy();
         musicBoxModel.destroy();
     }
@@ -65,11 +70,6 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
     @Override
     public Location getLocation() {
         return model.getWrapper().getPlayer().getLocation();
-    }
-
-    @Override
-    public void setLocation(Location location) {
-        throw new UnsupportedOperationException("Can't set location for player player");
     }
 
     @Override

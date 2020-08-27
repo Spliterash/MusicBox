@@ -5,10 +5,9 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
-import ru.spliterash.musicbox.customPlayers.models.AllPlayerModel;
+import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.customPlayers.models.PlayerPlayerModel;
 import ru.spliterash.musicbox.players.PlayerWrapper;
-import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.SongUtils;
 
 /**
@@ -18,11 +17,11 @@ import ru.spliterash.musicbox.utils.SongUtils;
 @Getter
 public class RadioPlayer extends RadioSongPlayer implements PlayerSongPlayer {
     private final PlayerPlayerModel model;
-    private final AllPlayerModel musicBoxModel;
+    private final MusicBoxSongPlayerModel musicBoxModel;
 
-    public RadioPlayer(MusicBoxSong song, IPlayList list, PlayerWrapper wrapper) {
-        super(song.getSong());
-        this.musicBoxModel = new AllPlayerModel(this, song, list, SongUtils.nextPlayerSong(wrapper));
+    public RadioPlayer(IPlayList list, PlayerWrapper wrapper) {
+        super(list.getNext().getSong());
+        this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         musicBoxModel.runPlayer();
 

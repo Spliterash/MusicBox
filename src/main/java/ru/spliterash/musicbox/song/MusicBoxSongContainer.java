@@ -23,6 +23,7 @@ public class MusicBoxSongContainer {
     private List<MusicBoxSong> songs;
     private final String name;
     private final List<String> lore;
+    private final int hash;
 
     public MusicBoxSongContainer(File folder, MusicBoxSongContainer parent) {
         this(folder, parent, true);
@@ -50,6 +51,7 @@ public class MusicBoxSongContainer {
         } else {
             lore = Collections.emptyList();
         }
+        hash = folder.getPath().hashCode();
         loadSongs(Objects.requireNonNull(folder.listFiles(f -> f.getName().endsWith(".nbs"))));
         loadSubContainers(Objects.requireNonNull(folder.listFiles(File::isDirectory)));
     }
@@ -119,5 +121,16 @@ public class MusicBoxSongContainer {
         meta.setLore(tempLore);
         chest.setItemMeta(meta);
         return chest;
+    }
+
+    public MusicBoxSongContainer findById(int id) {
+        if (getHash() == id)
+            return this;
+        for (MusicBoxSongContainer container : subContainers) {
+            MusicBoxSongContainer c = container.findById(id);
+            if (c != null)
+                return c;
+        }
+        return null;
     }
 }

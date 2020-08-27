@@ -4,23 +4,36 @@ import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.bukkit.inventory.ItemStack;
-import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
-import ru.spliterash.musicbox.utils.classes.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.SongContainerFactory;
+import ru.spliterash.musicbox.song.songContainers.factory.FolderContainerFactory;
+import ru.spliterash.musicbox.song.songContainers.factory.IdContainerFactory;
+import ru.spliterash.musicbox.song.songContainers.factory.ListContainerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @SuppressWarnings("unused")
 @UtilityClass
 
 public class MusicBoxSongManager {
+    public final String MASTER_CONTAINER = "MASTER";
+    public final String PLAYER_PLAYLIST_CONTAINER = "LIST";
+    public final String SINGLETON_SONG_CONTAINER = "ID";
+    public final String FOLDER_SONG_CONTAINER = "CHEST";
+    private final Set<SongContainerFactory<?>> factorySet = new HashSet<>();
+
+    static {
+        factorySet.add(new FolderContainerFactory());
+        factorySet.add(new IdContainerFactory());
+        factorySet.add(new ListContainerFactory());
+    }
+
     /**
      * NBT тег чтобы определить является ли пластинка кастомной
      */
     public final String NBT_NAME = "musicBoxSongHash";
+
     // Для быстрого поиска
     @Getter
     private List<MusicBoxSong> allSongs;
@@ -29,9 +42,10 @@ public class MusicBoxSongManager {
     @Getter
     private final SongContainer masterContainer = new MasterContainer();
 
+
     public void reload(File rootFolder) {
         rootContainer = new MusicBoxSongContainer(rootFolder, null, false);
-        // ArrayList так как по нему быстрее искать переменные
+        // ArrayList так как по нему быстрее искать элементы
         allSongs = Collections.unmodifiableList(new ArrayList<>(rootContainer.getAllSongs()));
     }
 
@@ -59,9 +73,42 @@ public class MusicBoxSongManager {
             return Optional.empty();
     }
 
+    public Optional<SongContainer> getById(String str) {
+        if (str.equals(MASTER_CONTAINER))
+            return Optional.of(masterContainer);
+        String[] split = str.split(":");
+        if (split.length != 2)
+            return Optional.empty();
+        int id;
+        try {
+            id = Integer.parseInt(split[1]);
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
+        return factorySet
+                .stream()
+                .filter(c -> c.getKey().equalsIgnoreCase(split[0]))
+                .findFirst()
+                .map(f -> f.parseContainer(id));
+
+    }
+
+    public Optional<MusicBoxSongContainer> findContainerById(int id) {
+        return Optional.of(rootContainer.findById(id));
+    }
+
     // Ломбук не умеет на лету обрабатывать UtilityClass
+
+    /**
+     * Имплементация контейнера, содержащая всё что только есть
+     */
     @SuppressWarnings("RedundantModifiersUtilityClassLombok")
     private static class MasterContainer implements SongContainer {
+
+        @Override
+        public String getNameId() {
+            return MASTER_CONTAINER;
+        }
 
         @Override
         public List<MusicBoxSong> getSongs() {
@@ -69,5 +116,11 @@ public class MusicBoxSongManager {
             Collections.shuffle(list);
             return list;
         }
+
+        @Override
+        public List<MusicBoxSong> getSongsShuffle() {
+            return getSongs();
+        }
     }
+
 }

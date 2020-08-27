@@ -51,6 +51,12 @@ public class SingletonPlayList implements IPlayList {
 
     @Override
     public void back(int count) {
-       // NONE
+        if (count > 0)
+            giveSong = true;
+    }
+
+    @Override
+    public int getSongNum(MusicBoxSong song) {
+        return 0;
     }
 }

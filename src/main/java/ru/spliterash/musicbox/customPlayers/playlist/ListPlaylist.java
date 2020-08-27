@@ -3,7 +3,7 @@ package ru.spliterash.musicbox.customPlayers.playlist;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.classes.PeekList;
-import ru.spliterash.musicbox.utils.classes.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,5 +54,10 @@ public class ListPlaylist implements IPlayList {
         for (int i = 0; i < count; i++) {
             peekList.peekPrev();
         }
+    }
+
+    @Override
+    public int getSongNum(MusicBoxSong song) {
+       return peekList.getIndexOf(song);
     }
 }

@@ -12,7 +12,7 @@ public class GetExecutor extends AbstractSelect {
 
     @Override
     protected void noArgs(Player player) {
-        PlayerWrapper.getInstance(player).openGetInventory();
+        GUIActions.openGetInventory(PlayerWrapper.getInstance(player));
     }
 
     @Override

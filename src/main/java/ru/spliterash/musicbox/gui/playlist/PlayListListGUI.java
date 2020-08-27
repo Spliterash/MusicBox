@@ -14,7 +14,7 @@ import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
 import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
-import ru.spliterash.musicbox.utils.classes.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
 
 import java.util.List;
 import java.util.function.Function;

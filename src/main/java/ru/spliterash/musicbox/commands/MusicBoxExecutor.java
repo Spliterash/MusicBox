@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.commands.subcommands.*;
+import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.ArrayUtils;
 
@@ -40,7 +41,7 @@ public class MusicBoxExecutor implements TabExecutor {
             return true;
         }
         if (args.length == 0) {
-            PlayerWrapper.getInstance(player).openDefaultInventory();
+            GUIActions.openDefaultInventory(PlayerWrapper.getInstance(player));
             return true;
         }
         SubCommand executor = subs.get(args[0]);

@@ -12,9 +12,7 @@ public class ShopExecutor extends AbstractSelect {
 
     @Override
     protected void noArgs(Player player) {
-        PlayerWrapper
-                .getInstance(player)
-                .openShopInventory();
+        GUIActions.openShopInventory(PlayerWrapper.getInstance(player));
     }
 
     @Override
