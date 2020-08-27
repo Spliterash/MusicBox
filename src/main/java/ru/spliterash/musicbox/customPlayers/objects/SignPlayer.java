@@ -34,7 +34,7 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
         this.location = BukkitUtils.centerBlock(location);
         SignPlayer oldBlock = players.put(this.location, this);
         if (oldBlock != null)
-            oldBlock.totalDestroy();
+            oldBlock.destroy();
         musicBoxModel.runPlayer();
     }
 

@@ -25,21 +25,6 @@ public interface MusicBoxSongPlayer {
         return getMusicBoxModel().getCurrentSong();
     }
 
-    /**
-     * Полное уничтожение
-     * Не запускает следующую музыку если вызвать
-     */
-    default void totalDestroy() {
-        getMusicBoxModel().totalDestroy();
-    }
-
-    /**
-     * Уничтожает проигрыватель
-     * Чтобы лишний раз не кастовать
-     * Так то любой SongPlayer имеет этот метод
-     */
-    void destroy();
-
     MusicBoxSongPlayerModel getMusicBoxModel();
 
     /**
@@ -48,6 +33,7 @@ public interface MusicBoxSongPlayer {
     default SongPlayer getApiPlayer() {
         return (SongPlayer) this;
     }
+
     /**
      * Получить тик который играет в данный момент
      */
@@ -59,9 +45,23 @@ public interface MusicBoxSongPlayer {
 
     boolean isDestroyed();
 
-
-
     default Set<UUID> getPlayers() {
         return getApiPlayer().getPlayerUUIDs();
+    }
+
+    /**
+     * Вызывается event'ом когда музыка реально закончилась
+     */
+    default void onSongEnd() {
+        destroy();
+        getMusicBoxModel().onSongEnd();
+    }
+
+    /**
+     * Просто сокращение
+     * Полностью убивает SongPlayer
+     */
+    default void destroy() {
+        getApiPlayer().destroy();
     }
 }

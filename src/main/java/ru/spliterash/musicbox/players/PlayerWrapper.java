@@ -12,7 +12,9 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.MusicBoxConfig;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
+import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
+import ru.spliterash.musicbox.customPlayers.models.PlayerPlayerModel;
 import ru.spliterash.musicbox.customPlayers.objects.RadioPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
 import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
@@ -139,7 +141,6 @@ public class PlayerWrapper {
         speaker = !speaker;
         if (isPlayNow()) {
             PlayerSongPlayer oldPlayer = getActivePlayer();
-            oldPlayer.getPlayList().back(1);
             play(oldPlayer.getPlayList(), oldPlayer.getApiPlayer().getTick());
         }
     }
@@ -183,7 +184,7 @@ public class PlayerWrapper {
      */
     public synchronized void destroyActivePlayer() {
         if (activePlayer != null) {
-            activePlayer.totalDestroy();
+            activePlayer.destroy();
             activePlayer = null;
         }
     }
@@ -208,6 +209,12 @@ public class PlayerWrapper {
     }
 
     public void play(SongContainer container) {
-        play(ListPlaylist.fromContainer(container,false,false));
+        play(ListPlaylist.fromContainer(container, false, false));
+    }
+
+    public void nullActivePlayer(MusicBoxSongPlayer playerModel) {
+        if (activePlayer == playerModel) {
+            activePlayer = null;
+        }
     }
 }

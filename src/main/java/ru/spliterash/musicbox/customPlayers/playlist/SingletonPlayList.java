@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SingletonPlayList implements IPlayList {
     private final MusicBoxSong song;
-    private boolean giveSong = true;
 
     @Override
     public boolean next() {
@@ -23,20 +22,27 @@ public class SingletonPlayList implements IPlayList {
 
     @Override
     public List<MusicBoxSong> getNextSongs(int a) {
-        if (giveSong)
-            return Collections.singletonList(song);
-        else
-            return Collections.emptyList();
+        return Collections.emptyList();
 
     }
 
     @Override
     public boolean hasNext() {
-        return giveSong;
+        return false;
     }
 
     @Override
-    public List<MusicBoxSong> getPreviousSong(int count) {
+    public boolean hasPrev() {
+        return false;
+    }
+
+    @Override
+    public boolean isSingleList() {
+        return true;
+    }
+
+    @Override
+    public List<MusicBoxSong> getPrevSong(int count) {
         return Collections.emptyList();
     }
 
@@ -47,8 +53,7 @@ public class SingletonPlayList implements IPlayList {
 
     @Override
     public void back(int count) {
-        if (count > 0)
-            giveSong = true;
+        // NO
     }
 
     @Override

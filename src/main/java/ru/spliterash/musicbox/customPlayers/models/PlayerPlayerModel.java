@@ -44,5 +44,6 @@ public class PlayerPlayerModel {
 
     public void destroy() {
         wrapper.setBarVisible(false);
+        wrapper.nullActivePlayer(getModel().getMusicBoxSongPlayer());
     }
 }

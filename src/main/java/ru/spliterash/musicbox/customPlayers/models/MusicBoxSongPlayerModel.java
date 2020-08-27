@@ -19,7 +19,6 @@ public class MusicBoxSongPlayerModel {
     private final MusicBoxSongPlayer musicBoxSongPlayer;
     private final IPlayList playList;
     private final Consumer<IPlayList> nextSongRunnable;
-    private boolean continuePlaylist = true;
     private boolean run = false;
 
     /**
@@ -40,7 +39,6 @@ public class MusicBoxSongPlayerModel {
     public void runPlayer() {
         if (!run) {
             SongPlayer songPlayer = this.musicBoxSongPlayer.getApiPlayer();
-            songPlayer.setAutoDestroy(true);
             songPlayer.setPlaying(true);
             run = true;
         }
@@ -52,18 +50,6 @@ public class MusicBoxSongPlayerModel {
     public void destroy() {
         if (rewindGUI != null)
             rewindGUI.close();
-        if (nextSongRunnable != null && continuePlaylist && playList.hasNext()) {
-            playList.next();
-            nextSongRunnable.accept(playList);
-        }
-    }
-
-    /**
-     * Полностью останавливает SongPlayer не воспроизводя следующую музыку из плейлиста
-     */
-    public void totalDestroy() {
-        continuePlaylist = false;
-        musicBoxSongPlayer.destroy();
     }
 
     private RewindGUI rewindGUI;
@@ -119,5 +105,13 @@ public class MusicBoxSongPlayerModel {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Вызывается из event'a
+     */
+    public void onSongEnd() {
+        if (playList.next())
+            nextSongRunnable.accept(playList);
     }
 }

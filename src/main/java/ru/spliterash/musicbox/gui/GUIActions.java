@@ -7,7 +7,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import ru.spliterash.musicbox.song.songContainers.containers.FolderSongContainer;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
@@ -23,15 +22,15 @@ import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.containers.FolderSongContainer;
 import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
 import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static ru.spliterash.musicbox.gui.song.SongContainerGUI.BarButton;
 import static ru.spliterash.musicbox.gui.song.SongContainerGUI.SongGUIParams;
@@ -117,10 +116,10 @@ public class GUIActions {
                 if (player == null)
                     return null;
                 IPlayList playlist = player.getPlayList();
-                if (!playlist.hasNext())
+                if (playlist.isSingleList())
                     return null;
                 List<String> lore = new ArrayList<>(7);
-                for (MusicBoxSong song : playlist.getPreviousSong(3)) {
+                for (MusicBoxSong song : playlist.getPrevSong(3)) {
                     lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString(
                             "{song}", song.getName(),
                             "{num}", String.valueOf(playlist.getSongNum(song) + 1)
@@ -150,14 +149,20 @@ public class GUIActions {
                     PlayerSongPlayer player = wrapper.getActivePlayer();
                     if (player == null)
                         return;
+                    IPlayList list = player.getPlayList();
                     switch (e.getClick()) {
+                        // Следующая
                         case LEFT:
                             player.destroy();
+                            list.next();
+                            wrapper.play(list);
                             data.refreshInventory();
                             break;
+                        // Предыдущая
                         case RIGHT:
-                            player.getPlayList().back(2);
                             player.destroy();
+                            list.back(1);
+                            wrapper.play(list);
                             data.refreshInventory();
                             break;
                     }

@@ -1,5 +1,6 @@
 package ru.spliterash.musicbox;
 
+import com.xxmicloxx.NoteBlockAPI.event.SongEndEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
@@ -16,14 +17,13 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
+import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
-import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
 import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.util.List;
@@ -41,6 +41,13 @@ public class Handler implements Listener {
         PlayerWrapper
                 .getInstanceOptional(e.getEntity())
                 .ifPresent(PlayerWrapper::destroyActivePlayer);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onSongEnd(SongEndEvent e) {
+        if (e.getSongPlayer() instanceof MusicBoxSongPlayer) {
+            ((MusicBoxSongPlayer) e.getSongPlayer()).onSongEnd();
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -82,15 +89,7 @@ public class Handler implements Listener {
             boolean rand = sign.getLine(3).contains("RAND");
             MusicBoxSongManager
                     .getContainerById(StringUtils.strip(songId))
-                    .ifPresent(c -> {
-                        List<MusicBoxSong> list = c.getSongsRand(rand);
-                        IPlayList container;
-                        if (list.size() == 1)
-                            container = new SingletonPlayList(list.get(0));
-                        else
-                            container = new ListPlaylist(list);
-                        PlayerWrapper.getInstance(player).play(container);
-                    });
+                    .ifPresent(c -> PlayerWrapper.getInstance(player).play(ListPlaylist.fromContainer(c, rand, true)));
         }
     }
 

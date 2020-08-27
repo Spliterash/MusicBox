@@ -60,7 +60,10 @@ public class PeekList<T> {
         return list.get(last);
     }
 
-    public T nextAndGet() {
+    /**
+     * Возращает текущее значение и сдвигает указатель вперёд
+     */
+    public T getAndNext() {
         T c = current();
         next();
         return c;

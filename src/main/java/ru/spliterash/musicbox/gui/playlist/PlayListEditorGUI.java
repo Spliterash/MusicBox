@@ -42,7 +42,7 @@ public class PlayListEditorGUI {
         for (int i = 0; i + start < songs.size() && i < 45; i++) {
             int arrayIndex = i + start;
             MusicBoxSong song = songs.get(arrayIndex);
-            ItemStack stack = song.getSongStack(list.nextAndGet(), Lang.PLAYLIST_ITEM_LORE.toList(), false);
+            ItemStack stack = song.getSongStack(list.getAndNext(), Lang.PLAYLIST_ITEM_LORE.toList(), false);
             gui.addItem(i, stack, new ClickAction(
                     () -> wrapper.play(song),
                     () -> {

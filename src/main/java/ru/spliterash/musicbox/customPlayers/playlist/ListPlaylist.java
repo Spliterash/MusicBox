@@ -44,11 +44,16 @@ public class ListPlaylist implements IPlayList {
 
     @Override
     public boolean hasNext() {
-        return true;
+        return peekList.hasNext();
     }
 
     @Override
-    public List<MusicBoxSong> getPreviousSong(int count) {
+    public boolean hasPrev() {
+        return peekList.hasPrev();
+    }
+
+    @Override
+    public List<MusicBoxSong> getPrevSong(int count) {
         List<MusicBoxSong> list = peekList.getPrevElements(count);
         Collections.reverse(list);
         return list;

@@ -101,7 +101,7 @@ public class SongContainerGUI {
                     enchanted = song.equals(playerSong);
                 else
                     enchanted = false;
-                ItemStack stack = song.getSongStack(list.nextAndGet(), extraLines, enchanted);
+                ItemStack stack = song.getSongStack(list.getAndNext(), extraLines, enchanted);
                 gui.addItem(inventoryIndex, stack,
                         new ClickAction(
                                 () -> {
