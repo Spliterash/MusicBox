@@ -33,7 +33,6 @@ public class PlayerPlayerModel {
      */
     public void nextTick(int all, int current) {
         if (current == -1) {
-            wrapper.setBarVisible(false);
             return;
         }
         double progress = (double) current / (double) all;
@@ -43,7 +42,6 @@ public class PlayerPlayerModel {
     }
 
     public void destroy() {
-        wrapper.setBarVisible(false);
         wrapper.nullActivePlayer(getModel().getMusicBoxSongPlayer());
     }
 }

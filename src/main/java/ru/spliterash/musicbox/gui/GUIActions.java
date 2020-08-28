@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
+import ru.spliterash.musicbox.customPlayers.objects.SignPlayer;
 import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
@@ -438,8 +439,23 @@ public class GUIActions {
             }
         }
         RandButton button = new RandButton();
-        BarButton[] buttons = new BarButton[3];
+        BarButton[] buttons = new BarButton[4];
         buttons[2] = button;
+        buttons[3] = new BarButton() {
+            private final ItemStack item = ItemUtils.createStack(XMaterial.PAPER, Lang.PLAYLIST_EDITOR.toString(), null);
+
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                return item;
+            }
+
+            @Override
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return e ->
+                        new PlayListListGUI(wrapper).openPage(0, container -> e1 ->
+                                applySign(wrapper, sign, container, button.rand), a -> Lang.SIGN_CONTAINER_LORE.toList());
+            }
+        };
         SongGUIParams params = SongGUIParams
                 .builder()
                 .bottomBar(buttons)
@@ -460,19 +476,15 @@ public class GUIActions {
                                         button.rand)
                 )
                 .extraSongLore(nothing -> Lang.SIGN_SONG_LORE.toList())
-                .extraContainerLore(nothing -> Lang.SIGN_CHEST_LORE.toList())
+                .extraContainerLore(nothing -> Lang.SIGN_CONTAINER_LORE.toList())
                 .build();
         rootGUI.openPage(0, params);
-    }
-
-    private List<String> signLore(PlayerPlayListModel model) {
-        return Lang.SIGN_PLAYLIST_LORE.toList();
     }
 
 
     private void applySign(PlayerWrapper wrapper, Sign sign, SongContainer songContainer, boolean rand) {
         sign.setLine(0, ChatColor.AQUA + songContainer.getNameId());
-        sign.setLine(1, String.format("%s[%sMUSIC%s]", ChatColor.GRAY, ChatColor.GREEN, ChatColor.GRAY));
+        sign.setLine(1, SignPlayer.SIGN_SECOND_LINE);
         String range = sign.getLine(2);
         if (range.isEmpty())
             range = "24";

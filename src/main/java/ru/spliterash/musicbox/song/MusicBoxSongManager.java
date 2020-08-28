@@ -18,7 +18,18 @@ import java.util.*;
 
 public class MusicBoxSongManager {
     public final String MASTER_CONTAINER = "MASTER";
+    /**
+     * NBT тег чтобы определить является ли пластинка кастомной
+     */
+    public final String NBT_NAME = "musicBoxSongHash";
     private final Set<SongContainerFactory<?>> factorySet = new HashSet<>();
+    @Getter
+    private final SongContainer masterContainer = new MasterContainer();
+    // Для быстрого поиска
+    @Getter
+    private List<MusicBoxSong> allSongs;
+    @Getter
+    private MusicBoxSongContainer rootContainer;
 
     static {
         factorySet.add(new FolderContainerFactory());
@@ -26,19 +37,25 @@ public class MusicBoxSongManager {
         factorySet.add(new ListContainerFactory());
     }
 
-    /**
-     * NBT тег чтобы определить является ли пластинка кастомной
-     */
-    public final String NBT_NAME = "musicBoxSongHash";
+    public Optional<SongContainer> getContainerById(String str) {
+        if (str.equals(MASTER_CONTAINER))
+            return Optional.of(masterContainer);
+        String[] split = str.split(":");
+        if (split.length != 2)
+            return Optional.empty();
+        int id;
+        try {
+            id = Integer.parseInt(split[1]);
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
+        return factorySet
+                .stream()
+                .filter(c -> c.getKey().equalsIgnoreCase(split[0]))
+                .findFirst()
+                .map(f -> f.parseContainer(id));
 
-    // Для быстрого поиска
-    @Getter
-    private List<MusicBoxSong> allSongs;
-    @Getter
-    private MusicBoxSongContainer rootContainer;
-    @Getter
-    private final SongContainer masterContainer = new MasterContainer();
-
+    }
 
     public void reload(File rootFolder) {
         rootContainer = new MusicBoxSongContainer(rootFolder, null, false);
@@ -68,26 +85,6 @@ public class MusicBoxSongManager {
             return findSongByHash(hash);
         else
             return Optional.empty();
-    }
-
-    public Optional<SongContainer> getContainerById(String str) {
-        if (str.equals(MASTER_CONTAINER))
-            return Optional.of(masterContainer);
-        String[] split = str.split(":");
-        if (split.length != 2)
-            return Optional.empty();
-        int id;
-        try {
-            id = Integer.parseInt(split[1]);
-        } catch (Exception ex) {
-            return Optional.empty();
-        }
-        return factorySet
-                .stream()
-                .filter(c -> c.getKey().equalsIgnoreCase(split[0]))
-                .findFirst()
-                .map(f -> f.parseContainer(id));
-
     }
 
     public Optional<MusicBoxSongContainer> findContainerById(int id) {

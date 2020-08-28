@@ -14,16 +14,12 @@ import ru.spliterash.musicbox.MusicBoxConfig;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
-import ru.spliterash.musicbox.customPlayers.models.PlayerPlayerModel;
 import ru.spliterash.musicbox.customPlayers.objects.RadioPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
 import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.db.DatabaseLoader;
-import ru.spliterash.musicbox.gui.GUIActions;
-import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-import ru.spliterash.musicbox.song.MusicBoxSongManager;
 import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 
@@ -185,8 +181,13 @@ public class PlayerWrapper {
     public synchronized void destroyActivePlayer() {
         if (activePlayer != null) {
             activePlayer.destroy();
-            activePlayer = null;
+            afterDestroy();
         }
+    }
+
+    private void afterDestroy() {
+        setBarVisible(false);
+        activePlayer = null;
     }
 
     public void setBarVisible(boolean visible) {
@@ -214,7 +215,9 @@ public class PlayerWrapper {
 
     public void nullActivePlayer(MusicBoxSongPlayer playerModel) {
         if (activePlayer == playerModel) {
-            activePlayer = null;
+            afterDestroy();
         }
     }
+
+
 }

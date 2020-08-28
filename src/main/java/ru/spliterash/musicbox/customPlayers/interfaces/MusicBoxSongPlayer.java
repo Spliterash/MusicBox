@@ -7,7 +7,6 @@ import ru.spliterash.musicbox.song.MusicBoxSong;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Все проигрыватели созданные этим плагином
@@ -53,6 +52,7 @@ public interface MusicBoxSongPlayer {
      * Вызывается event'ом когда музыка реально закончилась
      */
     default void onSongEnd() {
+        getMusicBoxModel().pingSongEnded();
         destroy();
         getMusicBoxModel().onSongEnd();
     }

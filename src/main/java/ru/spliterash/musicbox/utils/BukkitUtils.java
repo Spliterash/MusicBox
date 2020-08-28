@@ -61,4 +61,9 @@ public class BukkitUtils {
                 location.getBlockZ() + 0.5
         );
     }
+
+    public void checkPrimary() {
+        if (!Bukkit.isPrimaryThread())
+            throw new RuntimeException("Call this only in primary thread");
+    }
 }

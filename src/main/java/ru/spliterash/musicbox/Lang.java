@@ -145,6 +145,10 @@ public enum Lang {
     NOT_PLAY(
             "&6Music currently does not play",
             "&6В данный момент вы не слушаете музыку"),
+    BLOCK_NOT_PLAY(
+            "&6This block currently don't play music",
+            "&6Этот блок в данный момент не проигрывает музыку"
+    ),
     REWIND_GUI_TITLE(
             "Rewind &8{song}",
             "Перемотка &8{song}"),
@@ -388,20 +392,22 @@ public enum Lang {
             "&6Random mode {status}",
             "&6Рандомный режим {status}"),
 
-    SIGN_CHEST_LORE(
-            Arrays.asList(
-            "",
-                    "&7==========================",
-                    "&eRight click to setup this chest"
-
-    ),
+    SIGN_CONTAINER_LORE(
             Arrays.asList(
                     "",
                     "&7==========================",
-                    "&eПравый клик чтобы установить этот сундук"
+                    "&eRight click to setup this container on sign"
 
-                    )
-                    );
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eПравый клик чтобы установить этот контейнер на табличку"
+
+            )
+    ), WRONG_SIGN_FACE(
+            "&cWrong side of the plate, but nothing, now we'll fix it",
+            "&cНеправильная сторона таблички, но ничего, сейчас мы это исправим");
 
 
     /**

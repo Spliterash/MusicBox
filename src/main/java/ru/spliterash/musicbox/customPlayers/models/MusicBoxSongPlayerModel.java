@@ -114,4 +114,16 @@ public class MusicBoxSongPlayerModel {
         if (playList.next())
             nextSongRunnable.accept(playList);
     }
+
+    /**
+     * Завершилась ли музыка сама по себе, или её destroy()
+     */
+    private boolean songEndNormal = false;
+
+    /**
+     * Возможно костыль, но сначало нужно destroy SongPlayer а потом его модель
+     */
+    public void pingSongEnded() {
+        songEndNormal = true;
+    }
 }

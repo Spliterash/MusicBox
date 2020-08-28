@@ -10,7 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class ItemUtils {
@@ -43,5 +45,12 @@ public class ItemUtils {
         meta.removeEnchant(enchantment);
         item.setItemMeta(meta);
         return item;
+    }
+
+    public List<XMaterial> getEndWith(String endWith) {
+        return Arrays.stream(XMaterial.values())
+                .filter(s -> s.name().endsWith(endWith))
+                .filter(XMaterial::isSupported)
+                .collect(Collectors.toList());
     }
 }
