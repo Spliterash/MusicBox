@@ -34,9 +34,11 @@ public class RadioPlayer extends RadioSongPlayer implements PlayerSongPlayer {
 
     @Override
     public void destroy() {
-        super.destroy();
-        model.destroy();
-        musicBoxModel.destroy();
+        if (!isDestroyed()) {
+            super.destroy();
+            model.destroy();
+            musicBoxModel.destroy();
+        }
     }
 
     @Override

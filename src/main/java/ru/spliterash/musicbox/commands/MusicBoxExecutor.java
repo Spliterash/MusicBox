@@ -23,6 +23,7 @@ public class MusicBoxExecutor implements TabExecutor {
         subs.put("playlist", new PlaylistExecutor(this));
         subs.put("play", new PlayExecutor(this));
         subs.put("admin", new AdminExecutor(this));
+        subs.put("reload", new ReloadExecutor());
     }
 
     @Override
@@ -63,7 +64,7 @@ public class MusicBoxExecutor implements TabExecutor {
         if (player.hasPermission("musicbox.get")) {
             player.sendMessage(Lang.COMMAND_HELP_GET.toString());
         }
-        if(player.hasPermission("musicbox.admin")){
+        if (player.hasPermission("musicbox.admin")) {
             player.sendMessage(Lang.ADMIN_HELP.toArray());
         }
     }

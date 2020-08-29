@@ -288,8 +288,8 @@ public enum Lang {
     NEXT_PLAYLIST_SONG_TITLE(
             "&6Play next playlist song",
             "&6Следующая мелодия"),
-    CURRENT_PLAYLIST_SONG("&e{num}) &a{song}"),
-    ANOTHER_PLAYLIST_SONG("&e{num}) &7{song}"),
+    CURRENT_PLAYLIST_SONG("&9{num}) &a{song}"),
+    ANOTHER_PLAYLIST_SONG("&9{num}) &7{song}"),
     DEFAULT_PLAYLIST_LORE(
             Arrays.asList(
                     "",
@@ -407,7 +407,41 @@ public enum Lang {
             )
     ), WRONG_SIGN_FACE(
             "&cWrong side of the plate, but nothing, now we'll fix it",
-            "&cНеправильная сторона таблички, но ничего, сейчас мы это исправим");
+            "&cНеправильная сторона таблички, но ничего, сейчас мы это исправим"),
+    SEARCH_INFO_SIGN_HOVER(
+            Arrays.asList(
+                    "&7If enabled, it will display the current playlist",
+                    "&7on the sign above or below",
+                    "&7Looks for it from below and from above at a length of &e5&7 blocks from the current sign"
+
+            ),
+            Arrays.asList(
+                    "&7Если включено, то будет выводить текущий список проигрывания",
+                    "&7на табличку сверху или снизу",
+                    "&7Ищет её снизу и сверху на длинне &e5&7 блоков от текущей таблички"
+            )
+    ),
+    ENDLESS_SIGN_MODE(
+            "&6Endless sign mode {status}",
+            "&6Бесконечное проигрывание {status}"
+    ),
+    SEARCH_INFO_SIGN_TITLE(
+            "&6Search info sign {status}",
+            "&6Искать информационную табличку {status}"),
+    INFO_SIGN_OFF(
+            Arrays.asList(
+                    "It info sign",
+                    "for songplayer",
+                    "Currently SongPlayer",
+                    "&cOFF"
+            ),
+            Arrays.asList(
+                    "Это табличка нужна",
+                    "для проигрывателя",
+                    "Сейчас он",
+                    "&cВЫКЛЮЧЕН"
+            )
+    );
 
 
     /**

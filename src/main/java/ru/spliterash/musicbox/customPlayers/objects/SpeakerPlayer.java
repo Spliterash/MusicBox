@@ -59,10 +59,12 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
 
     @Override
     public void destroy() {
-        super.destroy();
-        rangeModel.destroy();
-        model.destroy();
-        musicBoxModel.destroy();
+        if (!isDestroyed()) {
+            super.destroy();
+            rangeModel.destroy();
+            model.destroy();
+            musicBoxModel.destroy();
+        }
     }
 
     @Override

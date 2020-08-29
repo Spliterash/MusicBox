@@ -1,6 +1,5 @@
 package ru.spliterash.musicbox;
 
-import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -8,6 +7,8 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
+import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
+import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.players.PlayerWrapper;
@@ -37,7 +38,7 @@ public final class MusicBox extends JavaPlugin {
 
     public void sendMessage(String pex, String noPexMessage, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(player.hasPermission(pex))
+            if (player.hasPermission(pex))
                 player.sendMessage(message);
             else
                 player.sendMessage(noPexMessage);
@@ -59,6 +60,7 @@ public final class MusicBox extends JavaPlugin {
     }
 
     public void reloadPlugin() {
+        destroyAllPlayers();
         loaded = false;
         try {
             configObject = MusicBoxConfig.parseConfig(new FileInputStream(new File(getDataFolder(), "config.yml")));
@@ -73,9 +75,14 @@ public final class MusicBox extends JavaPlugin {
         loaded = true;
     }
 
+    public void destroyAllPlayers() {
+        MusicBoxSongPlayerModel.destroyAll();
+        PlayerWrapper.clearAll();
+    }
+
     @Override
     public void onDisable() {
-        PlayerWrapper.clearAll();
+        destroyAllPlayers();
     }
 
     private void saveMyMusic() {

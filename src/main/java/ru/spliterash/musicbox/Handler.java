@@ -69,6 +69,9 @@ public class Handler implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onRedstone(BlockRedstoneEvent e) {
+        if (!MusicBox.getInstance().isLoaded()) {
+            return;
+        }
         RedstoneUtils.handleRedstoneForBlock(e.getBlock(), e.getOldCurrent(), e.getNewCurrent());
     }
 
@@ -85,6 +88,9 @@ public class Handler implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent e) {
+        if (!MusicBox.getInstance().isLoaded()) {
+            return;
+        }
         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK))
             return;
         if (e.getClickedBlock() == null)
@@ -107,6 +113,14 @@ public class Handler implements Listener {
     }
 
     private void processSignClick(Player player, Sign sign) {
+        SignPlayer infoSign = SignPlayer
+                .findByInfoSign(sign.getLocation())
+                .orElse(null);
+        if (infoSign != null) {
+            checkRewind(player, infoSign);
+            return;
+        }
+
         String lineTwo = sign.getLine(1);
         if (!StringUtils.strip(lineTwo).equalsIgnoreCase("[music]"))
             return;
@@ -119,21 +133,26 @@ public class Handler implements Listener {
                 player.sendMessage(Lang.NO_PEX.toString());
             }
         } else if (songId.startsWith(ChatColor.AQUA.toString())) {
-            ItemStack item = player.getInventory().getItemInMainHand();
             if (player.isSneaking()) {
-                //noinspection ConstantConditions
-                if ((item == null || item.getType() == Material.AIR)) {
-                    SignPlayer signPlayer = SignPlayer.getPlayer(sign.getLocation()).orElse(null);
-                    if (signPlayer != null) {
-                        signPlayer.getRewind().openForPlayer(player);
-                    } else {
-                        player.sendMessage(Lang.BLOCK_NOT_PLAY.toString());
-                    }
-                }
-            } else
+                SignPlayer signPlayer = SignPlayer.getPlayer(sign.getLocation()).orElse(null);
+                checkRewind(player, signPlayer);
+            } else {
                 SignUtils
-                        .parseSignPlaylist(sign, true)
+                        .parseSignPlaylist(sign)
                         .ifPresent(p -> PlayerWrapper.getInstance(player).play(p));
+            }
+        }
+    }
+
+    private void checkRewind(Player player, SignPlayer signPlayer) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        //noinspection ConstantConditions
+        if ((item == null || item.getType() == Material.AIR)) {
+            if (signPlayer != null) {
+                signPlayer.getRewind().openForPlayer(player);
+            } else {
+                player.sendMessage(Lang.BLOCK_NOT_PLAY.toString());
+            }
         }
     }
 

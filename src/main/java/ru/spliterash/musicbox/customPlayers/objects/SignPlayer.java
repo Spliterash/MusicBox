@@ -34,7 +34,7 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
     private final MusicBoxSongPlayerModel musicBoxModel;
     private final RangePlayerModel rangePlayerModel;
     private final BukkitTask task;
-    private Sign infoSign;
+    private Location infoSign;
 
     /**
      * Создаёт новый проигрыватель для таблички
@@ -46,13 +46,12 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
         super(list.getCurrent().getSong());
         Location location = sign.getLocation();
         setRange(range);
-        this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, l -> new SignPlayer(l, range, sign));
-        this.rangePlayerModel = new RangePlayerModel(musicBoxModel);
         setTargetLocation(BukkitUtils.centerBlock(location));
         SignPlayer oldBlock = players.put(getTargetLocation(), this);
         if (oldBlock != null)
             oldBlock.destroy();
-
+        this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, l -> new SignPlayer(l, range, sign));
+        this.rangePlayerModel = new RangePlayerModel(musicBoxModel);
         musicBoxModel.runPlayer();
         task = new BukkitRunnable() {
             @Override
@@ -70,12 +69,21 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
                 }
             }
         }.runTaskAsynchronously(MusicBox.getInstance());
-        SignUtils
-                .findSign(sign.getLocation())
-                .ifPresent(s -> {
-                    infoSign = s;
-                    SignUtils.setPlayListInfo(s, list);
-                });
+        if (sign.getLine(3).contains("I"))
+            SignUtils
+                    .findSign(sign.getLocation())
+                    .ifPresent(s -> {
+                        infoSign = s.getLocation();
+                        SignUtils.setPlayListInfo(infoSign, list);
+                    });
+    }
+
+    public static Optional<SignPlayer> findByInfoSign(Location location) {
+        return players
+                .values()
+                .stream()
+                .filter(i -> i.infoSign != null && i.infoSign.equals(location))
+                .findFirst();
     }
 
     public void checkSign() {
@@ -104,7 +112,7 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
         if (pin == 0) {
             if (newCurrent > 0) {
                 int range = SignUtils.parseSignRange(sign);
-                SignUtils.parseSignPlaylist(sign, false)
+                SignUtils.parseSignPlaylist(sign)
                         .ifPresent(l -> new SignPlayer(l, range, sign));
             } else if (player != null) {
                 player.destroy();
@@ -127,14 +135,26 @@ public class SignPlayer extends PositionSongPlayer implements PositionPlayer {
 
     @Override
     public void destroy() {
-        super.destroy();
-        players.values().remove(this);
-        rangePlayerModel.destroy();
-        musicBoxModel.destroy();
-        if(musicBoxModel.isSongEndNormal()) {
-            pingLever();
-        }else if(infoSign!=null){
-            SignUtils.setPlayerOff(infoSign);
+        if (!isDestroyed()) {
+
+            super.destroy();
+            players.values().remove(this);
+            boolean normalEnd = musicBoxModel.isSongEndNormal();
+            if (normalEnd)
+                pingLever();
+
+            if (infoSign != null) {
+                BukkitUtils.runSyncTask(() -> {
+                    if (!musicBoxModel.getPlayList().hasNext())
+                        SignUtils.setPlayerOff(infoSign);
+                    else if (!normalEnd)
+                        SignUtils.setPlayerOff(infoSign);
+                });
+            }
+
+            rangePlayerModel.destroy();
+            musicBoxModel.destroy();
+
         }
     }
 

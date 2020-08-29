@@ -8,14 +8,13 @@ import ru.spliterash.musicbox.gui.song.RewindGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Consumer;
 
 @Getter
 public class MusicBoxSongPlayerModel {
+    private final static Set<MusicBoxSongPlayerModel> all = Collections.newSetFromMap(new WeakHashMap<>());
     private final MusicBoxSongPlayer musicBoxSongPlayer;
     private final IPlayList playList;
     private final Consumer<IPlayList> nextSongRunnable;
@@ -27,9 +26,15 @@ public class MusicBoxSongPlayerModel {
      * @param nextSongRunnable как ставить следующую музыку из плейлиста
      */
     public MusicBoxSongPlayerModel(MusicBoxSongPlayer songPlayer, IPlayList playList, Consumer<IPlayList> nextSongRunnable) {
+        all.add(this);
         this.musicBoxSongPlayer = songPlayer;
         this.playList = playList;
         this.nextSongRunnable = nextSongRunnable;
+    }
+
+    public static void destroyAll() {
+        all.forEach(a -> a.getMusicBoxSongPlayer().destroy());
+        all.clear();
     }
 
     public MusicBoxSong getCurrentSong() {

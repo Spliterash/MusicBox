@@ -28,10 +28,15 @@ import ru.spliterash.musicbox.song.songContainers.containers.FolderSongContainer
 import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
 import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
+import ru.spliterash.musicbox.utils.SongUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ru.spliterash.musicbox.gui.song.SongContainerGUI.BarButton;
 import static ru.spliterash.musicbox.gui.song.SongContainerGUI.SongGUIParams;
@@ -119,23 +124,7 @@ public class GUIActions {
                 IPlayList playlist = player.getPlayList();
                 if (playlist.isSingleList())
                     return null;
-                List<String> lore = new ArrayList<>(7);
-                for (MusicBoxSong song : playlist.getPrevSong(3)) {
-                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString(
-                            "{song}", song.getName(),
-                            "{num}", String.valueOf(playlist.getSongNum(song) + 1)
-                    ));
-                }
-                lore.add(Lang.CURRENT_PLAYLIST_SONG.toString(
-                        "{song}", playlist.getCurrent().getName(),
-                        "{num}", String.valueOf(playlist.getSongNum(playlist.getCurrent()) + 1)
-                ));
-                for (MusicBoxSong song : playlist.getNextSongs(3)) {
-                    lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString(
-                            "{song}", song.getName(),
-                            "{num}", String.valueOf(playlist.getSongNum(song) + 1)
-                    ));
-                }
+                List<String> lore = SongUtils.generatePlaylistLore(playlist, 3, 3);
                 lore.addAll(Lang.PLAYLIST_CONTROL.toList());
                 return ItemUtils.createStack(
                         XMaterial.REDSTONE,
@@ -411,36 +400,71 @@ public class GUIActions {
 
     /**
      * Открывает инвентарь для настройки табличек
-     * Только плейлисты
      *
      * @param wrapper Игрок который настраивает
      * @param sign    Настраиваемая табличка
      */
     public void openSignSetupInventory(PlayerWrapper wrapper, Sign sign) {
         SongContainerGUI rootGUI = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
-        class RandButton implements BarButton {
-            private boolean rand = true;
+        abstract class BooleanButton implements BarButton {
+            private final String key;
+            private boolean value = true;
 
-            @Override
-            public ItemStack getItemStack(PlayerWrapper wrapper) {
-                String status = rand ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
-                return ItemUtils.createStack(
-                        XMaterial.REDSTONE,
-                        Lang.RANDOM_MODE_BUTTON.toString("{status}", status),
-                        null);
+            BooleanButton(String key) {
+                this.key = key;
+            }
+
+            public String getValue() {
+                return value ? key : null;
             }
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
                 return e -> {
-                    rand = !rand;
+                    value = !value;
                     data.refreshInventory();
                 };
             }
         }
-        RandButton button = new RandButton();
+        BooleanButton randButton = new BooleanButton("R") {
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                String status = super.value ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
+                return ItemUtils.createStack(
+                        XMaterial.REDSTONE,
+                        Lang.RANDOM_MODE_BUTTON.toString("{status}", status),
+                        null);
+            }
+        };
+        BooleanButton infoSignButton = new BooleanButton("I") {
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                String status = super.value ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
+                return ItemUtils.createStack(
+                        XMaterial.OAK_SIGN,
+                        Lang.SEARCH_INFO_SIGN_TITLE.toString("{status}", status),
+                        Lang.SEARCH_INFO_SIGN_HOVER.toList());
+            }
+        };
+        BooleanButton endlessSign = new BooleanButton("E") {
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                String status = super.value ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
+                return ItemUtils.createStack(
+                        XMaterial.GHAST_TEAR,
+                        Lang.ENDLESS_SIGN_MODE.toString("{status}", status),
+                        null);
+            }
+        };
         BarButton[] buttons = new BarButton[4];
-        buttons[2] = button;
+        buttons[0] = endlessSign;
+        buttons[1] = infoSignButton;
+        buttons[2] = randButton;
+        Supplier<String> signParams = () ->
+                Stream.of(endlessSign, infoSignButton, randButton)
+                        .map(BooleanButton::getValue)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.joining("|"));
         buttons[3] = new BarButton() {
             private final ItemStack item = ItemUtils.createStack(XMaterial.PAPER, Lang.PLAYLIST_EDITOR.toString(), null);
 
@@ -453,7 +477,7 @@ public class GUIActions {
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
                 return e ->
                         new PlayListListGUI(wrapper).openPage(0, container -> e1 ->
-                                applySign(wrapper, sign, container, button.rand), a -> Lang.SIGN_CONTAINER_LORE.toList());
+                                applySign(wrapper, sign, container, signParams), a -> Lang.SIGN_CONTAINER_LORE.toList());
             }
         };
         SongGUIParams params = SongGUIParams
@@ -465,7 +489,7 @@ public class GUIActions {
                                         wrapper1,
                                         sign,
                                         new SingletonContainer(musicBoxSongSongGUIData.getData()),
-                                        button.rand)
+                                        signParams)
                 )
                 .onContainerRightClick(
                         (wrapper12, musicBoxSongContainerSongGUIData) ->
@@ -473,7 +497,7 @@ public class GUIActions {
                                         wrapper12,
                                         sign,
                                         new FolderSongContainer(musicBoxSongContainerSongGUIData.getData()),
-                                        button.rand)
+                                        signParams)
                 )
                 .extraSongLore(nothing -> Lang.SIGN_SONG_LORE.toList())
                 .extraContainerLore(nothing -> Lang.SIGN_CONTAINER_LORE.toList())
@@ -482,7 +506,7 @@ public class GUIActions {
     }
 
 
-    private void applySign(PlayerWrapper wrapper, Sign sign, SongContainer songContainer, boolean rand) {
+    private void applySign(PlayerWrapper wrapper, Sign sign, SongContainer songContainer, Supplier<String> params) {
         sign.setLine(0, ChatColor.AQUA + songContainer.getNameId());
         sign.setLine(1, SignPlayer.SIGN_SECOND_LINE);
         String range = sign.getLine(2);
@@ -500,10 +524,7 @@ public class GUIActions {
             }
         }
         sign.setLine(2, ChatColor.RED + range);
-        if (rand)
-            sign.setLine(3, "RAND");
-        else
-            sign.setLine(3, "");
+        sign.setLine(3, ChatColor.YELLOW + params.get());
         sign.update(true);
         wrapper.getPlayer().closeInventory();
     }

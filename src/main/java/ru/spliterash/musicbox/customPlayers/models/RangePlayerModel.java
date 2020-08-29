@@ -1,7 +1,9 @@
 package ru.spliterash.musicbox.customPlayers.models;
 
+import com.cryptomorin.xseries.XSound;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import ru.spliterash.musicbox.customPlayers.interfaces.PositionPlayer;
 

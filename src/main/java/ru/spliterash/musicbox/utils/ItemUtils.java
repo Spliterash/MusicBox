@@ -27,7 +27,7 @@ public class ItemUtils {
     }
 
     public ItemStack createStack(XMaterial material, String name, @Nullable List<String> lore) {
-        ItemStack stack = material.parseItem();
+        ItemStack stack = material.parseItem(true);
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(name);
         if (lore != null)

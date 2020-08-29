@@ -5,23 +5,29 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
 
+import java.util.List;
 import java.util.Optional;
 
 @UtilityClass
 public class SignUtils {
-    public Optional<IPlayList> parseSignPlaylist(Sign sign, boolean hasEnd) {
+    public Optional<IPlayList> parseSignPlaylist(Sign sign) {
         String lineTwo = sign.getLine(1);
         if (!StringUtils.strip(lineTwo).equalsIgnoreCase("[music]"))
             return Optional.empty();
         String songId = sign.getLine(0);
-        boolean rand = sign.getLine(3).contains("RAND");
+        boolean rand = sign.getLine(3).contains("R");
         return MusicBoxSongManager
                 .getContainerById(StringUtils.strip(songId))
-                .map(c -> ListPlaylist.fromContainer(c, rand, hasEnd));
+                .map(c -> ListPlaylist.fromContainer(c, rand, hasEnd(sign)));
+    }
+
+    public boolean hasEnd(Sign sign) {
+        return !sign.getLine(3).contains("E");
     }
 
     public int parseSignRange(Sign sign) {
@@ -36,45 +42,60 @@ public class SignUtils {
         return range;
     }
 
-    // Обновляет табличку проигрывания
+    // Ищет ближайшую табличку не считая этот location
     public Optional<Sign> findSign(Location startLoc) {
         BukkitUtils.checkPrimary();
-        Block block = startLoc.getBlock();
-        boolean found = true;
-        blockSearch:
-        {
-            for (int i = 0; i < 5; i++) {
-                block = block.getRelative(BlockFace.UP);
-                if (block.getState() instanceof Sign) {
-                    break blockSearch;
-                }
+        Location location = startLoc.clone();
+        for (int i = 0; i < 5; i++) {
+            location.add(0, 1, 0);
+            Block block = location.getBlock();
+            if (block.getState() instanceof Sign) {
+                return Optional.of((Sign) block.getState());
             }
-            block = startLoc.getBlock();
-            for (int i = 0; i < 5; i++) {
-                block.getRelative(BlockFace.DOWN);
-                if (block.getState() instanceof Sign) {
-                    break blockSearch;
-                }
-            }
-            found = false;
         }
-        if (!found)
-            return Optional.empty();
-        else
-            return Optional.of((Sign) block.getState());
+        location = startLoc.clone();
+        for (int i = 0; i < 5; i++) {
+            location.add(0, -1, 0);
+            Block block = location.getBlock();
+            if (block.getState() instanceof Sign) {
+                return Optional.of((Sign) block.getState());
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void setSignList(Sign sign, List<String> list) {
+
+        for (int i = 0; i < 4; i++) {
+            String str = list.size() > i ? list.get(i) : "";
+            sign.setLine(i, str);
+        }
+        sign.update();
     }
 
     /**
      * Выводит плейлист на табло
      */
-    public void setPlayListInfo(Sign s, IPlayList list) {
+    public void setPlayListInfo(Location signLocation, IPlayList list) {
         BukkitUtils.checkPrimary();
+        Block b = signLocation.getBlock();
+        if (b.getState() instanceof Sign) {
+            Sign sign = (Sign) b.getState();
+            List<String> signText = SongUtils.generatePlaylistLore(list, 1, 2);
+            setSignList(sign, signText);
+        }
     }
 
     /**
      * Устанавливает на табличке что проигрыватель выключен
      */
-    public void setPlayerOff(Sign sign) {
+    public void setPlayerOff(Location signLocation) {
         BukkitUtils.checkPrimary();
+        Block b = signLocation.getBlock();
+        if (b.getState() instanceof Sign) {
+            Sign sign = (Sign) b.getState();
+            List<String> playerOff = Lang.INFO_SIGN_OFF.toList();
+            setSignList(sign, playerOff);
+        }
     }
 }
