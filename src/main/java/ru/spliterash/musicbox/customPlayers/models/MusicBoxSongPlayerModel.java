@@ -101,7 +101,6 @@ public class MusicBoxSongPlayerModel {
             Lock lock = getLock();
             lock.lock();
             try {
-
                 map.clear();
                 players.forEach(p -> map.put(p, true));
             } finally {

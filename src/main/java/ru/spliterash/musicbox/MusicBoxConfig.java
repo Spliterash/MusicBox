@@ -26,6 +26,7 @@ public class MusicBoxConfig {
     private int speakerRadius;
     private int jukeboxRadius;
     private String lang;
+    private int autoDestroy;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
