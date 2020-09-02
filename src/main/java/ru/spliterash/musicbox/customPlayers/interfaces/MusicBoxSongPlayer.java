@@ -53,7 +53,6 @@ public interface MusicBoxSongPlayer {
      */
     default void onSongEnd() {
         getMusicBoxModel().pingSongEnded();
-        destroy();
         getMusicBoxModel().onSongEnd();
     }
 

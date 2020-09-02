@@ -32,8 +32,8 @@ public class ListPlaylist implements IPlayList {
     }
 
     @Override
-    public boolean next() {
-        return peekList.next();
+    public void next() {
+        peekList.next();
     }
 
     @Override
@@ -53,10 +53,8 @@ public class ListPlaylist implements IPlayList {
     }
 
     @Override
-    public List<MusicBoxSong> getPrevSong(int count) {
-        List<MusicBoxSong> list = peekList.getPrevElements(count);
-        Collections.reverse(list);
-        return list;
+    public List<MusicBoxSong> getPrevSongs(int count) {
+        return peekList.getPrevElements(count);
     }
 
     @Override

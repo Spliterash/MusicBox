@@ -7,7 +7,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import ru.spliterash.musicbox.events.SourcedBlockRedstoneEvent;
-import ru.spliterash.musicbox.minecraft.nms.block.VersionUtilsFactory;
+import ru.spliterash.musicbox.minecraft.nms.versionutils.VersionUtilsFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,12 +21,6 @@ public class RedstoneUtils {
     private final Set<XMaterial> isRedstoneBlock = new HashSet<>();
 
     static {
-        FaceUtils.validSignFace.add(BlockFace.EAST);
-        FaceUtils.validSignFace.add(BlockFace.NORTH);
-        FaceUtils.validSignFace.add(BlockFace.SOUTH);
-        FaceUtils.validSignFace.add(BlockFace.WEST);
-
-
         isRedstoneBlock.add(XMaterial.POWERED_RAIL);
         isRedstoneBlock.add(XMaterial.DETECTOR_RAIL);
         isRedstoneBlock.add(XMaterial.STICKY_PISTON);

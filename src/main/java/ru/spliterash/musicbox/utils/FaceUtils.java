@@ -2,15 +2,30 @@ package ru.spliterash.musicbox.utils;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @UtilityClass
 public class FaceUtils {
-    final Set<BlockFace> validSignFace = new HashSet<>();
+    private final Set<BlockFace> validSignFace = new HashSet<>();
+    private final Set<BlockFace> searchFace = new HashSet<>();
+
+    static {
+        FaceUtils.validSignFace.add(BlockFace.EAST);
+        FaceUtils.validSignFace.add(BlockFace.NORTH);
+        FaceUtils.validSignFace.add(BlockFace.SOUTH);
+        FaceUtils.validSignFace.add(BlockFace.WEST);
+
+        searchFace.addAll(validSignFace);
+        searchFace.add(BlockFace.UP);
+        searchFace.add(BlockFace.DOWN);
+    }
 
     /**
      * @param face Start from direction
@@ -126,5 +141,18 @@ public class FaceUtils {
                 return value;
         }
         return BlockFace.NORTH;
+    }
+
+    public <T extends BlockState> T getRelativeAround(Block block, Class<T> tClass) {
+        for (BlockFace face : searchFace) {
+            Block anotherBlock = block.getRelative(face);
+            BlockState state = anotherBlock.getState();
+            //noinspection ConstantConditions
+            if (state == null)
+                continue;
+            if (tClass.isInstance(state))
+                return tClass.cast(state);
+        }
+        return null;
     }
 }

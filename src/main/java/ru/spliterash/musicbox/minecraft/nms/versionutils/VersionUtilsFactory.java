@@ -1,10 +1,7 @@
-package ru.spliterash.musicbox.minecraft.nms.block;
+package ru.spliterash.musicbox.minecraft.nms.versionutils;
 
 import lombok.Getter;
-import org.bukkit.block.Jukebox;
 import ru.spliterash.musicbox.minecraft.nms.NMSUtils;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class VersionUtilsFactory {
     @Getter

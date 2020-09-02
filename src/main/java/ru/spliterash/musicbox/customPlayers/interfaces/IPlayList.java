@@ -8,10 +8,8 @@ import java.util.List;
 public interface IPlayList {
     /**
      * Перемещает счётчик вперёд
-     *
-     * @return Переместился ли счётчик
      */
-    boolean next();
+    void next();
 
     /**
      * Список следуюших song'ов
@@ -25,7 +23,7 @@ public interface IPlayList {
      *
      * @param count Количество
      */
-    List<MusicBoxSong> getPrevSong(int count);
+    List<MusicBoxSong> getPrevSongs(int count);
 
     /**
      * Есть ли следующая песня
@@ -48,4 +46,11 @@ public interface IPlayList {
     int getSongNum(MusicBoxSong song);
 
 
+    default boolean tryNext() {
+        if (hasNext()) {
+            next();
+            return true;
+        } else
+            return false;
+    }
 }

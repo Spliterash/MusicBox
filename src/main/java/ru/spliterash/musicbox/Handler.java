@@ -3,12 +3,8 @@ package ru.spliterash.musicbox;
 import com.xxmicloxx.NoteBlockAPI.event.SongEndEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Jukebox;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -17,20 +13,19 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SignPlayer;
+import ru.spliterash.musicbox.customPlayers.objects.jukebox.JukeboxPlayer;
 import ru.spliterash.musicbox.events.SourcedBlockRedstoneEvent;
 import ru.spliterash.musicbox.gui.GUIActions;
-import ru.spliterash.musicbox.minecraft.nms.block.VersionUtilsFactory;
+import ru.spliterash.musicbox.minecraft.nms.versionutils.VersionUtilsFactory;
 import ru.spliterash.musicbox.players.PlayerWrapper;
-import ru.spliterash.musicbox.utils.FaceUtils;
-import ru.spliterash.musicbox.utils.RedstoneUtils;
-import ru.spliterash.musicbox.utils.SignUtils;
-import ru.spliterash.musicbox.utils.StringUtils;
+import ru.spliterash.musicbox.utils.*;
+
+import java.util.Optional;
 
 public class Handler implements Listener {
     @EventHandler(ignoreCancelled = true)
@@ -77,12 +72,16 @@ public class Handler implements Listener {
 
     @EventHandler
     public void onRedstoneCB(SourcedBlockRedstoneEvent e) {
-        if (e.getBlock().getState() instanceof Sign) {
-            Sign s = (Sign) e.getBlock().getState();
+        BlockState state = e.getBlock().getState();
+        if (state instanceof Sign) {
+            Sign s = (Sign) state;
             if (s.getLine(1).equals(SignPlayer.SIGN_SECOND_LINE)) {
                 int pin = RedstoneUtils.getPin(s.getBlock(), e.getSource());
                 SignPlayer.redstoneSign(s, pin, e.getNewCurrent());
             }
+        }else if(state instanceof Jukebox){
+            Jukebox box = (Jukebox) state;
+            JukeboxPlayer.onRedstone(box,e.getSource(),e.getNewCurrent());
         }
     }
 
@@ -100,26 +99,23 @@ public class Handler implements Listener {
             Sign sign = (Sign) b.getState();
             processSignClick(e.getPlayer(), sign);
         } else if (b.getState() instanceof Jukebox) {
-            if (e.getHand() == EquipmentSlot.HAND)
-                return;
             Jukebox jukebox = (Jukebox) b.getState();
-            @Nullable ItemStack item = e.getItem();
-            processJukeboxClick(e.getPlayer(), jukebox, item, e);
+            ItemStack item = e.getItem();
+            if (e.getPlayer().isSneaking()) {
+                if (item == null) {
+                    JukeboxPlayer.onSneakingClick(jukebox, e.getPlayer());
+                }
+            } else {
+                jukebox.eject();
+                JukeboxPlayer.onJukeboxClick(jukebox, item, e);
+            }
         }
-    }
-
-    private void processJukeboxClick(Player player, Jukebox jukebox, ItemStack item, Cancellable event) {
-
     }
 
     private void processSignClick(Player player, Sign sign) {
-        SignPlayer infoSign = SignPlayer
-                .findByInfoSign(sign.getLocation())
-                .orElse(null);
-        if (infoSign != null) {
-            checkRewind(player, infoSign);
-            return;
-        }
+        Optional<SignPlayer> infoSign = AbstractBlockPlayer
+                .findByInfoSign(sign.getLocation());
+        infoSign.ifPresent(a -> checkRewind(player, a));
 
         String lineTwo = sign.getLine(1);
         if (!StringUtils.strip(lineTwo).equalsIgnoreCase("[music]"))
@@ -134,7 +130,7 @@ public class Handler implements Listener {
             }
         } else if (songId.startsWith(ChatColor.AQUA.toString())) {
             if (player.isSneaking()) {
-                SignPlayer signPlayer = SignPlayer.getPlayer(sign.getLocation()).orElse(null);
+                SignPlayer signPlayer = AbstractBlockPlayer.findByLocation(sign.getLocation());
                 checkRewind(player, signPlayer);
             } else {
                 SignUtils

@@ -50,7 +50,7 @@ public class RangePlayerModel {
                 return;
             }
             emptyMillis += 100;
-        } else if (emptyMillis != 0)
+        } else
             emptyMillis = 0;
         getMusicBoxModel().setPlayers(canHear);
     }

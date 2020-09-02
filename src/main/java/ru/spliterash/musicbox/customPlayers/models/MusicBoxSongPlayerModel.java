@@ -115,8 +115,14 @@ public class MusicBoxSongPlayerModel {
      * Вызывается из event'a
      */
     public void onSongEnd() {
-        if (playList.next())
+        getMusicBoxSongPlayer().destroy();
+        if (playList.tryNext())
             nextSongRunnable.accept(playList);
+    }
+
+    public void createNextPlayer() {
+        getMusicBoxSongPlayer().destroy();
+        nextSongRunnable.accept(playList);
     }
 
     /**
@@ -129,5 +135,12 @@ public class MusicBoxSongPlayerModel {
      */
     public void pingSongEnded() {
         songEndNormal = true;
+    }
+
+    public void startNext() {
+        if (playList.tryNext()) {
+            createNextPlayer();
+        } else
+            getMusicBoxSongPlayer().destroy();
     }
 }

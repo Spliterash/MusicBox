@@ -16,8 +16,8 @@ public class SingletonPlayList implements IPlayList {
     private final MusicBoxSong song;
 
     @Override
-    public boolean next() {
-        return false;
+    public void next() {
+
     }
 
     @Override
@@ -42,7 +42,7 @@ public class SingletonPlayList implements IPlayList {
     }
 
     @Override
-    public List<MusicBoxSong> getPrevSong(int count) {
+    public List<MusicBoxSong> getPrevSongs(int count) {
         return Collections.emptyList();
     }
 

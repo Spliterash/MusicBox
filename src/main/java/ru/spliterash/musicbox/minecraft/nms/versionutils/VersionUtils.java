@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.minecraft.nms.block;
+package ru.spliterash.musicbox.minecraft.nms.versionutils;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

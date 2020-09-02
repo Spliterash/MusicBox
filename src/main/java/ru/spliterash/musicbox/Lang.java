@@ -288,8 +288,9 @@ public enum Lang {
     NEXT_PLAYLIST_SONG_TITLE(
             "&6Play next playlist song",
             "&6Следующая мелодия"),
-    CURRENT_PLAYLIST_SONG("&9{num}) &a{song}"),
-    ANOTHER_PLAYLIST_SONG("&9{num}) &7{song}"),
+    PLAYLIST_SONG_NUM("&9{num}) "),
+    CURRENT_PLAYLIST_SONG("{num}&a{song}"),
+    ANOTHER_PLAYLIST_SONG("{num}&8{song}"),
     DEFAULT_PLAYLIST_LORE(
             Arrays.asList(
                     "",
