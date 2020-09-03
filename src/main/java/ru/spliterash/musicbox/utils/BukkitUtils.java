@@ -4,13 +4,22 @@ import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.MusicBox;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @UtilityClass
 public class BukkitUtils {
@@ -60,6 +69,25 @@ public class BukkitUtils {
                 location.getBlockY() + 0.5,
                 location.getBlockZ() + 0.5
         );
+    }
+
+    /**
+     * Если у игрока открыт инвентарь, то что с ним делать
+     *
+     * @param holder Холдер инвентаря
+     * @return Стрим с игроками у которых открыт этот инвентарь
+     */
+    public Set<Player> findOpenPlayers(InventoryHolder holder) {
+        checkPrimary();
+        return Bukkit
+                .getOnlinePlayers()
+                .stream()
+                .filter(p -> {
+                    Inventory inv = p.getOpenInventory().getTopInventory();
+                    @Nullable InventoryHolder cHolder = inv.getHolder();
+                    return holder.equals(cHolder);
+                })
+                .collect(Collectors.toSet());
     }
 
     public void checkPrimary() {

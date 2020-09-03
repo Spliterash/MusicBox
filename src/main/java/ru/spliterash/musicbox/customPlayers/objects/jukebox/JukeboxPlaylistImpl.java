@@ -22,7 +22,7 @@ import ru.spliterash.musicbox.utils.ItemUtils;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Реализация плейлиста для Jukebox'а, благодаря чему будет работать весь функионал с плейлистами
@@ -83,21 +83,25 @@ class JukeboxPlaylistImpl implements IPlayList {
         return chest.getInventory();
     }
 
-    private void swapItems(Function<Inventory, ChestIndex> nextItemGetter, Function<Inventory, Integer> putToIndexGetter) {
-        Inventory inv = getChestInventory();
+    private void swapItems(Supplier<ChestIndex> nextItemGetter, Supplier<Integer> putToIndexGetter) {
+        @Nullable Inventory inv = getChestInventory();
         if (inv == null)
             return;
+        swapItems(inv, nextItemGetter, putToIndexGetter);
+    }
+
+    private void swapItems(Inventory inv, Supplier<ChestIndex> nextItemGetter, Supplier<Integer> putToIndexGetter) {
         Jukebox box = getJukebox();
         if (box == null)
             return;
         JukeboxCustom cBox = JukeboxFactory.getJukebox(box);
-        ChestIndex nextItem = nextItemGetter.apply(inv);
+        ChestIndex nextItem = nextItemGetter.get();
         if (nextItem == null)
             return;
         inv.setItem(nextItem.getIndex(), null);
         ItemStack currentJukeboxItem = cBox.getJukebox();
         if (currentJukeboxItem != null) {
-            int puttingIndex = putToIndexGetter.apply(inv);
+            int puttingIndex = putToIndexGetter.get();
             if (puttingIndex > -1) {
                 inv.setItem(puttingIndex, currentJukeboxItem);
             } else {
@@ -111,17 +115,27 @@ class JukeboxPlaylistImpl implements IPlayList {
 
     @Override
     public void next() {
-        swapItems(
-                inventory -> getByIndex(inventory, 0),
-                this::getLastFreeIndex);
+        @Nullable Inventory inv = getChestInventory();
+        if (inv != null)
+            swapItems(
+                    inv,
+                    () -> getByIndex(inv, 0),
+                    () -> getLastFreeIndex(inv));
     }
 
-    private void back() {
+    private void next(Inventory inv) {
         swapItems(
-                this::getLastSong,
-                inventory -> {
+                inv,
+                () -> getByIndex(inv, 0),
+                () -> getLastFreeIndex(inv));
+    }
+
+    private void back(Inventory inventory) {
+        swapItems(
+                () -> getLastSong(inventory),
+                () -> {
                     ItemUtils.groupInventory(inventory);
-                    ItemUtils.shiftInventory(inventory, 1);
+                    ItemUtils.shiftInventory(inventory, -1);
                     return 0;
                 }
         );
@@ -238,14 +252,37 @@ class JukeboxPlaylistImpl implements IPlayList {
 
     @Override
     public void back(int count) {
-        for (int i = 0; i < count; i++) {
-            back();
-        }
+        @Nullable Inventory inv = getChestInventory();
+        if (inv != null)
+            for (int i = 0; i < count; i++) {
+                back(inv);
+            }
     }
 
     @Override
     public int getSongNum(MusicBoxSong song) {
         return -1;
+    }
+
+
+    @Override
+    public void setSong(MusicBoxSong song) {
+        // Чтобы лишний раз не мотать, проверим есть ли такой айтем в сундуке или он уже стоит
+        // Юзаю равно, потому что это полюбому одни и те же объекты
+        if (getCurrent() == song)
+            return;
+        @Nullable Inventory inv = getChestInventory();
+        if (inv == null)
+            return;
+        int songIndex = ItemUtils.findItem(inv, stack -> song == MusicBoxSongManager.findByItem(stack).orElse(null));
+        // Какая то зараза достала из сундука
+        if (songIndex == -1)
+            return;
+        int limiter = 0;
+        while (getCurrent() != song && limiter++ < inv.getSize()) {
+            next(inv);
+        }
+
     }
 
     @Getter

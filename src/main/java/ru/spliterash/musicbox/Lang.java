@@ -41,8 +41,8 @@ public enum Lang {
     GUI_TITLE("&l&3MusicBox &8{container} &0{page}&7/&0{last_page}"),
     FOLDER_FORMAT("&e{folder}"),
     CURRENT_PLAYNING(
-            "&eNow playing &b{song}",
-            "&eСейчас играет &b{song}"),
+            "&eNow playing &0{song}",
+            "&eСейчас играет &0{song}"),
 
     ADD_CONTAINER_TO_PLAYLIST(
             Arrays.asList(
@@ -59,6 +59,26 @@ public enum Lang {
     CURRENT_IN_PLAYLIST(
             "&aIn playlist",
             "&aВ плейлисте"
+    ),
+    SONG_PANEL_NOW_PLAY(
+            Arrays.asList(
+                    "",
+                    "&aNow playning"
+            ),
+            Arrays.asList(
+                    "",
+                    "&aСейчас играет"
+            )
+    ),
+    SONG_PANEL_SWITH_TO(
+            Arrays.asList(
+                    "",
+                    "&7Click to play"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7Нажми чтобы проиграть"
+            )
     ),
     ADD_MUSIC_TO_PLAYLIST(
             Arrays.asList("&bRightClick&7 to add this song to playlist"),
@@ -149,9 +169,9 @@ public enum Lang {
             "&6This block currently don't play music",
             "&6Этот блок в данный момент не проигрывает музыку"
     ),
-    REWIND_GUI_TITLE(
-            "Rewind &8{song}",
-            "Перемотка &8{song}"),
+    CONTROL_GUI_TITLE(
+            "Song panel - now play &b&n{song}",
+            "Музыкальная панель - играет &b&n{song}"),
     REWIND_TO(
             "&6Rewind to &b{time}&e({percent}%)",
             "&6Перемотать на &b{time}&e({percent}%)"),

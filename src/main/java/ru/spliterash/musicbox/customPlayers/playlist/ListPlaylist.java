@@ -73,4 +73,9 @@ public class ListPlaylist implements IPlayList {
     public int getSongNum(MusicBoxSong song) {
         return peekList.getIndexOf(song);
     }
+
+    @Override
+    public void setSong(MusicBoxSong song) {
+        peekList.moveTo(song);
+    }
 }

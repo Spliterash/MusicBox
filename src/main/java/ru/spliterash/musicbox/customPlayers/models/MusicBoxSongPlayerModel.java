@@ -4,20 +4,20 @@ import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import lombok.Getter;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
-import ru.spliterash.musicbox.gui.song.RewindGUI;
+import ru.spliterash.musicbox.gui.song.SPControlGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Getter
 public class MusicBoxSongPlayerModel {
     private final static Set<MusicBoxSongPlayerModel> all = Collections.newSetFromMap(new WeakHashMap<>());
     private final MusicBoxSongPlayer musicBoxSongPlayer;
     private final IPlayList playList;
-    private final Consumer<IPlayList> nextSongRunnable;
+    private final Function<IPlayList, ? extends MusicBoxSongPlayer> nextSongRunnable;
     private boolean run = false;
 
     /**
@@ -25,7 +25,7 @@ public class MusicBoxSongPlayerModel {
      * @param playList         плейлист который сейчас играет
      * @param nextSongRunnable как ставить следующую музыку из плейлиста
      */
-    public MusicBoxSongPlayerModel(MusicBoxSongPlayer songPlayer, IPlayList playList, Consumer<IPlayList> nextSongRunnable) {
+    public MusicBoxSongPlayerModel(MusicBoxSongPlayer songPlayer, IPlayList playList, Function<IPlayList, ? extends MusicBoxSongPlayer> nextSongRunnable) {
         all.add(this);
         this.musicBoxSongPlayer = songPlayer;
         this.playList = playList;
@@ -53,19 +53,19 @@ public class MusicBoxSongPlayerModel {
      * Вызывается при вызове {@link SongPlayer#destroy()}
      */
     public void destroy() {
-        if (rewindGUI != null)
-            rewindGUI.close();
+        if (controlGUI != null)
+            controlGUI.close();
     }
 
-    private RewindGUI rewindGUI;
+    private SPControlGUI controlGUI;
 
     /**
-     * Создаёт GUI для перемотки этого плеера
+     * Создаёт GUI для настройки этого SongPlayer'а
      */
-    public RewindGUI getRewind() {
-        if (rewindGUI == null)
-            rewindGUI = new RewindGUI(musicBoxSongPlayer);
-        return rewindGUI;
+    public SPControlGUI getControlGUI() {
+        if (controlGUI == null)
+            controlGUI = new SPControlGUI(this);
+        return controlGUI;
     }
     // Немного чернухи
 
@@ -112,17 +112,26 @@ public class MusicBoxSongPlayerModel {
     }
 
     /**
+     * Применяет следующий плейлист
+     */
+    private void acceptNext() {
+        MusicBoxSongPlayer nextPlayer = nextSongRunnable.apply(playList);
+        if (nextPlayer != null && controlGUI != null)
+            controlGUI.openNext(nextPlayer.getMusicBoxModel());
+    }
+
+    /**
      * Вызывается из event'a
      */
     public void onSongEnd() {
         getMusicBoxSongPlayer().destroy();
         if (playList.tryNext())
-            nextSongRunnable.accept(playList);
+            acceptNext();
     }
 
     public void createNextPlayer() {
         getMusicBoxSongPlayer().destroy();
-        nextSongRunnable.accept(playList);
+        acceptNext();
     }
 
     /**

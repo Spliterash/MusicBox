@@ -17,7 +17,7 @@ public class SingletonPlayList implements IPlayList {
 
     @Override
     public void next() {
-
+        // Тоже нет
     }
 
     @Override
@@ -59,5 +59,10 @@ public class SingletonPlayList implements IPlayList {
     @Override
     public int getSongNum(MusicBoxSong song) {
         return 0;
+    }
+
+    @Override
+    public void setSong(MusicBoxSong song) {
+        // НЕА
     }
 }

@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
+import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @UtilityClass
 public class SongUtils {
@@ -65,7 +67,10 @@ public class SongUtils {
     }
 
 
-    public Consumer<IPlayList> nextPlayerSong(PlayerWrapper wrapper) {
-        return wrapper::play;
+    public Function<IPlayList, PlayerSongPlayer> nextPlayerSong(PlayerWrapper wrapper) {
+        return list -> {
+            wrapper.play(list);
+            return wrapper.getActivePlayer();
+        };
     }
 }

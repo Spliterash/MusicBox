@@ -2,7 +2,7 @@ package ru.spliterash.musicbox.customPlayers.interfaces;
 
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
-import ru.spliterash.musicbox.gui.song.RewindGUI;
+import ru.spliterash.musicbox.gui.song.SPControlGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
 import java.util.Set;
@@ -13,8 +13,8 @@ import java.util.UUID;
  */
 public interface MusicBoxSongPlayer {
 
-    default RewindGUI getRewind() {
-        return getMusicBoxModel().getRewind();
+    default SPControlGUI getControl() {
+        return getMusicBoxModel().getControlGUI();
     }
 
     /**

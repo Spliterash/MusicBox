@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -106,6 +108,9 @@ public class ItemUtils {
      * Сдвигает все ячейки инвентаря на N ячеек
      * Пример для 1
      * 0|1|2|3 -> 3|0|1|2 -> 2|3|0|1 -> 1|2|3|0
+     * <p>
+     * <p>
+     * PS. Алгоритм стырил(зато честно)
      *
      * @param inventory Инвентарь который надо сдвинуть
      * @param shift     На сколько будет сдвинут инвентарь
@@ -113,16 +118,16 @@ public class ItemUtils {
     public void shiftInventory(Inventory inventory, int shift) {
         int currentIndex, movedIndex;
         ItemStack buffer;
-        int size = inventory.getSize();
-        int greatest = greatestCommonDivisor(shift, size);
+        int invLength = inventory.getSize();
+        int greatest = greatestCommonDivisor(Math.abs(shift), invLength);
         for (int i = 0; i < greatest; i++) {
             buffer = inventory.getItem(i);
             currentIndex = i;
             if (shift > 0) {
                 while (true) {
                     movedIndex = currentIndex + shift;
-                    if (movedIndex >= size)
-                        movedIndex = movedIndex - size;
+                    if (movedIndex >= invLength)
+                        movedIndex = movedIndex - invLength;
                     if (movedIndex == i)
                         break;
                     inventory.setItem(currentIndex, inventory.getItem(movedIndex));
@@ -132,13 +137,14 @@ public class ItemUtils {
                 while (true) {
                     movedIndex = currentIndex + shift;
                     if (movedIndex < 0)
-                        movedIndex = size + movedIndex;
+                        movedIndex = invLength + movedIndex;
                     if (movedIndex == i)
                         break;
                     inventory.setItem(currentIndex, inventory.getItem(movedIndex));
                     currentIndex = movedIndex;
                 }
             }
+
             inventory.setItem(currentIndex, buffer);
         }
     }
@@ -148,5 +154,21 @@ public class ItemUtils {
             return a;
         else
             return greatestCommonDivisor(b, a % b);
+    }
+
+    /**
+     * Ищет первый попавшийся айтетем в инвентаре и возращает его индекс
+     *
+     * @param inv       Инвентарь
+     * @param predicate Чекалка предметов
+     */
+    public int findItem(Inventory inv, Predicate<ItemStack> predicate) {
+        for (ListIterator<ItemStack> iter = inv.iterator(); iter.hasNext(); ) {
+            int index = iter.nextIndex();
+            ItemStack stack = iter.next();
+            if (predicate.test(stack))
+                return index;
+        }
+        return -1;
     }
 }

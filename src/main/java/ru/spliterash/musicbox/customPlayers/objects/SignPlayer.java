@@ -108,8 +108,8 @@ public class SignPlayer extends AbstractBlockPlayer {
     }
 
     @Override
-    protected void runNextSong(IPlayList list) {
-        new SignPlayer(list, getRange(), sign);
+    protected SignPlayer runNextSong(IPlayList list) {
+        return new SignPlayer(list, getRange(), sign);
     }
 
     @Override

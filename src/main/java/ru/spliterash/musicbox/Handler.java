@@ -14,7 +14,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SignPlayer;
@@ -79,9 +78,9 @@ public class Handler implements Listener {
                 int pin = RedstoneUtils.getPin(s.getBlock(), e.getSource());
                 SignPlayer.redstoneSign(s, pin, e.getNewCurrent());
             }
-        }else if(state instanceof Jukebox){
+        } else if (state instanceof Jukebox) {
             Jukebox box = (Jukebox) state;
-            JukeboxPlayer.onRedstone(box,e.getSource(),e.getNewCurrent());
+            JukeboxPlayer.onRedstone(box, e.getSource(), e.getNewCurrent());
         }
     }
 
@@ -113,7 +112,7 @@ public class Handler implements Listener {
     }
 
     private void processSignClick(Player player, Sign sign) {
-        Optional<SignPlayer> infoSign = AbstractBlockPlayer
+        Optional<AbstractBlockPlayer> infoSign = AbstractBlockPlayer
                 .findByInfoSign(sign.getLocation());
         infoSign.ifPresent(a -> checkRewind(player, a));
 
@@ -140,12 +139,12 @@ public class Handler implements Listener {
         }
     }
 
-    private void checkRewind(Player player, SignPlayer signPlayer) {
+    private void checkRewind(Player player, AbstractBlockPlayer blockPlayer) {
         ItemStack item = player.getInventory().getItemInMainHand();
         //noinspection ConstantConditions
         if ((item == null || item.getType() == Material.AIR)) {
-            if (signPlayer != null) {
-                signPlayer.getRewind().openForPlayer(player);
+            if (blockPlayer != null) {
+                blockPlayer.getControl().open(player);
             } else {
                 player.sendMessage(Lang.BLOCK_NOT_PLAY.toString());
             }

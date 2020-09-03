@@ -66,7 +66,7 @@ public class JukeboxPlayer extends AbstractBlockPlayer {
     public static void onSneakingClick(Jukebox jukebox, Player player) {
         JukeboxPlayer songPlayer = AbstractBlockPlayer.findByLocation(jukebox.getLocation());
         if (songPlayer != null) {
-            songPlayer.getRewind().openForPlayer(player);
+            songPlayer.getControl().open(player);
         }
     }
 
@@ -97,11 +97,12 @@ public class JukeboxPlayer extends AbstractBlockPlayer {
     }
 
     @Override
-    protected void runNextSong(IPlayList list) {
+    protected JukeboxPlayer runNextSong(IPlayList list) {
         @NotNull BlockState state = getTargetLocation().getBlock().getState();
         if (state instanceof Jukebox) {
-            new JukeboxPlayer(list, getRange(), (Jukebox) state);
-        }
+            return new JukeboxPlayer(list, getRange(), (Jukebox) state);
+        } else
+            return null;
     }
 
     @Override

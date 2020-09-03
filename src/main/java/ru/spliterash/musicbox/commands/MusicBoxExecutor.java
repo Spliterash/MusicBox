@@ -24,6 +24,7 @@ public class MusicBoxExecutor implements TabExecutor {
         subs.put("play", new PlayExecutor(this));
         subs.put("admin", new AdminExecutor(this));
         subs.put("reload", new ReloadExecutor());
+        subs.put("test", new TestExecutor());
     }
 
     @Override

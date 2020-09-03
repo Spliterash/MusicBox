@@ -13,13 +13,14 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @param <T>
  */
+@SuppressWarnings("unused")
 @Getter
 public class PeekList<T> {
 
     private final List<T> list;
     private final boolean hasEnd;
     private final Lock lock = new ReentrantLock();
-    int last = 0;
+    int current = 0;
 
     public PeekList(List<T> source) {
         this(source, false);
@@ -31,33 +32,33 @@ public class PeekList<T> {
     }
 
     public synchronized List<T> getNextElements(int size) {
-        int currentLast = last;
+        int currentLast = current;
         List<T> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             if (!next())
                 break;
             list.add(current());
         }
-        last = currentLast;
+        current = currentLast;
         return list;
     }
 
     public boolean hasNext() {
         if (hasEnd) {
-            return last < list.size() - 1;
+            return current < list.size() - 1;
         } else
             return true;
     }
 
     public boolean hasPrev() {
         if (hasEnd) {
-            return last > 0;
+            return current > 0;
         } else
             return true;
     }
 
     public T current() {
-        return list.get(last);
+        return list.get(current);
     }
 
     /**
@@ -80,9 +81,9 @@ public class PeekList<T> {
         lock.lock();
         try {
             if (hasNext()) {
-                last++;
-                if (last == list.size()) {
-                    last = 0;
+                current++;
+                if (current == list.size()) {
+                    current = 0;
                 }
                 return true;
             } else
@@ -96,9 +97,9 @@ public class PeekList<T> {
         lock.lock();
         try {
             if (hasPrev()) {
-                last--;
-                if (last <= -1) {
-                    last = list.size() - 1;
+                current--;
+                if (current <= -1) {
+                    current = list.size() - 1;
                 }
                 return true;
             } else {
@@ -112,14 +113,14 @@ public class PeekList<T> {
     public List<T> getPrevElements(int size) {
         lock.lock();
         try {
-            int currentLast = last;
+            int currentLast = current;
             List<T> list = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
                 if (!prev())
                     break;
                 list.add(current());
             }
-            last = currentLast;
+            current = currentLast;
             return list;
         } finally {
             lock.unlock();
@@ -128,5 +129,11 @@ public class PeekList<T> {
 
     public int getIndexOf(T element) {
         return list.indexOf(element);
+    }
+
+    public void moveTo(T element) {
+        int index = list.indexOf(element);
+        if (index != -1)
+            current = index;
     }
 }

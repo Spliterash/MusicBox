@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
+import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.PositionPlayer;
 import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.customPlayers.models.RangePlayerModel;
@@ -62,7 +63,7 @@ public abstract class AbstractBlockPlayer extends PositionSongPlayer implements 
 
     protected abstract void every100MillisAsync();
 
-    protected abstract void runNextSong(IPlayList list);
+    protected abstract MusicBoxSongPlayer runNextSong(IPlayList list);
 
     public static <T extends AbstractBlockPlayer> Optional<T> findByInfoSign(Location location) {
         //noinspection unchecked

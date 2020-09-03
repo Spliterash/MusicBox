@@ -53,4 +53,11 @@ public interface IPlayList {
         } else
             return false;
     }
+
+    /**
+     * Перемотать к этой музыке (если есть)
+     *
+     * @param song Собственно к чему надо перематывать
+     */
+    void setSong(MusicBoxSong song);
 }

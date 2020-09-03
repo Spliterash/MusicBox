@@ -30,7 +30,6 @@ import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.SongUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -244,7 +243,7 @@ public class GUIActions {
                     if (active == null) {
                         wrapper.getPlayer().sendMessage(Lang.NOT_PLAY.toString());
                     } else {
-                        active.getRewind().openForPlayer(wrapper.getPlayer());
+                        active.getControl().open(wrapper.getPlayer());
                     }
                 };
             }
