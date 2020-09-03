@@ -172,7 +172,7 @@ public class GUIActions {
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                return e -> openPlaylistListEditor(wrapper);
+                return e -> new ClickAction(() -> openPlaylistListEditor(wrapper));
             }
 
         };
@@ -193,7 +193,6 @@ public class GUIActions {
     }
 
     /**
-     * TODO
      * Открывает редактор плейлиста
      *
      * @param wrapper Игрок
@@ -218,11 +217,11 @@ public class GUIActions {
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                return e -> {
+                return new ClickAction(() -> {
                     if (wrapper.switchModeChecked()) {
                         data.refreshInventory();
                     }
-                };
+                });
             }
         };
     }
@@ -238,14 +237,14 @@ public class GUIActions {
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                return e -> {
+                return new ClickAction(() -> {
                     PlayerSongPlayer active = wrapper.getActivePlayer();
                     if (active == null) {
                         wrapper.getPlayer().sendMessage(Lang.NOT_PLAY.toString());
                     } else {
                         active.getControl().open(wrapper.getPlayer());
                     }
-                };
+                });
             }
 
 
@@ -263,10 +262,10 @@ public class GUIActions {
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                return e -> {
+                return new ClickAction(() -> {
                     wrapper.destroyActivePlayer();
                     data.refreshInventory();
-                };
+                });
             }
 
         };
@@ -346,7 +345,7 @@ public class GUIActions {
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                return e -> editorGUI.open(0);
+                return new ClickAction(() -> editorGUI.open(0));
             }
         };
         SongGUIParams params = SongGUIParams.builder()
@@ -419,10 +418,10 @@ public class GUIActions {
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                return e -> {
+                return new ClickAction(() -> {
                     value = !value;
                     data.refreshInventory();
-                };
+                });
             }
         }
         BooleanButton randButton = new BooleanButton("R") {
@@ -474,9 +473,9 @@ public class GUIActions {
 
             @Override
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
-                return e ->
+                return new ClickAction(() ->
                         new PlayListListGUI(wrapper).openPage(0, container -> e1 ->
-                                applySign(wrapper, sign, container, signParams), a -> Lang.SIGN_CONTAINER_LORE.toList());
+                                applySign(wrapper, sign, container, signParams), a -> Lang.SIGN_CONTAINER_LORE.toList()));
             }
         };
         SongGUIParams params = SongGUIParams
