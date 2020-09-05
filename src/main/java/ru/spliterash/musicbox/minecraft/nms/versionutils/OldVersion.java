@@ -7,7 +7,8 @@ import org.bukkit.material.Directional;
 import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
 
-public class v1_12 implements VersionUtils {
+@SuppressWarnings("deprecation")
+public class OldVersion implements VersionUtils {
 
     @Override
     public BlockFace getRotation(Block block) {

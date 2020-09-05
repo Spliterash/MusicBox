@@ -1,15 +1,14 @@
 package ru.spliterash.musicbox.song;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.google.common.base.Objects;
 import com.xxmicloxx.NoteBlockAPI.model.Song;
 import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ru.spliterash.musicbox.utils.*;
 import ru.spliterash.musicbox.Lang;
+import ru.spliterash.musicbox.utils.*;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -54,14 +53,18 @@ public class MusicBoxSong {
         return getSongStack(material, Collections.emptyList(), false);
     }
 
+    public ItemStack getSongStack(XMaterial material, List<String> extraLines, boolean glow) {
+        return getSongStack(material, Lang.SONG_NAME.toString("{song}", getName()), extraLines, glow);
+    }
+
     /**
      * @param material Какой материал использовать
      * @return Айтем с этим материалом
      */
-    public ItemStack getSongStack(XMaterial material, List<String> extraLines, boolean glow) {
+    public ItemStack getSongStack(XMaterial material, String itemName, List<String> extraLines, boolean glow) {
         ItemStack stack = material.parseItem();
         ItemMeta meta = stack.getItemMeta();
-        meta.setDisplayName(Lang.SONG_NAME.toString("{song}", getName()));
+        meta.setDisplayName(itemName);
         List<String> list = ArrayUtils.replaceOrRemove(Lang.SONG_LORE.toList(), hoverMap);
         if (newInstruments) {
             list.add(Lang.NEW_INSTRUMENT.toString());

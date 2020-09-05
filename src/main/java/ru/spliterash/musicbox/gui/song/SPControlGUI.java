@@ -1,7 +1,6 @@
 package ru.spliterash.musicbox.gui.song;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -9,6 +8,7 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
+import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.minecraft.gui.GUI;
 import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
 import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
@@ -16,6 +16,7 @@ import ru.spliterash.musicbox.minecraft.gui.actions.PlayerClickAction;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
+import ru.spliterash.musicbox.utils.SongUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 import ru.spliterash.musicbox.utils.classes.PeekList;
 
@@ -23,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Контроллер SongPlayer'а
@@ -51,19 +51,33 @@ public class SPControlGUI {
         List<MusicBoxSong> next = list.getNextSongs(4);
         PeekList<XMaterial> peekList = new PeekList<>(BukkitUtils.DISCS);
         for (ListIterator<MusicBoxSong> iterator = prev.listIterator(); iterator.hasNext(); ) {
-            addDiscItem(iterator.nextIndex(), iterator.next(), peekList, false);
+            int i = iterator.nextIndex();
+            MusicBoxSong s = iterator.next();
+            addDiscItem(i, s, peekList, false, list.getSongNum(s));
         }
-        addDiscItem(4, currentPlay, peekList, true);
+        addDiscItem(4, currentPlay, peekList, true, list.getSongNum(currentPlay));
         for (ListIterator<MusicBoxSong> iterator = next.listIterator(); iterator.hasNext(); ) {
-            addDiscItem(5 + iterator.nextIndex(), iterator.next(), peekList, false);
+            int i = iterator.nextIndex();
+            MusicBoxSong s = iterator.next();
+            addDiscItem(5 + i, s, peekList, false, list.getSongNum(s));
         }
         updateRewind();
+        updateControlButtons();
     }
 
-    private void addDiscItem(int index, MusicBoxSong song, PeekList<XMaterial> peekList, boolean playNow) {
-        gui.addItem(index, song.getSongStack(peekList.getAndNext(), playNow ?
-                        Lang.SONG_PANEL_NOW_PLAY.toList() :
-                        Lang.SONG_PANEL_SWITH_TO.toList(),
+    public void updateControlButtons() {
+        MusicBoxSongPlayer player = spModel.getMusicBoxSongPlayer();
+        // Кнопка остановки
+        {
+            ItemStack stack = GUIActions.getStopStack();
+            gui.addItem(22, stack, new ClickAction(player::destroy));
+        }
+    }
+
+    private void addDiscItem(int index, MusicBoxSong song, PeekList<XMaterial> peekList, boolean playNow, int songNum) {
+        gui.addItem(index, song.getSongStack(peekList.getAndNext(),
+                SongUtils.getSongName(songNum, song, playNow),
+                playNow ? Lang.SONG_PANEL_NOW_PLAY.toList() : Lang.SONG_PANEL_SWITH_TO.toList(),
                 playNow
         ), new ClickAction(() -> {
             spModel.getPlayList().setSong(song);
@@ -117,7 +131,6 @@ public class SPControlGUI {
                     )
             );
         }
-        // Заполнить всё остальное выходом
     }
 
     public void openNoRefresh(Player p) {
@@ -134,9 +147,6 @@ public class SPControlGUI {
         ItemStack close = ItemUtils.createStack(XMaterial.RED_STAINED_GLASS_PANE, Lang.CLOSE.toString(), null);
         InventoryAction action = new PlayerClickAction(HumanEntity::closeInventory);
         for (int i = 0; i < gui.getInventory().getSize(); i++) {
-            ItemStack item = gui.getInventory().getItem(i);
-            if (item != null)
-                continue;
             gui.addItem(i, close, action);
         }
     }

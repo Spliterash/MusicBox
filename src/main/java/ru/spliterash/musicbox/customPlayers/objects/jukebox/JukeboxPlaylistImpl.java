@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.customPlayers.objects.jukebox;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -35,13 +36,12 @@ class JukeboxPlaylistImpl implements IPlayList {
     public JukeboxPlaylistImpl(Location jukebox) throws JukeboxPlaylistInitException {
         this.jukeboxLoc = jukebox;
         @Nullable Inventory inv = getChestInventory();
-        Jukebox j = getJukebox();
-        if (j == null)
+        JukeboxCustom jc = getCustom();
+        if (jc == null)
             throw new JukeboxPlaylistInitException("Location does not contains jukebox");
         if (inv != null) {
             ItemUtils.groupInventory(inv);
         }
-        JukeboxCustom jc = JukeboxFactory.getJukebox(j);
         MusicBoxSong startSongTemp;
         if (jc.isEmpty()) {
             if (inv != null) {
@@ -91,10 +91,9 @@ class JukeboxPlaylistImpl implements IPlayList {
     }
 
     private void swapItems(Inventory inv, Supplier<ChestIndex> nextItemGetter, Supplier<Integer> putToIndexGetter) {
-        Jukebox box = getJukebox();
-        if (box == null)
+        JukeboxCustom cBox = getCustom();
+        if (cBox == null)
             return;
-        JukeboxCustom cBox = JukeboxFactory.getJukebox(box);
         ChestIndex nextItem = nextItemGetter.get();
         if (nextItem == null)
             return;
@@ -241,10 +240,10 @@ class JukeboxPlaylistImpl implements IPlayList {
 
     @Override
     public MusicBoxSong getCurrent() {
-        Jukebox j = getJukebox();
+        JukeboxCustom j = getCustom();
         if (j == null)
             return null;
-        ItemStack item = JukeboxFactory.getJukebox(j).getJukebox();
+        ItemStack item = j.getJukebox();
         if (item == null || item.getType().equals(Material.AIR))
             return null;
         return MusicBoxSongManager.findByItem(item).orElse(null);
@@ -269,7 +268,8 @@ class JukeboxPlaylistImpl implements IPlayList {
     public void setSong(MusicBoxSong song) {
         // Чтобы лишний раз не мотать, проверим есть ли такой айтем в сундуке или он уже стоит
         // Юзаю равно, потому что это полюбому одни и те же объекты
-        if (getCurrent() == song)
+        MusicBoxSong current = getCurrent();
+        if (current == song)
             return;
         @Nullable Inventory inv = getChestInventory();
         if (inv == null)
@@ -278,11 +278,59 @@ class JukeboxPlaylistImpl implements IPlayList {
         // Какая то зараза достала из сундука
         if (songIndex == -1)
             return;
-        int limiter = 0;
-        while (getCurrent() != song && limiter++ < inv.getSize()) {
-            next(inv);
+        if (!putJukeboxToChest(inv)) {
+            return;
         }
+        ItemUtils.groupInventory(inv);
+        int count = ItemUtils.getFilledSlots(inv);
+        // Возможно алгоритм не самый лучший
+        // если кто знает как реализовать это получше, то пожалуйста отправьте pull
+        for (int counter = 0; counter < count; counter++) {
+            @Nullable ItemStack zeroIndexItem = inv.getItem(0);
+            MusicBoxSong indexSong = null;
+            if (zeroIndexItem != null && !zeroIndexItem.getType().equals(Material.AIR))
+                indexSong = MusicBoxSongManager.findByItem(zeroIndexItem).orElse(null);
+            // Если это не то что мы ищем
+            if (indexSong != song) {
+                int lastIndex = getLastFreeIndex(inv);
+                if (lastIndex == -1)
+                    break;
+                inv.setItem(0, null);
+                inv.setItem(lastIndex, zeroIndexItem);
+                ItemUtils.groupInventory(inv);
+            } else {
+                break;
+            }
+        }
+        next(inv);
+    }
 
+    /**
+     * Перекладывает трек в конец сундука
+     *
+     * @param inv Куда складывать
+     * @return удалось ли положить
+     */
+    private boolean putJukeboxToChest(Inventory inv) {
+        JukeboxCustom j = getCustom();
+        if (j == null)
+            return false;
+        ItemStack item = j.getJukebox();
+        if (item == null || item.getType().equals(Material.AIR))
+            return true;
+        int lastIndex = getLastFreeIndex(inv);
+        if (lastIndex == -1)
+            return false;
+        inv.setItem(lastIndex, item);
+        j.setJukebox(null);
+        return true;
+    }
+
+    private JukeboxCustom getCustom() {
+        Jukebox j = getJukebox();
+        if (j == null)
+            return null;
+        return JukeboxFactory.getJukebox(j);
     }
 
     @Getter

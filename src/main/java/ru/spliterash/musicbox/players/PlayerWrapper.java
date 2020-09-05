@@ -18,7 +18,6 @@ import ru.spliterash.musicbox.customPlayers.objects.RadioPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
 import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
-import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.utils.BukkitUtils;
@@ -36,7 +35,6 @@ public class PlayerWrapper {
      * Игрок которому принадлежит этот инстанц
      */
     private final Player player;
-    private final PlayerConfig config;
     /**
      * Включен ли режим колонки
      * Не хочу хранить это в конфиге
@@ -65,7 +63,6 @@ public class PlayerWrapper {
             this.playBar.setVisible(false);
             this.playBar.addPlayer(player);
         }
-        this.config = DatabaseLoader.getBase().loadConfig(player.getUniqueId());
     }
 
     /**
@@ -97,15 +94,13 @@ public class PlayerWrapper {
 
 
     /**
-     * Сохраняет всё на жесткий диск
-     * И удаляет инстанц из игрока
+     * Удаляет инстанц из игрока
      */
     public void destroy() {
         destroyActivePlayer();
         player.removeMetadata(METADATA_KEY, MusicBox.getInstance());
         if (playBar != null)
             playBar.removeAll();
-        config.save();
     }
 
     public boolean isPlayNow() {

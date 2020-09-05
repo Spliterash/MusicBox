@@ -105,6 +105,19 @@ public class ItemUtils {
     }
 
     /**
+     * Считает сколько слотов занято
+     */
+    public int getFilledSlots(Inventory inventory) {
+        int notEmpty = 0;
+        for (ItemStack stack : inventory) {
+            if (stack != null && !stack.getType().equals(Material.AIR)) {
+                notEmpty++;
+            }
+        }
+        return notEmpty;
+    }
+
+    /**
      * Сдвигает все ячейки инвентаря на N ячеек
      * Пример для 1
      * 0|1|2|3 -> 3|0|1|2 -> 2|3|0|1 -> 1|2|3|0

@@ -124,12 +124,13 @@ public class MusicBoxSongPlayerModel {
      * Вызывается из event'a
      */
     public void onSongEnd() {
-        getMusicBoxSongPlayer().destroy();
-        if (playList.tryNext())
-            acceptNext();
+        startNext();
     }
 
+    private boolean nextCreated = false;
+
     public void createNextPlayer() {
+        nextCreated = true;
         getMusicBoxSongPlayer().destroy();
         acceptNext();
     }

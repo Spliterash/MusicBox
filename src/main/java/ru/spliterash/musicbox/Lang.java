@@ -41,8 +41,8 @@ public enum Lang {
     GUI_TITLE("&l&3MusicBox &8{container} &0{page}&7/&0{last_page}"),
     FOLDER_FORMAT("&e{folder}"),
     CURRENT_PLAYNING(
-            "&eNow playing &0{song}",
-            "&eСейчас играет &0{song}"),
+            "&eNow playing &b{song}",
+            "&eСейчас играет &b{song}"),
 
     ADD_CONTAINER_TO_PLAYLIST(
             Arrays.asList(
@@ -170,8 +170,8 @@ public enum Lang {
             "&6Этот блок в данный момент не проигрывает музыку"
     ),
     CONTROL_GUI_TITLE(
-            "Song panel - now play &b&n{song}",
-            "Музыкальная панель - играет &b&n{song}"),
+            "Song panel - now play &0&n{song}",
+            "Музыкальная панель - играет &0&n{song}"),
     REWIND_TO(
             "&6Rewind to &b{time}&e({percent}%)",
             "&6Перемотать на &b{time}&e({percent}%)"),
@@ -354,19 +354,6 @@ public enum Lang {
                     "&7==========================",
                     "&7Нажми правой кнопкой чтобы получить всё из этого сундука"
             )),
-    PLAYLIST_CONTROL(
-            Arrays.asList(
-                    "",
-                    "&7==========================",
-                    "&bLeft click&7 to next",
-                    "&bRight click&7 to prev"
-            ),
-            Arrays.asList(
-                    "",
-                    "&7==========================",
-                    "&bЛевый клик&7 следующая",
-                    "&bПравый клик&7 предыдущая"
-            )),
     INPUT_NAME(
             "&6Input name &b/musicbox playlist create name",
             "&6Введи имя &b/musicbox playlist create имя"),
@@ -462,7 +449,10 @@ public enum Lang {
                     "Сейчас он",
                     "&cВЫКЛЮЧЕН"
             )
-    );
+    ),
+    CONTROL_PANEL_BUTTON(
+            "&6Songplayer panel",
+            "&6Панель проигрывателя");
 
 
     /**

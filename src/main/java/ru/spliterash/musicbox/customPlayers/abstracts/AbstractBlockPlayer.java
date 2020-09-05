@@ -106,15 +106,12 @@ public abstract class AbstractBlockPlayer extends PositionSongPlayer implements 
             Location infoSign = getInfoSign();
             if (infoSign != null) {
                 BukkitUtils.runSyncTask(() -> {
-                    if (!musicBoxModel.getPlayList().hasNext())
-                        SignUtils.setPlayerOff(infoSign);
-                    else if (!normalEnd)
+                    if (!musicBoxModel.isNextCreated())
                         SignUtils.setPlayerOff(infoSign);
                 });
             }
             rangePlayerModel.destroy();
             musicBoxModel.destroy();
-
         }
     }
 

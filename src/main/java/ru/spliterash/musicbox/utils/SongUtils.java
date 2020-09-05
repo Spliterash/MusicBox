@@ -30,11 +30,18 @@ public class SongUtils {
                 .anyMatch(n -> n >= 10);
     }
 
-    private String getNum(int num) {
+    public String getNum(int num) {
         if (num > -1)
             return Lang.PLAYLIST_SONG_NUM.toString("{num}", String.valueOf(num + 1));
         else
             return "";
+    }
+
+    public String getSongName(int i, MusicBoxSong song, boolean glow) {
+        String num = getNum(i);
+        return (glow ? Lang.CURRENT_PLAYLIST_SONG : Lang.ANOTHER_PLAYLIST_SONG).toString(
+                "{song}", song.getName(),
+                "{num}", num);
     }
 
     /**
@@ -45,23 +52,14 @@ public class SongUtils {
         List<MusicBoxSong> prevList = list.getPrevSongs(prevCount);
         Collections.reverse(prevList);
         for (MusicBoxSong song : prevList) {
-            String num = getNum(list.getSongNum(song));
-            lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString(
-                    "{song}", song.getName(),
-                    "{num}", num));
+            lore.add(getSongName(list.getSongNum(song), song, false));
         }
         {
-            String num = getNum(list.getSongNum(list.getCurrent()));
-            lore.add(Lang.CURRENT_PLAYLIST_SONG.toString(
-                    "{song}", list.getCurrent().getName(),
-                    "{num}", num));
+            MusicBoxSong current = list.getCurrent();
+            lore.add(getSongName(list.getSongNum(current), current, true));
         }
         for (MusicBoxSong song : list.getNextSongs(postCount)) {
-            String num = getNum(list.getSongNum(song));
-            lore.add(Lang.ANOTHER_PLAYLIST_SONG.toString(
-                    "{song}", song.getName(),
-                    "{num}", num
-            ));
+            lore.add(getSongName(list.getSongNum(song), song, false));
         }
         return lore;
     }

@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
 import ru.spliterash.musicbox.db.utils.NamedParamStatement;
 import ru.spliterash.musicbox.db.utils.ResultSetRow;
-import ru.spliterash.musicbox.players.PlayerConfig;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
 import ru.spliterash.musicbox.utils.StringUtils;
@@ -217,15 +216,6 @@ public abstract class AbstractBase {
             }
             statement.executeBatch();
         }
-    }
-
-    public void saveConfig(PlayerConfig playerConfig) {
-        // TODO
-    }
-
-    public PlayerConfig loadConfig(UUID playerUUID) {
-        // TODO
-        return new PlayerConfig();
     }
 
     private List<PlayerPlayListModel> extractPlayList(List<ResultSetRow> set) {

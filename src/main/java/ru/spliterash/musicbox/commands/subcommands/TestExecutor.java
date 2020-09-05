@@ -13,6 +13,6 @@ public class TestExecutor implements ru.spliterash.musicbox.commands.SubCommand 
         @NotNull Block b = player.getTargetBlock(null, 20);
         Chest chest = (Chest) b.getState();
         @NotNull Inventory inv = chest.getInventory();
-        ItemUtils.shiftInventory(inv, -10);
+        ItemUtils.shiftInventory(inv, 1);
     }
 }

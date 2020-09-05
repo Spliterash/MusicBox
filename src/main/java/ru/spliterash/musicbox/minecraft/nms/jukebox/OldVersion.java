@@ -6,10 +6,10 @@ import ru.spliterash.musicbox.minecraft.nms.NMSUtils;
 
 import java.lang.reflect.Method;
 
-public class v1_12 implements JukeboxCustom {
+public class OldVersion implements JukeboxCustom {
     private final Object tile_entity;
 
-    v1_12(Jukebox box) throws Exception {
+    OldVersion(Jukebox box) throws Exception {
         Method m = NMSUtils.getNMSClass("org.bukkit.craftbukkit", "block.CraftBlockEntityState").getDeclaredMethod("getTileEntity");
         m.setAccessible(true);
         this.tile_entity = m.invoke(box);

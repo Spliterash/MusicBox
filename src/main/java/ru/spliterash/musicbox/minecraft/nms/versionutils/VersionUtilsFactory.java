@@ -13,10 +13,8 @@ public class VersionUtilsFactory {
         int iV = Integer.parseInt(str.split("_")[1]);
         if (iV >= 13) {
             instance = new NewVersion();
-        } else if (iV == 12) {
-            instance = new v1_12();
         } else {
-            instance = null;
+            instance = new OldVersion();
         }
     }
 

@@ -14,8 +14,8 @@ public class JukeboxFactory {
         int iV = Integer.parseInt(str.split("_")[1]);
         if (iV >= 13) {
             clazz = NewVersion.class;
-        } else if (iV == 12) {
-            clazz = v1_12.class;
+        } else  {
+            clazz = OldVersion.class;
         }
     }
 

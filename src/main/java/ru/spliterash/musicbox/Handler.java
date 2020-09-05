@@ -114,7 +114,7 @@ public class Handler implements Listener {
     private void processSignClick(Player player, Sign sign) {
         Optional<AbstractBlockPlayer> infoSign = AbstractBlockPlayer
                 .findByInfoSign(sign.getLocation());
-        infoSign.ifPresent(a -> checkRewind(player, a));
+        infoSign.ifPresent(a -> openControl(player, a));
 
         String lineTwo = sign.getLine(1);
         if (!StringUtils.strip(lineTwo).equalsIgnoreCase("[music]"))
@@ -128,9 +128,12 @@ public class Handler implements Listener {
                 player.sendMessage(Lang.NO_PEX.toString());
             }
         } else if (songId.startsWith(ChatColor.AQUA.toString())) {
-            if (player.isSneaking()) {
+            ItemStack item = player.getInventory().getItemInMainHand();
+            // Если игрок шифтит и в руке ничего нет
+            //noinspection ConstantConditions
+            if (player.isSneaking() && (item == null || item.getType() == Material.AIR)) {
                 SignPlayer signPlayer = AbstractBlockPlayer.findByLocation(sign.getLocation());
-                checkRewind(player, signPlayer);
+                openControl(player, signPlayer);
             } else {
                 SignUtils
                         .parseSignPlaylist(sign)
@@ -139,15 +142,11 @@ public class Handler implements Listener {
         }
     }
 
-    private void checkRewind(Player player, AbstractBlockPlayer blockPlayer) {
-        ItemStack item = player.getInventory().getItemInMainHand();
-        //noinspection ConstantConditions
-        if ((item == null || item.getType() == Material.AIR)) {
-            if (blockPlayer != null) {
-                blockPlayer.getControl().open(player);
-            } else {
-                player.sendMessage(Lang.BLOCK_NOT_PLAY.toString());
-            }
+    private void openControl(Player player, AbstractBlockPlayer blockPlayer) {
+        if (blockPlayer != null) {
+            blockPlayer.getControl().open(player);
+        } else {
+            player.sendMessage(Lang.BLOCK_NOT_PLAY.toString());
         }
     }
 
