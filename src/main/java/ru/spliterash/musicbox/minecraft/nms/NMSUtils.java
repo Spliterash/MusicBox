@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 @UtilityClass
 public class NMSUtils {
     @Getter
-    private String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+    private final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 
     public Class<?> getNMSClass(String first, String nmsClassString) throws ClassNotFoundException {
         String name = first + "." + version + "." + nmsClassString;

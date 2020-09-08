@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -93,5 +94,43 @@ public class BukkitUtils {
     public void checkPrimary() {
         if (!Bukkit.isPrimaryThread())
             throw new RuntimeException("Call this only in primary thread");
+    }
+
+    public static String locationToString(Location location) {
+        return String.format("%s|%s|%s|%s", location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
+    }
+
+    public static Location parseLocation(String string) {
+        String[] split = string.split("\\|");
+        if (split.length != 4)
+            return null;
+        World world = Bukkit.getWorld(split[0]);
+        if (world == null)
+            return null;
+        double[] array = new double[3];
+        for (int i = 0; i < 3; i++) {
+            double d;
+            try {
+                d = Double.parseDouble(split[i + 1]);
+                array[i] = d;
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+        }
+        return new Location(world, array[0], array[1], array[2]);
+    }
+
+    /**
+     * Проверяет принадлежит ли данная локация к этому чанку
+     */
+    public static boolean inChunk(Location location, World chunkWorld, int chunkX, int chunkZ) {
+        if (!location.getWorld().equals(chunkWorld))
+            return false;
+        int xp = chunkX * 16; // must multiple by 16 to get the blocks location
+        int zp = chunkZ * 16; // must multiple by 16 to get the blocks location
+        int x = -9314;
+        int z = -931;
+        return (xp <= x) && (xp + 15 >= x) && (zp <= z) && (zp + 15 >= z);
+
     }
 }

@@ -48,7 +48,7 @@ public enum Lang {
             Arrays.asList(
                     "",
                     "&7==========================",
-                    "&bRight click&7 to add your playlist"
+                    "&bRight click&7 to add in your playlist"
             ),
             Arrays.asList(
                     "",
@@ -81,8 +81,8 @@ public enum Lang {
             )
     ),
     ADD_MUSIC_TO_PLAYLIST(
-            Arrays.asList("&bRightClick&7 to add this song to playlist"),
-            Arrays.asList("&bПравый клик&7 чтобы добавить эту мелодию в плейлист")
+            Arrays.asList("&bLeft click&7 to add this song to playlist"),
+            Arrays.asList("&bЛевый клик&7 чтобы добавить эту мелодию в плейлист")
     ),
     COMMAND_HELP_SHOP(
             "&b/musicbox shop (name)&6- Open disc shop or buy disc with name",
@@ -267,8 +267,8 @@ public enum Lang {
             "&6Create new playlist",
             "&6Создать новый плейлист"),
     NEW_PLAYLIST_MESSAGE(
-            "&6To create a new playlist write &b/musicbox playlist create playlist name ",
-            "&6Чтобы создать новый плейлист напиши &b/musicbox playlist create Имя плейлиста"),
+            "&6To create a new playlist write &b/musicbox playlist Playlist name ",
+            "&6Чтобы создать новый плейлист напиши &b/musicbox playlist Имя плейлиста"),
     SAVE_PLAYLIST_CHANGE(
             "&6Save changes",
             "&6Сохранить изменения"),
@@ -355,8 +355,8 @@ public enum Lang {
                     "&7Нажми правой кнопкой чтобы получить всё из этого сундука"
             )),
     INPUT_NAME(
-            "&6Input name &b/musicbox playlist create name",
-            "&6Введи имя &b/musicbox playlist create имя"),
+            "&6Input name &b/musicbox playlist name",
+            "&6Введи имя &b/musicbox playlist имя"),
     PLAYER_OFLLINE(
             "&6Player &b{player}&6 offline",
             "&6Игрок &b{player}&6 не в сети"),
@@ -452,7 +452,27 @@ public enum Lang {
     ),
     CONTROL_PANEL_BUTTON(
             "&6Songplayer panel",
-            "&6Панель проигрывателя");
+            "&6Панель проигрывателя"),
+    PREVENT_DESTROY_TITLE(
+            "&6Prevent sign destroy {status}",
+            "&6Предотвратить автоуничтожение проигрывателя {status}"
+    ),
+    PREVENT_DESTROY_LORE(
+            Arrays.asList(
+                    "&7If enabled, the plugin will not destroy the sign",
+                    "&7if no one hears it for more than &b60&7 seconds (configurable in the config)",
+                    "&7also protects the songplayer to restart the server",
+                    "",
+                    "&7This button is visible only to those who have &cmusicbox.admin"
+            ),
+            Arrays.asList(
+                    "&7Если включено, плагин не будет уничтожать проигрыватель таблички",
+                    "&7в случае если её никто не слышит более &b60&7 секунд(настраивается в конфиге)",
+                    "&7а так же это защищает табличку от рестарта сервера",
+                    "",
+                    "&7Эту кнопку видят только те, у кого есть &cmusicbox.admin"
+            )
+    );
 
 
     /**

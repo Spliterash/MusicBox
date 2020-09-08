@@ -6,7 +6,7 @@ import ru.spliterash.musicbox.minecraft.nms.NMSUtils;
 import java.lang.reflect.InvocationTargetException;
 
 public class JukeboxFactory {
-    private static Class<? extends JukeboxCustom> clazz;
+    private static final Class<? extends JukeboxCustom> clazz;
 
     static {
         String v = NMSUtils.getVersion();

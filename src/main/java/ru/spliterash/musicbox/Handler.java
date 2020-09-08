@@ -2,6 +2,7 @@ package ru.spliterash.musicbox;
 
 import com.xxmicloxx.NoteBlockAPI.event.SongEndEvent;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.Player;
@@ -13,7 +14,9 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.objects.SignPlayer;
@@ -25,6 +28,7 @@ import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class Handler implements Listener {
     @EventHandler(ignoreCancelled = true)
@@ -69,12 +73,28 @@ public class Handler implements Listener {
         RedstoneUtils.handleRedstoneForBlock(e.getBlock(), e.getOldCurrent(), e.getNewCurrent());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
+    public void onChunkUnload(ChunkUnloadEvent e) {
+        @NotNull Chunk chunk = e.getChunk();
+        Set<? extends AbstractBlockPlayer> playersInChunk = AbstractBlockPlayer.findByChunk(chunk.getWorld(), chunk.getX(), chunk.getZ());
+        for (AbstractBlockPlayer player : playersInChunk) {
+            if (player instanceof SignPlayer) {
+                SignPlayer signPlayer = (SignPlayer) player;
+                if (signPlayer.isPreventDestroy()) {
+                    e.setCancelled(true);
+                    return;
+                }
+            }
+            player.destroy();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onRedstoneCB(SourcedBlockRedstoneEvent e) {
         BlockState state = e.getBlock().getState();
         if (state instanceof Sign) {
             Sign s = (Sign) state;
-            if (s.getLine(1).equals(SignPlayer.SIGN_SECOND_LINE)) {
+            if (SignPlayer.isPlayerSign(s)) {
                 int pin = RedstoneUtils.getPin(s.getBlock(), e.getSource());
                 SignPlayer.redstoneSign(s, pin, e.getNewCurrent());
             }

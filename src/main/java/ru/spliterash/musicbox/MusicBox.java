@@ -1,14 +1,17 @@
 package ru.spliterash.musicbox;
 
 import lombok.Getter;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
-import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
+import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
 import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
+import ru.spliterash.musicbox.customPlayers.objects.SignPlayer;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.players.PlayerWrapper;
@@ -18,7 +21,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.function.Function;
 import java.util.jar.JarEntry;
+import java.util.stream.Collectors;
 
 @Getter
 public final class MusicBox extends JavaPlugin {
@@ -26,6 +32,7 @@ public final class MusicBox extends JavaPlugin {
     private static MusicBox instance;
     private MusicBoxConfig configObject;
     private boolean loaded = false;
+    private Metrics bStats;
 
     @Override
     public void onEnable() {
@@ -55,13 +62,14 @@ public final class MusicBox extends JavaPlugin {
     @SuppressWarnings("SameParameterValue")
     private void registerCommand(String command, TabExecutor executor) {
         PluginCommand cmd = getCommand(command);
+        //noinspection ConstantConditions
         cmd.setExecutor(executor);
         cmd.setTabCompleter(executor);
     }
 
     public void reloadPlugin() {
-        destroyAllPlayers();
         loaded = false;
+        destroyAllPlayers();
         try {
             configObject = MusicBoxConfig.parseConfig(new FileInputStream(new File(getDataFolder(), "config.yml")));
         } catch (FileNotFoundException e) {
@@ -72,7 +80,16 @@ public final class MusicBox extends JavaPlugin {
         PlayerWrapper.clearAll();
         MusicBoxSongManager.reload(new File(getDataFolder(), "songs"));
         GUIActions.reloadGUI();
+        if (configObject.isBStats() && bStats == null) {
+            bStats = new Metrics(this, 8766);
+            bStats.addCustomChart(
+                    new Metrics.SingleLineChart(
+                            "song_count",
+                            () -> MusicBoxSongManager.getAllSongs().size())
+            );
+        }
         loaded = true;
+        SignPlayer.restorePreventedPlayers();
     }
 
     public void destroyAllPlayers() {
@@ -82,6 +99,9 @@ public final class MusicBox extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        List<Location> signLocations = SignPlayer.getPreventedPlayers().stream().map(AbstractBlockPlayer::getLocation).collect(Collectors.toList());
+        if (signLocations.size() > 0)
+            DatabaseLoader.getBase().savePreventedSigns(signLocations);
         destroyAllPlayers();
     }
 
@@ -95,6 +115,7 @@ public final class MusicBox extends JavaPlugin {
                 if (!entry.getName().startsWith("songs/"))
                     continue;
                 if (entry.isDirectory()) { // if its a directory, create it
+                    //noinspection ResultOfMethodCallIgnored
                     realFile.mkdir();
                     continue;
                 }

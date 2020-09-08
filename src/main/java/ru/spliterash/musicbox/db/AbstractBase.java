@@ -1,6 +1,8 @@
 package ru.spliterash.musicbox.db;
 
+import lombok.Cleanup;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.db.model.PlayerPlayListModel;
@@ -8,6 +10,7 @@ import ru.spliterash.musicbox.db.utils.NamedParamStatement;
 import ru.spliterash.musicbox.db.utils.ResultSetRow;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.IOException;
@@ -283,5 +286,44 @@ public abstract class AbstractBase {
             return list.get(0);
         else
             return null;
+    }
+
+    /**
+     * Возвращает список сохранённых табличек, и сразу же удаляет его
+     */
+    public List<Location> getPreventedSigns() {
+        try {
+            @Cleanup Connection connection = getConnection();
+            @Cleanup Statement statement = connection.createStatement();
+            @Cleanup ResultSet result = statement.executeQuery("SELECT location FROM signs");
+            List<Location> list = new LinkedList<>();
+            while (result.next()) {
+                Location location = BukkitUtils.parseLocation(result.getString(1));
+                if (location != null)
+                    list.add(location);
+            }
+            //noinspection SqlWithoutWhere
+            statement.executeUpdate("DELETE FROM signs");
+            return list;
+        } catch (SQLException throwables) {
+            throw new RuntimeException(throwables);
+        }
+    }
+
+    public void savePreventedSigns(Collection<Location> locations) {
+        try {
+            @Cleanup
+            Connection connection = getConnection();
+            connection.setAutoCommit(false);
+            List<Object[]> argsList = locations
+                    .stream()
+                    .map(BukkitUtils::locationToString)
+                    .map(str -> new String[]{str})
+                    .collect(Collectors.toList());
+            updateBatch(connection, "INSERT INTO signs (location) values (?)", argsList);
+            connection.commit();
+        } catch (SQLException throwables) {
+            throw new RuntimeException(throwables);
+        }
     }
 }

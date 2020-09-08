@@ -208,7 +208,7 @@ public class GUIActions {
 
             @Override
             public ItemStack getItemStack(PlayerWrapper wrapper) {
-                return stopItem;
+                return wrapper.isPlayNow() ? stopItem : null;
             }
 
             @Override
@@ -375,6 +375,13 @@ public class GUIActions {
                 });
             }
         }
+        /*
+          Наличие буквы обозначает что это включенно
+          R - Рандомный режим
+          I - Поиск инфотаблички включён
+          E - Музон будет идти бесконечно
+          P - Будет ли табличка оставаться даже если её никто не слышит(так же сохраняет в базу)
+         */
         BooleanButton randButton = new BooleanButton("R") {
             @Override
             public ItemStack getItemStack(PlayerWrapper wrapper) {
@@ -405,16 +412,32 @@ public class GUIActions {
                         null);
             }
         };
-        BarButton[] buttons = new BarButton[4];
-        buttons[0] = endlessSign;
-        buttons[1] = infoSignButton;
-        buttons[2] = randButton;
+        BooleanButton preventDestroy;
+
+        preventDestroy = new BooleanButton("P") {
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                String status = super.value ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
+                return ItemUtils.createStack(
+                        XMaterial.CLOCK,
+                        Lang.PREVENT_DESTROY_TITLE.toString("{status}", status),
+                        Lang.PREVENT_DESTROY_LORE.toList()
+                );
+            }
+        };
+        preventDestroy.value = false;
+        BarButton[] buttons = new BarButton[5];
+        if (wrapper.getPlayer().hasPermission("musicbox.admin"))
+            buttons[0] = preventDestroy;
+        buttons[1] = endlessSign;
+        buttons[2] = infoSignButton;
+        buttons[3] = randButton;
         Supplier<String> signParams = () ->
-                Stream.of(endlessSign, infoSignButton, randButton)
+                Stream.of(endlessSign, infoSignButton, randButton, preventDestroy)
                         .map(BooleanButton::getValue)
                         .filter(Objects::nonNull)
                         .collect(Collectors.joining("|"));
-        buttons[3] = new BarButton() {
+        buttons[4] = new BarButton() {
             private final ItemStack item = ItemUtils.createStack(XMaterial.PAPER, Lang.PLAYLIST_EDITOR.toString(), null);
 
             @Override

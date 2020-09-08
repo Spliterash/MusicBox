@@ -12,6 +12,7 @@ import ru.spliterash.musicbox.utils.StringUtils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlaylistExecutor implements SubCommand {
     private final MusicBoxExecutor parent;
@@ -26,23 +27,15 @@ public class PlaylistExecutor implements SubCommand {
             GUIActions.openPlaylistListEditor(PlayerWrapper.getInstance(player));
             return;
         }
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (args[0].toLowerCase()) {
-            case "create":
-                createPlaylist(player, args);
-                break;
-            default:
-                parent.sendHelp(player);
-                break;
-        }
+        createPlaylist(player, args);
     }
 
     private void createPlaylist(Player player, String[] args) {
-        if (args.length <= 1) {
+        if (args.length <= 0) {
             player.sendMessage(Lang.INPUT_NAME.toString());
             return;
         }
-        String name = StringUtils.t(StringUtils.concat(args, 1, args.length));
+        String name = StringUtils.t(String.join(" ", args));
         GUIActions.openPlaylistEditor(
                 PlayerWrapper.getInstance(player),
                 new PlayerPlayListModel(-1, player.getUniqueId(), name)
@@ -53,15 +46,4 @@ public class PlaylistExecutor implements SubCommand {
     public String getPex() {
         return "musicbox.use";
     }
-
-    @Override
-    public List<String> tabComplete(Player player, String[] args) {
-        if (args.length <= 1) {
-            //noinspection ArraysAsListWithZeroOrOneArgument
-            return Arrays.asList("create");
-        }
-        return Collections.emptyList();
-    }
-
-
 }

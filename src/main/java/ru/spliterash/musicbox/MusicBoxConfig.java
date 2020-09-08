@@ -27,6 +27,7 @@ public class MusicBoxConfig {
     private int jukeboxRadius;
     private String lang;
     private int autoDestroy;
+    private boolean bStats;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

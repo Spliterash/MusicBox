@@ -15,13 +15,21 @@ import java.util.stream.Collectors;
 public class RangePlayerModel {
     private final MusicBoxSongPlayerModel musicBoxModel;
     private final Set<UUID> players = new HashSet<>();
-    private final int destroyMillis;
+    private int destroyMillis;
     private int emptyMillis = 0;
 
     public RangePlayerModel(MusicBoxSongPlayerModel musicBoxModel) {
         this.musicBoxModel = musicBoxModel;
         destroyMillis = MusicBox.getInstance().getConfigObject().getAutoDestroy() * 1000;
         players.addAll(getSongPlayer().getPlayers());
+    }
+
+    /**
+     * Устанавливает новое значение после которого SP будет уничтожен
+     */
+    public void setAutoDestroyMillis(int millis) {
+        this.destroyMillis = millis;
+        emptyMillis = 0;
     }
 
     public PositionPlayer getSongPlayer() {

@@ -7,21 +7,28 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
+import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.minecraft.nms.versionutils.VersionUtils;
 import ru.spliterash.musicbox.minecraft.nms.versionutils.VersionUtilsFactory;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.FaceUtils;
 import ru.spliterash.musicbox.utils.SignUtils;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Getter
 public class SignPlayer extends AbstractBlockPlayer {
     public static final String SIGN_SECOND_LINE = String.format("%s[%sMUSIC%s]", ChatColor.GRAY, ChatColor.GREEN, ChatColor.GRAY);
     private final Sign sign;
+    private final boolean preventDestroy;
     private Location infoSign;
 
     /**
@@ -33,7 +40,22 @@ public class SignPlayer extends AbstractBlockPlayer {
     private SignPlayer(IPlayList list, int range, Sign sign) {
         super(list, sign.getLocation(), range);
         this.sign = sign;
+        preventDestroy = sign.getLine(3).contains("P");
+        if (preventDestroy)
+            getRangePlayerModel().setAutoDestroyMillis(0);
         setupInfoSign();
+    }
+
+    /**
+     * Возвращает массив который содержат SongPlayer'ы защищенные от уничтожения
+     */
+    public static Set<SignPlayer> getPreventedPlayers() {
+        return getAll()
+                .stream()
+                .filter(p -> p instanceof SignPlayer)
+                .map(p -> (SignPlayer) p)
+                .filter(SignPlayer::isPreventDestroy)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -48,10 +70,7 @@ public class SignPlayer extends AbstractBlockPlayer {
         // Связано с включением или выключением
         if (pin == 0) {
             if (newCurrent > 0) {
-                int range = SignUtils.parseSignRange(sign);
-                SignUtils
-                        .parseSignPlaylist(sign)
-                        .ifPresent(l -> new SignPlayer(l, range, sign));
+                createSign(sign);
             } else if (player != null) {
                 player.destroy();
             }
@@ -70,6 +89,35 @@ public class SignPlayer extends AbstractBlockPlayer {
             player.destroy();
             new SignPlayer(list, player.getRange(), sign);
         }
+    }
+
+    private static void createSign(Sign sign) {
+        int range = SignUtils.parseSignRange(sign);
+        SignUtils
+                .parseSignPlaylist(sign)
+                .ifPresent(l -> new SignPlayer(l, range, sign));
+    }
+
+    /**
+     * Восстанавливает сохранённые проигрыватели
+     */
+    public static void restorePreventedPlayers() {
+        List<Location> locations = DatabaseLoader.getBase().getPreventedSigns();
+        for (Location location : locations) {
+            BukkitUtils.runSyncTask(() -> {
+                @NotNull BlockState b = location.getBlock().getState();
+                if (b instanceof Sign) {
+                    Sign sign = (Sign) b;
+                    if (isPlayerSign(sign)) {
+                        createSign(sign);
+                    }
+                }
+            });
+        }
+    }
+
+    public static boolean isPlayerSign(Sign s) {
+        return s.getLine(1).equals(SignPlayer.SIGN_SECOND_LINE);
     }
 
     private void pingLever() {

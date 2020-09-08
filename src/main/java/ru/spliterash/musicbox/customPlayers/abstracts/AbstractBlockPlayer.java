@@ -3,7 +3,9 @@ package ru.spliterash.musicbox.customPlayers.abstracts;
 import com.xxmicloxx.NoteBlockAPI.songplayer.PositionSongPlayer;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
@@ -13,13 +15,14 @@ import ru.spliterash.musicbox.customPlayers.models.RangePlayerModel;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.SignUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public abstract class AbstractBlockPlayer extends PositionSongPlayer implements PositionPlayer {
     private final static Map<Location, AbstractBlockPlayer> players = new HashMap<>();
+    @Getter
+    private final static Collection<AbstractBlockPlayer> all = Collections.unmodifiableCollection(players.values());
     private final MusicBoxSongPlayerModel musicBoxModel;
     private final RangePlayerModel rangePlayerModel;
     private final Location location;
@@ -56,6 +59,14 @@ public abstract class AbstractBlockPlayer extends PositionSongPlayer implements 
     public static <T extends AbstractBlockPlayer> T findByLocation(Location location) {
         //noinspection unchecked
         return (T) players.get(BukkitUtils.centerBlock(location));
+    }
+
+    public static Set<? extends AbstractBlockPlayer> findByChunk(World world, int x, int z) {
+        return getAll()
+                .stream()
+                .filter(e -> BukkitUtils.inChunk(e.getLocation(), world, x, z))
+                .collect(Collectors.toSet());
+
     }
 
     protected abstract Location getInfoSign();

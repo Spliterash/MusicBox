@@ -2,7 +2,7 @@
 -- Author:        Desktop
 -- Caption:       New Model
 -- Project:       Name of the project
--- Changed:       2020-08-16 19:20
+-- Changed:       2020-09-08 20:59
 -- Created:       2020-08-16 19:12
 CREATE TABLE IF NOT EXISTS "playlists"
 (
@@ -10,13 +10,9 @@ CREATE TABLE IF NOT EXISTS "playlists"
     "owner" VARCHAR(64)                       NOT NULL,
     "name"  VARCHAR(256)                      NOT NULL
 );
-CREATE TABLE IF NOT EXISTS "player_settings"
+CREATE TABLE IF NOT EXISTS "signs"
 (
-    "uuid"  VARCHAR(64) PRIMARY KEY NOT NULL,
-    "key"   VARCHAR(32)             NOT NULL,
-    "value" VARCHAR(256),
-    CONSTRAINT "unque"
-        UNIQUE ("uuid", "key")
+    "location" VARCHAR(256) PRIMARY KEY NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "playlist_song"
 (
