@@ -182,11 +182,6 @@ public class SongContainerGUI {
     @Getter
     @Builder
     public static class SongGUIParams {
-        /**
-         * Возможно выглядит слишком длинно
-         * Ключ это получение предмета
-         * Значение это действие при клике
-         */
         @Nullable
         private final BarButton[] bottomBar;
         @Nullable

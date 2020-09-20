@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox;
+package ru.spliterash.musicbox.utils;
 
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.chat.BaseComponent;

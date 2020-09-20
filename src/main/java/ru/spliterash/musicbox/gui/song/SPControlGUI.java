@@ -50,8 +50,9 @@ public class SPControlGUI {
         Collections.reverse(prev);
         List<MusicBoxSong> next = list.getNextSongs(4);
         PeekList<XMaterial> peekList = new PeekList<>(BukkitUtils.DISCS);
+        int startFrom = 4 - prev.size();
         for (ListIterator<MusicBoxSong> iterator = prev.listIterator(); iterator.hasNext(); ) {
-            int i = iterator.nextIndex();
+            int i = iterator.nextIndex() + startFrom;
             MusicBoxSong s = iterator.next();
             addDiscItem(i, s, peekList, false, list.getSongNum(s));
         }

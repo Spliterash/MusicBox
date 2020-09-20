@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import ru.spliterash.musicbox.utils.ComponentUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.File;
@@ -404,13 +405,13 @@ public enum Lang {
             Arrays.asList(
                     "",
                     "&7==========================",
-                    "&eRight click to setup this container on sign"
+                    "&eRight click&7 to setup this container on sign"
 
             ),
             Arrays.asList(
                     "",
                     "&7==========================",
-                    "&eПравый клик чтобы установить этот контейнер на табличку"
+                    "&eПравый клик&7 чтобы установить этот контейнер на табличку"
 
             )
     ), WRONG_SIGN_FACE(
@@ -471,6 +472,18 @@ public enum Lang {
                     "&7а так же это защищает табличку от рестарта сервера",
                     "",
                     "&7Эту кнопку видят только те, у кого есть &cmusicbox.admin"
+            )
+    ),
+    CLICK_TO_PLAY_CONTAINER(
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eRight click&7 to play this chest"
+            ),
+            Arrays.asList(
+                    "",
+                    "&7==========================",
+                    "&eПравый клик&7 чтобы послушать всё что тут лежит"
             )
     );
 

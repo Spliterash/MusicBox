@@ -8,6 +8,8 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.players.PlayerWrapper;
+import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.factory.FolderContainerFactory;
 import ru.spliterash.musicbox.utils.FileUtils;
 import ru.spliterash.musicbox.utils.JavaUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
@@ -17,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Getter
-public class MusicBoxSongContainer {
+public class MusicBoxSongContainer implements SongContainer {
     private final MusicBoxSongContainer parent;
     private List<MusicBoxSongContainer> subContainers;
     private List<MusicBoxSong> songs;
@@ -132,5 +134,10 @@ public class MusicBoxSongContainer {
                 return c;
         }
         return null;
+    }
+
+    @Override
+    public String getNameId() {
+        return FolderContainerFactory.NAME + ":" + getHash();
     }
 }

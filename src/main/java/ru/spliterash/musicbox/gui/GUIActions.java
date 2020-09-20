@@ -23,7 +23,6 @@ import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
 import ru.spliterash.musicbox.song.songContainers.SongContainer;
-import ru.spliterash.musicbox.song.songContainers.containers.FolderSongContainer;
 import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
 import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
@@ -64,6 +63,8 @@ public class GUIActions {
             DEFAULT_MODE = SongGUIParams
                     .builder()
                     .onSongLeftClick(GUIActions::playerPlayMusic)
+                    .onContainerRightClick(GUIActions::playContainer)
+                    .extraContainerLore(GUIActions::playerPlayAllContainer)
                     .bottomBar(defaultBar)
                     .build();
         }
@@ -87,6 +88,15 @@ public class GUIActions {
                     .extraContainerLore(GUIActions::playerGetAllContainerLore)
                     .build();
         }
+    }
+
+    private static List<String> playerPlayAllContainer(SongContainerGUI.SongGUIData<MusicBoxSongContainer> data) {
+        return Lang.CLICK_TO_PLAY_CONTAINER.toList();
+    }
+
+    private static void playContainer(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer> data) {
+        wrapper.play(data.getData());
+        data.refreshInventory();
     }
 
     private List<String> playerGetAllContainerLore(SongContainerGUI.SongGUIData<MusicBoxSongContainer> musicBoxSongContainerSongGUIData) {
@@ -357,7 +367,7 @@ public class GUIActions {
         SongContainerGUI rootGUI = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
         abstract class BooleanButton implements BarButton {
             private final String key;
-            private boolean value = true;
+            private boolean value = false;
 
             BooleanButton(String key) {
                 this.key = key;
@@ -425,7 +435,6 @@ public class GUIActions {
                 );
             }
         };
-        preventDestroy.value = false;
         BarButton[] buttons = new BarButton[5];
         if (wrapper.getPlayer().hasPermission("musicbox.admin"))
             buttons[0] = preventDestroy;
@@ -468,7 +477,7 @@ public class GUIActions {
                                 applySign(
                                         wrapper12,
                                         sign,
-                                        new FolderSongContainer(musicBoxSongContainerSongGUIData.getData()),
+                                        musicBoxSongContainerSongGUIData.getData(),
                                         signParams)
                 )
                 .extraSongLore(nothing -> Lang.SIGN_SONG_LORE.toList())
