@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.stream.Collectors;
 
