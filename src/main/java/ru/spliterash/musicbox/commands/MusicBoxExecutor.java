@@ -13,6 +13,7 @@ import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.ArrayUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MusicBoxExecutor implements TabExecutor {
     private final Map<String, SubCommand> subs = new HashMap<>();
@@ -88,8 +89,13 @@ public class MusicBoxExecutor implements TabExecutor {
                 tabComplete.add("get");
             if (player.hasPermission("musicbox.admin"))
                 tabComplete.add("admin");
-
-            return tabComplete;
+            if (args.length == 1)
+                return tabComplete
+                        .stream()
+                        .filter(s -> s.startsWith(args[0]))
+                        .collect(Collectors.toList());
+            else
+                return tabComplete;
         } else {
             SubCommand executor = subs.get(args[0].toLowerCase());
             if (executor != null) {

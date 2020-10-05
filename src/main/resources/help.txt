@@ -1,5 +1,5 @@
 musicbox.use - Allow command /musicbox and /musicbox play
 musicbox.speaker - Allow use speaker mode
-musicbox.shop - Allow use disc shop
-musicbox.get - Allow get any disc
-musicbox.admin - Reload plugin
+musicbox.shop - Allow use disc shop (/musicbox shop)|(/musicbox shop [Song name])
+musicbox.get - Allow get any disc (/musicbox get)|(/musicbox get [Song name])
+musicbox.admin - Reload plugin and protected music sign's
