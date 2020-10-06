@@ -43,6 +43,7 @@ public class MusicBoxSong {
         hoverMap.put("{length}", time);
         hoverMap.put("{author}", song.getAuthor());
         hoverMap.put("{original_author}", song.getOriginalAuthor());
+        hoverMap.put("{name}",getName());
     }
 
     public int getDuration() {
