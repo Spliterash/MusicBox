@@ -42,8 +42,12 @@ public class JukeboxPlayer extends AbstractBlockPlayer {
         if (clickedItem == null)
             return;
         MusicBoxSong song = MusicBoxSongManager.findByItem(clickedItem).orElse(null);
-        if (song == null)
+        if (song == null) {
+            if (MusicBoxSongManager.tryReplaceLegacyItem(e.getPlayer(), clickedItem))
+                e.setCancelled(true);
             return;
+        }
+
         e.setCancelled(true);
         e.getPlayer().getInventory().setItemInMainHand(null);
         JukeboxFactory.getJukebox(jukebox).setJukebox(clickedItem);

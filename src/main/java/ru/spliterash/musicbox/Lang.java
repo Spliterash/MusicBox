@@ -485,7 +485,17 @@ public enum Lang {
                     "&7==========================",
                     "&eПравый клик&7 чтобы послушать всё что тут лежит"
             )
+    ),
+    LEGACY_DISC_NOT_FOUND(
+            "&6Sorry, i can find sound with name &b{song}",
+            "&6Извини, но я не могу найти звук для &b{song}"),
+    LEGACY_DISC_REPLACE(
+            "&6It looks like this is a disc from an old version of the plugin, " +
+                    "but don't worry, we'll convert it to the new one. Click again, but now with a new disc",
+            "&6Похоже это диск от старой версии плагина, но не волнуйся, " +
+                    "мы переделаем его в новый. Кликни ещё раз, но теперь новым диском, он должен быть где то у тебя в инвентаре"
     );
+
 
 
     /**
