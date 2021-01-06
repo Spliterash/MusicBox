@@ -20,10 +20,10 @@ import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
 import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-import ru.spliterash.musicbox.song.MusicBoxSongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.containers.SingletonContainer;
+import ru.spliterash.musicbox.song.songContainers.types.FullSongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 import ru.spliterash.musicbox.utils.EconomyUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
 
@@ -90,16 +90,16 @@ public class GUIActions {
         }
     }
 
-    private static List<String> playerPlayAllContainer(SongContainerGUI.SongGUIData<MusicBoxSongContainer> data) {
+    private static List<String> playerPlayAllContainer(SongContainerGUI.SongGUIData<FullSongContainer> data) {
         return Lang.CLICK_TO_PLAY_CONTAINER.toList();
     }
 
-    private static void playContainer(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer> data) {
+    private static void playContainer(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<FullSongContainer> data) {
         wrapper.play(data.getData());
         data.refreshInventory();
     }
 
-    private List<String> playerGetAllContainerLore(SongContainerGUI.SongGUIData<MusicBoxSongContainer> musicBoxSongContainerSongGUIData) {
+    private List<String> playerGetAllContainerLore(SongContainerGUI.SongGUIData<FullSongContainer> musicBoxSongContainerSongGUIData) {
         return Lang.GET_ALL_CONTAINER_LORE.toList();
     }
 
@@ -107,7 +107,7 @@ public class GUIActions {
         return Lang.GET_DISC_LORE.toList();
     }
 
-    private void getAllContainer(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<MusicBoxSongContainer> data) {
+    private void getAllContainer(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<FullSongContainer> data) {
         for (MusicBoxSong song : data.getData().getAllSongs()) {
             giveDisc(wrapper, song);
         }
@@ -278,14 +278,14 @@ public class GUIActions {
         }
     }
 
-    public List<String> playerBuyAllContainerLore(SongContainerGUI.SongGUIData<MusicBoxSongContainer> containerData) {
+    public List<String> playerBuyAllContainerLore(SongContainerGUI.SongGUIData<FullSongContainer> containerData) {
         return Lang.BUY_CONTAINER_LORE.toList(
                 "{price}",
                 String.valueOf(EconomyUtils.getDiscPrice() * containerData.getData().getAllSongs().size())
         );
     }
 
-    public void buyAllContainer(PlayerWrapper player, SongContainerGUI.SongGUIData<MusicBoxSongContainer> container) {
+    public void buyAllContainer(PlayerWrapper player, SongContainerGUI.SongGUIData<FullSongContainer> container) {
         for (MusicBoxSong song : container.getData().getAllSongs()) {
             playerBuyMusic(player, song);
         }

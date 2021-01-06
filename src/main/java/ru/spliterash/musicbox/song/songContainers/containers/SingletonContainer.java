@@ -1,7 +1,7 @@
 package ru.spliterash.musicbox.song.songContainers.containers;
 
 import lombok.RequiredArgsConstructor;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.songContainers.factory.SingletonContainerFactory;
 

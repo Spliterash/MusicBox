@@ -19,7 +19,7 @@ import ru.spliterash.musicbox.customPlayers.objects.SpeakerPlayer;
 import ru.spliterash.musicbox.customPlayers.playlist.ListPlaylist;
 import ru.spliterash.musicbox.customPlayers.playlist.SingletonPlayList;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 
 import java.util.Optional;

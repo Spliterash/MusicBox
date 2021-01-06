@@ -13,35 +13,48 @@ import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
 import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-import ru.spliterash.musicbox.song.MusicBoxSongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.FullSongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.classes.PeekList;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Getter
 public class SongContainerGUI {
-    private final MusicBoxSongContainer container;
+    private final FullSongContainer container;
     private final PlayerWrapper wrapper;
+    private final List<SongGUIItem> items = new LinkedList<>();
 
-    public SongContainerGUI(MusicBoxSongContainer container, PlayerWrapper wrapper) {
+    public SongContainerGUI(FullSongContainer container, PlayerWrapper wrapper) {
         this.container = container;
         this.wrapper = wrapper;
+        refreshItems();
+    }
+
+
+    public void refreshItems() {
+        items.clear();
+
+        container.getSubContainers().stream().map(SongGUIChest::new).collect(Collectors.toCollection(() -> this.items));
+
+        container.getSongs().stream().map(SongGUISong::new).collect(Collectors.toCollection(() -> this.items));
     }
 
 
     /**
-     * Открывает инвентарь игркоу
+     * Открывает инвентарь игроку
      *
-     * @param page   Страница инвентар
+     * @param page   Страница инвентаря
      * @param params Параметры инвентаря
      */
     public void openPage(int page, SongGUIParams params) {
-        int inventoryIndex = -1;
         int indexLimit = 45;
         //Сколько элементов надо пропустить, чувствую тут надо +1 написать, но потом затестим
         int skipElements = page * indexLimit;
@@ -53,44 +66,48 @@ public class SongContainerGUI {
                 "{last_page}", String.valueOf(pageCount)
         ));
         gui.open(getWrapper().getPlayer());
-        inventoryFill:
-        {
-            List<MusicBoxSongContainer> subContainers = container.getSubContainers();
-            for (int i = skipElements; i < subContainers.size(); i++, skipElements++) {
-                MusicBoxSongContainer subContainer = subContainers.get(i);
-                SongGUIData<MusicBoxSongContainer> data = new SongGUIData<>(
+
+        List<SongGUIItem> items = getItems();
+        FullSongContainer container = this.container;
+
+
+        PeekList<XMaterial> list = new PeekList<>(BukkitUtils.DISCS);
+        List<MusicBoxSong> songs = container.getSongs();
+        MusicBoxSong playerSong = wrapper.getActivePlayer() != null ? wrapper.getActivePlayer().getMusicBoxSong() : null;
+        /*
+          i - Индекс майнкрафтовского инвентаря
+          currentListItem - текущий элемент из items
+         */
+        for (int i = 0, currentListItem = skipElements; i < 45 && currentListItem < items.size(); i++, currentListItem++) {
+            SongGUIItem item = items.get(currentListItem);
+            if (item instanceof SongGUIChest) {
+                FullSongContainer chest = ((SongGUIChest) item).getContainer();
+                SongGUIData<FullSongContainer> data = new SongGUIData<>(
                         this,
-                        subContainer,
+                        chest,
                         params,
                         page
                 );
-                if (inventoryIndex++ >= indexLimit)
-                    break inventoryFill;
+
                 List<String> extraLines;
                 if (params.getExtraContainerLore() != null)
                     extraLines = params.getExtraContainerLore().apply(data);
                 else
                     extraLines = Collections.emptyList();
-                ItemStack containerStack = subContainer.getItemStack(extraLines);
+                ItemStack containerStack;
+                containerStack = chest.getItemStack(extraLines);
                 Runnable containerConsumer;
                 if (params.getOnContainerRightClick() != null)
                     containerConsumer = () -> params.getOnContainerRightClick().accept(wrapper, data);
                 else
                     containerConsumer = null;
-                ClickAction containerAction = new ClickAction(
-                        () -> subContainer.createGUI(wrapper)
-                                .openPage(0, params),
-                        containerConsumer);
-                gui.addItem(inventoryIndex, containerStack, containerAction);
-            }
-            PeekList<XMaterial> list = new PeekList<>(BukkitUtils.DISCS);
-            List<MusicBoxSong> songs = container.getSongs();
-            MusicBoxSong playerSong = wrapper.getActivePlayer() != null ? wrapper.getActivePlayer().getMusicBoxSong() : null;
-            for (int i = skipElements; i < songs.size(); i++) {
-                MusicBoxSong song = songs.get(i);
+                ClickAction containerAction = new ClickAction(() -> new SongContainerGUI(chest, wrapper).openPage(0, params), containerConsumer);
+                gui.addItem(i, containerStack, containerAction);
+            } else if (item instanceof SongGUISong) {
+                MusicBoxSong song = ((SongGUISong) item).getSong();
                 SongGUIData<MusicBoxSong> data = new SongGUIData<>(this, song, params, page);
-                if (inventoryIndex++ >= indexLimit)
-                    break inventoryFill;
+
+
                 List<String> extraLines;
                 if (params.getExtraSongLore() != null)
                     extraLines = params.getExtraSongLore().apply(data);
@@ -102,7 +119,7 @@ public class SongContainerGUI {
                 else
                     enchanted = false;
                 ItemStack stack = song.getSongStack(list.getAndNext(), extraLines, enchanted);
-                gui.addItem(inventoryIndex, stack,
+                gui.addItem(i, stack,
                         new ClickAction(
                                 () -> {
                                     if (params.getOnSongLeftClick() != null)
@@ -115,6 +132,7 @@ public class SongContainerGUI {
                         ));
             }
         }
+
 
         @Nullable BarButton[] bottomBar;
         if (params.getBottomBar() != null) {
@@ -134,16 +152,18 @@ public class SongContainerGUI {
             }
         }
         //Добавление выхода на уровень выше, если он есть
-        parentContainer:
-        {
-            MusicBoxSongContainer parentContainer = container.getParent();
-            if (parentContainer == null)
-                break parentContainer;
+        if (container.getParentContainer() != null) {
+            SongContainer parent = container.getParentContainer();
+
+            if (!(parent instanceof FullSongContainer)) {
+                wrapper.getPlayer().sendMessage("Sry, but plugin has error, this container is not GUI container, so i can show it");
+                return;
+            }
+
             gui.addItem(
                     46,
                     ItemUtils.createStack(XMaterial.TORCH, Lang.PARENT_CONTAINER.toString(), null),
-                    new ClickAction(() -> parentContainer
-                            .createGUI(wrapper)
+                    new ClickAction(() -> new SongContainerGUI((FullSongContainer) container.getParentContainer(), wrapper)
                             .openPage(0, params))
             );
         }
@@ -191,9 +211,9 @@ public class SongContainerGUI {
         @Nullable
         private final BiConsumer<PlayerWrapper, SongGUIData<MusicBoxSong>> onSongRightClick;
         @Nullable
-        private final Function<SongGUIData<MusicBoxSongContainer>, List<String>> extraContainerLore;
+        private final Function<SongGUIData<FullSongContainer>, List<String>> extraContainerLore;
         @Nullable
-        private final BiConsumer<PlayerWrapper, SongGUIData<MusicBoxSongContainer>> onContainerRightClick;
+        private final BiConsumer<PlayerWrapper, SongGUIData<FullSongContainer>> onContainerRightClick;
     }
 
     @Getter
@@ -211,5 +231,21 @@ public class SongContainerGUI {
         public void refreshInventory() {
             openPage(page, params);
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class SongGUIChest implements SongGUIItem {
+        private final FullSongContainer container;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class SongGUISong implements SongGUIItem {
+        private final MusicBoxSong song;
+    }
+
+    private interface SongGUIItem {
+
     }
 }

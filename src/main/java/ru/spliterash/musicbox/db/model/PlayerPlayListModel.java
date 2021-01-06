@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.db.DatabaseLoader;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.factory.ListContainerFactory;
 
 import java.util.LinkedList;

@@ -1,4 +1,4 @@
-package ru.spliterash.musicbox.song.songContainers;
+package ru.spliterash.musicbox.song.songContainers.types;
 
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
@@ -19,5 +19,9 @@ public interface SongContainer {
 
     default List<MusicBoxSong> getSongsRand(boolean rand) {
         return rand ? getSongsShuffle() : getSongs();
+    }
+
+    default List<MusicBoxSong> getAllSongs() {
+        return getSongs();
     }
 }

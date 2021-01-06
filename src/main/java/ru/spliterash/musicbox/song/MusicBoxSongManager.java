@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.Lang;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.SongContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.factory.FolderContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.factory.ListContainerFactory;

@@ -8,18 +8,22 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.gui.song.SongContainerGUI;
 import ru.spliterash.musicbox.players.PlayerWrapper;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.factory.FolderContainerFactory;
+import ru.spliterash.musicbox.song.songContainers.types.FullSongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SubSongContainer;
 import ru.spliterash.musicbox.utils.FileUtils;
 import ru.spliterash.musicbox.utils.JavaUtils;
 import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
-public class MusicBoxSongContainer implements SongContainer {
+public class MusicBoxSongContainer implements SubSongContainer, FullSongContainer {
     private final MusicBoxSongContainer parent;
     private List<MusicBoxSongContainer> subContainers;
     private List<MusicBoxSong> songs;
@@ -87,19 +91,6 @@ public class MusicBoxSongContainer implements SongContainer {
     }
 
     /**
-     * Возращает всю музыку с учётом саб контейнеров и в них и в них
-     * Рекурсивная крч фигня
-     */
-    public List<MusicBoxSong> getAllSongs() {
-        // Так как мы будем очень часто добавлять в него переменные
-        List<MusicBoxSong> list = new LinkedList<>(songs);
-        for (MusicBoxSongContainer container : subContainers) {
-            list.addAll(container.getAllSongs());
-        }
-        return list;
-    }
-
-    /**
      * Создать GUI для этого контейнера
      */
     public SongContainerGUI createGUI(PlayerWrapper player) {
@@ -139,5 +130,15 @@ public class MusicBoxSongContainer implements SongContainer {
     @Override
     public String getNameId() {
         return FolderContainerFactory.NAME + ":" + getHash();
+    }
+
+    @Override
+    public List<MusicBoxSongContainer> getSubContainers() {
+        return subContainers;
+    }
+
+    @Override
+    public SubSongContainer getParentContainer() {
+        return getParent();
     }
 }

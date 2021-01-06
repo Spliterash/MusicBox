@@ -3,9 +3,8 @@ package ru.spliterash.musicbox.customPlayers.playlist;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.classes.PeekList;
-import ru.spliterash.musicbox.song.songContainers.SongContainer;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ListPlaylist implements IPlayList {
@@ -28,7 +27,7 @@ public class ListPlaylist implements IPlayList {
     }
 
     public static ListPlaylist fromContainer(SongContainer container, boolean rand, boolean hasEnd) {
-        return new ListPlaylist(rand ? container.getSongsShuffle() : container.getSongs(), hasEnd);
+        return new ListPlaylist(rand ? container.getSongsShuffle() : container.getAllSongs(), hasEnd);
     }
 
     @Override
