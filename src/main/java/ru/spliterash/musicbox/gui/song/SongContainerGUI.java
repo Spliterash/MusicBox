@@ -56,7 +56,6 @@ public class SongContainerGUI {
      */
     public void openPage(int page, SongGUIParams params) {
         int indexLimit = 45;
-        //Сколько элементов надо пропустить, чувствую тут надо +1 написать, но потом затестим
         int skipElements = page * indexLimit;
         int pageCount = getPageCount();
 
@@ -173,7 +172,7 @@ public class SongContainerGUI {
                     45,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.BACK.toString(), null),
                     new ClickAction(() -> openPage(page - 1, params)));
-        if (pageCount > page && page > 0)
+        if ((pageCount - 1) > page)
             gui.addItem(
                     53,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),
@@ -187,7 +186,7 @@ public class SongContainerGUI {
     }
 
     private int getPageCount() {
-        int containerElementSize = container.getSubContainers().size() + container.getSongs().size();
+        int containerElementSize = items.size();
         return (int) Math.ceil(containerElementSize / 45D);
     }
 

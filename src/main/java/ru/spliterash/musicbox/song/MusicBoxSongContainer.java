@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.song;
 
 import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.spliterash.musicbox.Lang;
@@ -17,10 +18,8 @@ import ru.spliterash.musicbox.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 
 @Getter
 public class MusicBoxSongContainer implements SubSongContainer, FullSongContainer {
@@ -71,6 +70,8 @@ public class MusicBoxSongContainer implements SubSongContainer, FullSongContaine
             MusicBoxSongContainer container = new MusicBoxSongContainer(folder, this);
             subContainersTemp.add(container);
         }
+        subContainersTemp.sort(Comparator.comparing(container -> ChatColor.stripColor(container.getName())));
+
         subContainers = Collections.unmodifiableList(subContainersTemp);
     }
 
@@ -87,6 +88,9 @@ public class MusicBoxSongContainer implements SubSongContainer, FullSongContaine
                 MusicBox.getInstance().getLogger().warning("Can't load " + file);
             }
         }
+
+        songsTemp.sort(Comparator.comparing(song -> ChatColor.stripColor(song.getName())));
+
         songs = Collections.unmodifiableList(songsTemp);
     }
 

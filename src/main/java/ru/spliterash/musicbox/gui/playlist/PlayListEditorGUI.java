@@ -114,7 +114,7 @@ public class PlayListEditorGUI {
                     45,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.BACK.toString(), null),
                     new ClickAction(() -> open(page - 1)));
-        if (last > page && page > 0)
+        if ((last - 1) > page)
             gui.addItem(
                     53,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),

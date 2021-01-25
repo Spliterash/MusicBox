@@ -87,7 +87,7 @@ public class PlayListListGUI {
                     45,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.BACK.toString(), null),
                     new ClickAction(() -> openPage(page - 1, onSelect, extraLore)));
-        if (lastPage > page && page > 0)
+        if ((lastPage - 1) > page)
             gui.addItem(
                     53,
                     ItemUtils.createStack(XMaterial.MAGMA_CREAM, Lang.NEXT.toString(), null),

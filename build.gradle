@@ -13,7 +13,7 @@ javafx {
 }
 
 group = 'ru.spliterash'
-version = '2.0.2'
+version = '2.0.3'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -40,7 +40,7 @@ dependencies {
 //    compileOnly fileTree('libs');
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
-    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
     compileOnly 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
 
@@ -61,9 +61,8 @@ jar {
     }
 }
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 
-task relocateShadowJar(type: ConfigureShadowRelocation) {
+task relocateShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation) {
     target = tasks.shadowJar
     prefix = "ru.spliterash.musicbox.shadow"
 }
