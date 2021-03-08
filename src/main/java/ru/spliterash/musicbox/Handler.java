@@ -15,6 +15,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
@@ -112,6 +113,8 @@ public class Handler implements Listener {
         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK))
             return;
         if (e.getClickedBlock() == null)
+            return;
+        if (e.getHand() != EquipmentSlot.HAND)
             return;
         Block b = e.getClickedBlock();
         if (b.getState() instanceof Sign) {
