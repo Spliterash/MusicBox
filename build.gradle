@@ -13,7 +13,7 @@ javafx {
 }
 
 group = 'ru.spliterash'
-version = '2.0.4'
+version = '2.0.5'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -45,7 +45,7 @@ dependencies {
     compileOnly 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
 
     compile 'com.github.cryptomorin:XSeries:7.2.0'
-    compile 'io.github.bananapuncher714:NBTEditor:7.16'
+    compile 'com.github.BananaPuncher714:NBTEditor:master-SNAPSHOT'
     compile 'org.bstats:bstats-bukkit:1.7'
 
 }
