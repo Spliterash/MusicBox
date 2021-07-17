@@ -34,7 +34,7 @@ public class NewVersion implements VersionUtils {
         if (block.getBlockData() instanceof Powerable) {
             Powerable data = (Powerable) block.getBlockData();
             data.setPowered(powered);
-            block.setBlockData(data, false);
+            block.setBlockData(data, true);
         }
     }
 

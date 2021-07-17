@@ -2,6 +2,7 @@ package ru.spliterash.musicbox;
 
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
@@ -79,10 +80,13 @@ public final class MusicBox extends JavaPlugin {
         PlayerWrapper.clearAll();
         MusicBoxSongManager.reload(new File(getDataFolder(), "songs"));
         GUIActions.reloadGUI();
+
+
+
         if (configObject.isBStats() && bStats == null) {
             bStats = new Metrics(this, 8766);
             bStats.addCustomChart(
-                    new Metrics.SingleLineChart(
+                    new SingleLineChart(
                             "song_count",
                             () -> MusicBoxSongManager.getAllSongs().size())
             );

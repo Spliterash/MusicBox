@@ -2,24 +2,26 @@ package ru.spliterash.musicbox.minecraft.nms.jukebox;
 
 import org.bukkit.block.Jukebox;
 import ru.spliterash.musicbox.minecraft.nms.NMSUtils;
+import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V12;
+import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V13_16;
+import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V17;
 
 import java.lang.reflect.InvocationTargetException;
 
 public class JukeboxFactory {
-    private static final Class<? extends JukeboxCustom> clazz;
+    private static final Class<? extends IJukebox> clazz;
 
     static {
-        String v = NMSUtils.getVersion();
-        String str = v.substring(0, v.lastIndexOf('_'));
-        int iV = Integer.parseInt(str.split("_")[1]);
-        if (iV >= 13) {
-            clazz = NewVersion.class;
-        } else  {
-            clazz = OldVersion.class;
-        }
+        int iV = NMSUtils.getVersion();
+        if (iV >= 17)
+            clazz = V17.class;
+        else if (iV >= 13)
+            clazz = V13_16.class;
+        else
+            clazz = V12.class;
     }
 
-    public static JukeboxCustom getJukebox(Jukebox jukebox) {
+    public static IJukebox getJukebox(Jukebox jukebox) {
         try {
             return clazz.getDeclaredConstructor(Jukebox.class).newInstance(jukebox);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

@@ -27,7 +27,7 @@ public class OldVersion implements VersionUtils {
         if (data instanceof org.bukkit.material.Directional) {
             ((Directional) data).setFacingDirection(face);
             state.setData(data);
-            state.update(true, false);
+            state.update(true, true);
         }
     }
 

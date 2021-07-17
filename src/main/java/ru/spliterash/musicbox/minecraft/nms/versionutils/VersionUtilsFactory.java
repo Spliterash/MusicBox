@@ -8,9 +8,7 @@ public class VersionUtilsFactory {
     private static final VersionUtils instance;
 
     static {
-        String v = NMSUtils.getVersion();
-        String str = v.substring(0, v.lastIndexOf('_'));
-        int iV = Integer.parseInt(str.split("_")[1]);
+        int iV = NMSUtils.getVersion();
         if (iV >= 13) {
             instance = new NewVersion();
         } else {

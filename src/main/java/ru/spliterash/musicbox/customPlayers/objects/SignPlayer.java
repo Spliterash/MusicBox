@@ -117,7 +117,7 @@ public class SignPlayer extends AbstractBlockPlayer {
     }
 
     public static boolean isPlayerSign(Sign s) {
-        return s.getLine(1).equals(SignPlayer.SIGN_SECOND_LINE);
+        return s.getLine(1).startsWith(SignPlayer.SIGN_SECOND_LINE);
     }
 
     private void pingLever() {

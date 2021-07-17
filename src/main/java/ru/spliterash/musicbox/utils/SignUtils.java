@@ -1,6 +1,7 @@
 package ru.spliterash.musicbox.utils;
 
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -32,7 +33,7 @@ public class SignUtils {
     public int parseSignRange(Sign sign) {
         int range;
         try {
-            range = Integer.parseInt(sign.getLine(2));
+            range = Integer.parseInt(ChatColor.stripColor(sign.getLine(2)));
             if (range > 256)
                 range = 256;
         } catch (Exception exception) {

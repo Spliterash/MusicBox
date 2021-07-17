@@ -1,1 +1,6 @@
 rootProject.name = 'MusicBox'
+
+include "nms:shared"
+include "nms:versions:12"
+include "nms:versions:13-16"
+include "nms:versions:17"

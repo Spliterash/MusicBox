@@ -151,17 +151,9 @@ public class Handler implements Listener {
                 player.sendMessage(Lang.NO_PEX.toString());
             }
         } else if (songId.startsWith(ChatColor.AQUA.toString())) {
-            ItemStack item = player.getInventory().getItemInMainHand();
-            // Если игрок шифтит и в руке ничего нет
-            //noinspection ConstantConditions
-            if (player.isSneaking() && (item == null || item.getType() == Material.AIR)) {
-                SignPlayer signPlayer = AbstractBlockPlayer.findByLocation(sign.getLocation());
-                openControl(player, signPlayer);
-            } else {
-                SignUtils
-                        .parseSignPlaylist(sign)
-                        .ifPresent(p -> PlayerWrapper.getInstance(player).play(p));
-            }
+            SignPlayer signPlayer = AbstractBlockPlayer.findByLocation(sign.getLocation());
+            openControl(player, signPlayer);
+
         }
     }
 

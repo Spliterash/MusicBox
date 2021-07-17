@@ -1,17 +1,16 @@
 package ru.spliterash.musicbox.minecraft.nms;
 
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 
 @UtilityClass
-public class NMSUtils {
-    @Getter
-    private final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-
+public class OldNmsUtils {
     public Class<?> getNMSClass(String first, String nmsClassString) throws ClassNotFoundException {
-        String name = first + "." + version + "." + nmsClassString;
+        String name = first + "." + getOldNmsPackage() + "." + nmsClassString;
         return Class.forName(name);
     }
 
+    public static String getOldNmsPackage() {
+        return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    }
 }

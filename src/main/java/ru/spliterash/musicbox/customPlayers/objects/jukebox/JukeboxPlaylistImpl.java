@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
-import ru.spliterash.musicbox.minecraft.nms.jukebox.JukeboxCustom;
+import ru.spliterash.musicbox.minecraft.nms.jukebox.IJukebox;
 import ru.spliterash.musicbox.minecraft.nms.jukebox.JukeboxFactory;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
@@ -35,7 +35,7 @@ class JukeboxPlaylistImpl implements IPlayList {
     public JukeboxPlaylistImpl(Location jukebox) throws JukeboxPlaylistInitException {
         this.jukeboxLoc = jukebox;
         @Nullable Inventory inv = getChestInventory();
-        JukeboxCustom jc = getCustom();
+        IJukebox jc = getCustom();
         if (jc == null)
             throw new JukeboxPlaylistInitException("Location does not contains jukebox");
         if (inv != null) {
@@ -90,7 +90,7 @@ class JukeboxPlaylistImpl implements IPlayList {
     }
 
     private void swapItems(Inventory inv, Supplier<ChestIndex> nextItemGetter, Supplier<Integer> putToIndexGetter) {
-        JukeboxCustom cBox = getCustom();
+        IJukebox cBox = getCustom();
         if (cBox == null)
             return;
         ChestIndex nextItem = nextItemGetter.get();
@@ -239,7 +239,7 @@ class JukeboxPlaylistImpl implements IPlayList {
 
     @Override
     public MusicBoxSong getCurrent() {
-        JukeboxCustom j = getCustom();
+        IJukebox j = getCustom();
         if (j == null)
             return null;
         ItemStack item = j.getJukebox();
@@ -311,7 +311,7 @@ class JukeboxPlaylistImpl implements IPlayList {
      * @return удалось ли положить
      */
     private boolean putJukeboxToChest(Inventory inv) {
-        JukeboxCustom j = getCustom();
+        IJukebox j = getCustom();
         if (j == null)
             return false;
         ItemStack item = j.getJukebox();
@@ -325,7 +325,7 @@ class JukeboxPlaylistImpl implements IPlayList {
         return true;
     }
 
-    private JukeboxCustom getCustom() {
+    private IJukebox getCustom() {
         Jukebox j = getJukebox();
         if (j == null)
             return null;
