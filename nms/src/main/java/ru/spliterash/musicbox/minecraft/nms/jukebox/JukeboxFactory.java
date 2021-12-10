@@ -5,6 +5,7 @@ import ru.spliterash.musicbox.minecraft.nms.NMSUtils;
 import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V12;
 import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V13_16;
 import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V17;
+import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V18;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -13,7 +14,9 @@ public class JukeboxFactory {
 
     static {
         int iV = NMSUtils.getVersion();
-        if (iV >= 17)
+        if (iV >= 18)
+            clazz = V18.class;
+        else if (iV == 17)
             clazz = V17.class;
         else if (iV >= 13)
             clazz = V13_16.class;
