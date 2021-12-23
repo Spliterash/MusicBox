@@ -14,14 +14,16 @@ public class PlayerPlayerModel {
 
     private final PlayerWrapper wrapper;
     private final MusicBoxSongPlayerModel model;
+    private String title;
 
     public PlayerPlayerModel(PlayerWrapper wrapper, MusicBoxSongPlayerModel model) {
         this.wrapper = wrapper;
         this.model = model;
         wrapper.setBarProgress(0);
         wrapper.setBarVisible(true);
-        wrapper.setBarTitle(Lang.CURRENT_PLAYNING.toString("{song}", model.getCurrentSong().getName()));
         SongPlayer songPlay = model.getMusicBoxSongPlayer().getApiPlayer();
+        title = songPlay.getSong().getTitle();
+        wrapper.setBarTitle(Lang.CURRENT_PLAYNING.toString("{song}", title));
         songPlay.addPlayer(wrapper.getPlayer());
     }
 
@@ -36,6 +38,10 @@ public class PlayerPlayerModel {
             return;
         }
         double progress = (double) current / (double) all;
+        if (current == 0) {
+            title = model.getMusicBoxSongPlayer().getApiPlayer().getSong().getTitle();
+            wrapper.setBarTitle(Lang.CURRENT_PLAYNING.toString("{song}", title));
+        }
         if (progress >= 0 && progress <= 1) {
             wrapper.setBarProgress(progress);
         }

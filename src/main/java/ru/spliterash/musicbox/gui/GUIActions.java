@@ -1,6 +1,7 @@
 package ru.spliterash.musicbox.gui;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
 import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
@@ -51,7 +52,7 @@ public class GUIActions {
     public void reloadGUI() {
         // Стандартный режим
         {
-            BarButton[] defaultBar = new BarButton[6];
+            BarButton[] defaultBar = new BarButton[7];
             // Кнопка открытия панели
             defaultBar[0] = controlPanelButton();
             // Кнопка остановки, просто чтобы не лезть каждый раз в панель
@@ -60,6 +61,8 @@ public class GUIActions {
             defaultBar[4] = playListEditor();
             // Смена режима проигрывания
             defaultBar[5] = switchPlayMode();
+
+            defaultBar[6] = setRepeatMode();
             DEFAULT_MODE = SongGUIParams
                     .builder()
                     .onSongLeftClick(GUIActions::playerPlayMusic)
@@ -176,6 +179,41 @@ public class GUIActions {
             public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
                 return new ClickAction(() -> {
                     if (wrapper.switchModeChecked()) {
+                        data.refreshInventory();
+                    }
+                });
+            }
+        };
+    }
+
+    private BarButton setRepeatMode() {
+        return new BarButton() {
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                List<String> lore;
+                if (wrapper.canSwitchRepeat()) {
+                    String status = "null";
+                    switch(wrapper.getRepeatMode()) { //TODO: translate
+                        case ALL:
+                            status = ChatColor.YELLOW + "Repeat playlist songs";
+                            break;
+                        case NO:
+                            status = ChatColor.YELLOW + "No repeat";
+                            break;
+                        case ONE:
+                            status = ChatColor.YELLOW + "Repeat one song";
+                            break;
+                    }
+                    lore = Lang.SWITH_REPEAT_MODE_LORE.toList("{status}", status);
+                } else
+                    lore = Lang.SWITH_REPEAT_MODE_NO_PEX_LORE.toList();
+                return ItemUtils.createStack(XMaterial.NOTE_BLOCK, Lang.REPEAT_MODE.toString(), lore);
+            }
+
+            @Override
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return new ClickAction(() -> {
+                    if (wrapper.switchRepeatModeChecked()) {
                         data.refreshInventory();
                     }
                 });

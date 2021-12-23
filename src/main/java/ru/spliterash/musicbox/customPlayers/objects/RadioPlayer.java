@@ -24,8 +24,9 @@ public class RadioPlayer extends RadioSongPlayer implements PlayerSongPlayer {
 
 
     public RadioPlayer(IPlayList list, PlayerWrapper wrapper) {
-        super(list.getCurrent().getSong());
+        super(list.getPlayList());
         if (MusicBox.getInstance().getConfigObject().isExtendedOctavesRange()) this.setEnable10Octave(true);
+        this.setRepeatMode(wrapper.getRepeatMode());
         this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         musicBoxModel.runPlayer();

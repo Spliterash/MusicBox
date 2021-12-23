@@ -4,6 +4,7 @@ import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import lombok.Getter;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
+import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.gui.song.SPControlGUI;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
@@ -124,7 +125,7 @@ public class MusicBoxSongPlayerModel {
      * Вызывается из event'a
      */
     public void onSongEnd() {
-        startNext();
+        if (!(this instanceof PlayerSongPlayer)) startNext();
     }
 
     private boolean nextCreated = false;

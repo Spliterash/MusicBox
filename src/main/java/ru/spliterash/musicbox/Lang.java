@@ -119,6 +119,8 @@ public enum Lang {
     CANT_SWITCH(
             "You cant switch play mode",
             "&6Вы не можете поменять режим проигрывания"),
+    CANT_SWITCH_REPEAT(
+            "You cant switch repeat mode"),
     NEXT(
             "&6Next",
             "&6Вперёд"),
@@ -199,7 +201,6 @@ public enum Lang {
                     "&7Режим колонки позволит игрокам рядом с вами слышать вашу музыку"
             )
     ),
-
     SWITH_MODE_NO_PEX_LORE(
             Arrays.asList(
                     "&7You need &bmusicbox.speaker to change mode"
@@ -211,6 +212,23 @@ public enum Lang {
     SPEAKER_MODE(
             "&6Speaker mode",
             "&6Режим колонки"),
+
+
+    SWITH_REPEAT_MODE_LORE(
+            Arrays.asList(
+                    "&7Status: {status}",
+                    "&7Repeat mode allow music to repeat"
+            )
+    ),
+
+    SWITH_REPEAT_MODE_NO_PEX_LORE(
+            Arrays.asList(
+                    "&7You need &bmusicbox.repeat to change mode"
+            )
+    ),
+    REPEAT_MODE(
+            "&6Repeat mode"),
+
     PLAYLIST_EDITOR(
             "&6Playlist list",
             "&6Список плейлистов"),

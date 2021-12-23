@@ -1,5 +1,6 @@
 package ru.spliterash.musicbox.customPlayers.abstracts;
 
+import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
 import com.xxmicloxx.NoteBlockAPI.songplayer.PositionSongPlayer;
 import lombok.Getter;
 import org.bukkit.Location;

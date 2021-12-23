@@ -1,5 +1,7 @@
 package ru.spliterash.musicbox.players;
 
+import com.xxmicloxx.NoteBlockAPI.model.Playlist;
+import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -51,6 +53,8 @@ public class PlayerWrapper {
      */
     @Getter(AccessLevel.NONE)
     private BossBar playBar;
+
+    private RepeatMode repeatMode = RepeatMode.NO;
 
     /**
      * Вызывается только если игрок захочет что нибудь послушать
@@ -132,8 +136,52 @@ public class PlayerWrapper {
         speaker = !speaker;
         if (isPlayNow()) {
             PlayerSongPlayer oldPlayer = getActivePlayer();
-            play(oldPlayer.getPlayList(), oldPlayer.getApiPlayer().getTick());
+            play(oldPlayer);
         }
+    }
+
+    public boolean canSwitchRepeat() { return getPlayer().hasPermission("musicbox.repeat"); }
+
+    public boolean switchRepeatModeChecked() {
+        if (!canSwitchRepeat()) {
+            player.sendMessage(Lang.CANT_SWITCH_REPEAT.toString());
+            return false;
+        } else {
+            switchRepeatMode();
+            return true;
+        }
+    }
+
+    public void switchRepeatMode() {
+        switch(repeatMode){
+            case NO:
+                repeatMode = RepeatMode.ALL;
+                break;
+            case ALL:
+                repeatMode = RepeatMode.ONE;
+                break;
+            case ONE:
+                repeatMode = RepeatMode.NO;
+                break;
+        }
+        if (isPlayNow()) {
+            PlayerSongPlayer oldPlayer = getActivePlayer();
+            oldPlayer.getApiPlayer().setRepeatMode(repeatMode);
+        }
+    }
+
+    public void play(PlayerSongPlayer player) {
+        short tick = player.getTick();
+        IPlayList playList = player.getPlayList();
+        if (speaker)
+            startSpeaker(playList);
+        else
+            startRadio(playList);
+        Playlist apiPlayList = playList.getPlayList();
+        activePlayer.getApiPlayer().setPlaylist(apiPlayList);
+        activePlayer.getApiPlayer().playSong(player.getApiPlayer().getPlayedSongIndex());
+        if (tick > -1)
+            activePlayer.getApiPlayer().setTick(tick);
     }
 
     public void play(IPlayList song) {

@@ -1,5 +1,6 @@
 package ru.spliterash.musicbox.customPlayers.interfaces;
 
+import com.xxmicloxx.NoteBlockAPI.model.Playlist;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
 import java.util.List;
@@ -60,4 +61,6 @@ public interface IPlayList {
      * @param song Собственно к чему надо перематывать
      */
     void setSong(MusicBoxSong song);
+
+    default Playlist getPlayList() { return new Playlist(getCurrent().getSong()); }
 }

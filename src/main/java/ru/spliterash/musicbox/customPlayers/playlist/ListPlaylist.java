@@ -1,5 +1,7 @@
 package ru.spliterash.musicbox.customPlayers.playlist;
 
+import com.xxmicloxx.NoteBlockAPI.model.Playlist;
+import com.xxmicloxx.NoteBlockAPI.model.Song;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.utils.classes.PeekList;
@@ -76,5 +78,17 @@ public class ListPlaylist implements IPlayList {
     @Override
     public void setSong(MusicBoxSong song) {
         peekList.moveTo(song);
+    }
+
+    @Override
+    public Playlist getPlayList() {
+        List<MusicBoxSong> list = peekList.getList();
+        int size = list.size();
+        Song[] songs = new Song[size];
+        for (int i = 0; i < size; i++){
+            songs[i] = list.get(i).getSong();
+
+        }
+        return new Playlist(songs);
     }
 }
