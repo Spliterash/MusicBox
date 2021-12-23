@@ -1,9 +1,11 @@
 package ru.spliterash.musicbox.customPlayers.models;
 
+import com.xxmicloxx.NoteBlockAPI.model.Song;
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import lombok.Getter;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.players.PlayerWrapper;
+import ru.spliterash.musicbox.song.MusicBoxSong;
 
 /**
  * Небольшая модель
@@ -39,7 +41,14 @@ public class PlayerPlayerModel {
         }
         double progress = (double) current / (double) all;
         if (current == 0) {
-            title = model.getMusicBoxSongPlayer().getApiPlayer().getSong().getTitle();
+            Song song = model.getMusicBoxSongPlayer().getApiPlayer().getSong();
+            if (model.getPlayList().getNextSongs(1).get(0).getSong() == song) {
+                model.getPlayList().next();
+                if (model.getControlGUI() != null) {
+                    model.getControlGUI().refresh();
+                }
+            }
+            title = song.getTitle();
             wrapper.setBarTitle(Lang.CURRENT_PLAYNING.toString("{song}", title));
         }
         if (progress >= 0 && progress <= 1) {

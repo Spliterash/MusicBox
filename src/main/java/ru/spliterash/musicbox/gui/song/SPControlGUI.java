@@ -34,7 +34,7 @@ import java.util.Set;
 public class SPControlGUI {
     private final MusicBoxSongPlayerModel spModel;
     private final GUI gui;
-    private final MusicBoxSong currentPlay;
+    private MusicBoxSong currentPlay;
     private boolean closed = false;
 
     public SPControlGUI(MusicBoxSongPlayerModel songPlayerModel) {
@@ -46,6 +46,7 @@ public class SPControlGUI {
 
     public void refresh() {
         IPlayList list = spModel.getPlayList();
+        currentPlay = list.getCurrent();
         List<MusicBoxSong> prev = list.getPrevSongs(4);
         Collections.reverse(prev);
         List<MusicBoxSong> next = list.getNextSongs(4);
@@ -82,7 +83,7 @@ public class SPControlGUI {
                 playNow
         ), new ClickAction(() -> {
             spModel.getPlayList().setSong(song);
-            spModel.createNextPlayer();
+            spModel.playSong(songNum);
         }));
     }
 

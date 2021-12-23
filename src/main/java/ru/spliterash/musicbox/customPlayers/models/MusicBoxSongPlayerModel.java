@@ -130,10 +130,10 @@ public class MusicBoxSongPlayerModel {
 
     private boolean nextCreated = false;
 
-    public void createNextPlayer() {
-        nextCreated = true;
-        getMusicBoxSongPlayer().destroy();
-        acceptNext();
+    public void playSong(int songNumber) {
+        getMusicBoxSongPlayer().getApiPlayer().playSong(songNumber);
+        if (controlGUI != null)
+            controlGUI.openNext(getMusicBoxSongPlayer().getMusicBoxModel());
     }
 
     /**
@@ -150,7 +150,7 @@ public class MusicBoxSongPlayerModel {
 
     public void startNext() {
         if (playList.tryNext()) {
-            createNextPlayer();
+            playSong(playList.getSongNum(playList.getCurrent()));
         } else
             getMusicBoxSongPlayer().destroy();
     }
