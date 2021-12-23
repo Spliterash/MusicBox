@@ -1,6 +1,8 @@
 package ru.spliterash.musicbox.gui.song;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -99,6 +101,46 @@ public class SPControlGUI {
                         updateControlButtons();
                     }));
             gui.addItem(22, GUIActions.getStopStack(), new ClickAction(player::destroy));
+            ItemStack repeatButton;
+            {
+                List<String> lore;
+                String status = "null";
+                switch(spModel.getMusicBoxSongPlayer().getApiPlayer().getRepeatMode()) { //TODO: translate
+                    case ALL:
+                        status = ChatColor.YELLOW + "Repeat playlist songs";
+                        break;
+                    case NO:
+                        status = ChatColor.YELLOW + "No repeat";
+                        break;
+                    case ONE:
+                        status = ChatColor.YELLOW + "Repeat one song";
+                        break;
+                }
+                lore = Lang.SWITH_REPEAT_MODE_LORE.toList("{status}", status);
+                repeatButton = ItemUtils.createStack(XMaterial.NOTE_BLOCK, Lang.REPEAT_MODE.toString(), lore);
+            }
+            gui.addItem(26, repeatButton, new PlayerClickAction(p -> {
+                if (p.hasPermission("musicbox.repeat")) {
+                    if (spModel.getMusicBoxSongPlayer() instanceof PlayerSongPlayer) {
+                        PlayerWrapper.getInstance(p).switchRepeatMode();
+                    } else {
+                        switch(spModel.getMusicBoxSongPlayer().getApiPlayer().getRepeatMode()){
+                            case NO:
+                                spModel.getMusicBoxSongPlayer().getApiPlayer().setRepeatMode(RepeatMode.ALL);
+                                break;
+                            case ALL:
+                                spModel.getMusicBoxSongPlayer().getApiPlayer().setRepeatMode(RepeatMode.ONE);
+                                break;
+                            case ONE:
+                                spModel.getMusicBoxSongPlayer().getApiPlayer().setRepeatMode(RepeatMode.NO);
+                                break;
+                        }
+                    }
+                    updateControlButtons();
+                } else {
+                    p.sendMessage(Lang.CANT_SWITCH_REPEAT.toString());
+                }
+            }));
         }
     }
 
