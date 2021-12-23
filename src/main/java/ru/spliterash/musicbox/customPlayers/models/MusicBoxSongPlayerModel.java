@@ -126,7 +126,7 @@ public class MusicBoxSongPlayerModel {
      */
     public void onSongEnd() {
         if (!(this.getMusicBoxSongPlayer() instanceof PlayerSongPlayer)) startNext();
-        getMusicBoxSongPlayer().destroy();
+        else getMusicBoxSongPlayer().destroy();
     }
 
     private boolean nextCreated = false;
