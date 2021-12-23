@@ -39,6 +39,7 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
         this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         this.rangeModel = new RangePlayerModel(musicBoxModel);
+        setVolume(wrapper.getVolume());
         setEntity(wrapper.getPlayer());
         setRange(MusicBox.getInstance().getConfigObject().getSpeakerRadius());
         musicBoxModel.runPlayer();

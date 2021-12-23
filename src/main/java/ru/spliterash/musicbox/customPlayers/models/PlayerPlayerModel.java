@@ -42,6 +42,9 @@ public class PlayerPlayerModel {
         double progress = (double) current / (double) all;
         if (current == 0) {
             Song song = model.getMusicBoxSongPlayer().getApiPlayer().getSong();
+            if (model.getPlayList().hasNext() && model.getPlayList().getNextSongs(1).get(0).getSong() == song) {
+                model.getPlayList().next();
+            }
             if (model.getControlGUI() != null) {
                 model.getControlGUI().refresh();
             }

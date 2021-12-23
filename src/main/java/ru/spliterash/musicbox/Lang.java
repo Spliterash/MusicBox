@@ -512,6 +512,15 @@ public enum Lang {
                     "but don't worry, we'll convert it to the new one. Click again, but now with a new disc",
             "&6Похоже это диск от старой версии плагина, но не волнуйся, " +
                     "мы переделаем его в новый. Кликни ещё раз, но теперь новым диском, он должен быть где то у тебя в инвентаре"
+    ),
+    VOLUME_NAME(
+            "&7Volume : &e{value}"
+    ),
+    VOLUME_LORE(
+            Arrays.asList(
+                    "&7Right Click -> volume - &c5",
+                    "&7Left Click -> volume + &a5"
+            )
     );
 
 

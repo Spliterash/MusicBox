@@ -56,6 +56,8 @@ public class PlayerWrapper {
 
     private RepeatMode repeatMode = RepeatMode.NO;
 
+    private byte volume = 100;
+
     /**
      * Вызывается только если игрок захочет что нибудь послушать
      */
@@ -263,4 +265,13 @@ public class PlayerWrapper {
     }
 
 
+
+    public void setVolume(int volume) {
+        if (volume > 100){
+            volume = 100;
+        } else if (volume < 0){
+            volume = 0;
+        }
+        this.volume = (byte) volume;
+    }
 }

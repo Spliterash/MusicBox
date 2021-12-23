@@ -29,6 +29,7 @@ public class RadioPlayer extends RadioSongPlayer implements PlayerSongPlayer {
         this.setRepeatMode(wrapper.getRepeatMode());
         this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
+        setVolume(wrapper.getVolume());
         musicBoxModel.runPlayer();
 
     }

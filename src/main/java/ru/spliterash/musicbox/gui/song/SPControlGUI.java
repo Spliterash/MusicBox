@@ -7,13 +7,17 @@ import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
+import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
 import ru.spliterash.musicbox.customPlayers.models.MusicBoxSongPlayerModel;
 import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.minecraft.gui.GUI;
 import ru.spliterash.musicbox.minecraft.gui.InventoryAction;
 import ru.spliterash.musicbox.minecraft.gui.actions.ClickAction;
 import ru.spliterash.musicbox.minecraft.gui.actions.PlayerClickAction;
+import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
+import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.song.songContainers.types.FullSongContainer;
 import ru.spliterash.musicbox.utils.BukkitUtils;
 import ru.spliterash.musicbox.utils.ItemUtils;
 import ru.spliterash.musicbox.utils.SongUtils;
@@ -71,8 +75,30 @@ public class SPControlGUI {
         MusicBoxSongPlayer player = spModel.getMusicBoxSongPlayer();
         // Кнопка остановки
         {
-            ItemStack stack = GUIActions.getStopStack();
-            gui.addItem(22, stack, new ClickAction(player::destroy));
+            gui.addItem(
+                    19,
+                    ItemUtils.createStack(XMaterial.TORCH, Lang.PARENT_CONTAINER.toString(), null),
+                    (spModel.getMusicBoxSongPlayer() instanceof PlayerSongPlayer)
+                            ? new ClickAction(() -> MusicBoxSongManager.getRootContainer().createGUI(((PlayerSongPlayer) spModel.getMusicBoxSongPlayer().getApiPlayer()).getModel().getWrapper()).openPage(0, GUIActions.DEFAULT_MODE))
+                            : new PlayerClickAction(HumanEntity::closeInventory));
+            gui.addItem(
+                    20,
+                    ItemUtils.createStack(XMaterial.NOTE_BLOCK, Lang.VOLUME_NAME.toString("{value}", Byte.toString(spModel.getMusicBoxSongPlayer().getApiPlayer().getVolume())), Lang.VOLUME_LORE.toList()),
+                    new ClickAction(() -> {
+                        spModel.getMusicBoxSongPlayer().getApiPlayer().setVolume((byte) (spModel.getMusicBoxSongPlayer().getApiPlayer().getVolume()+5));
+                        if (spModel.getMusicBoxSongPlayer() instanceof PlayerSongPlayer) {
+                            ((PlayerSongPlayer) spModel.getMusicBoxSongPlayer()).getModel().getWrapper().setVolume(spModel.getMusicBoxSongPlayer().getApiPlayer().getVolume());
+                        }
+                        updateControlButtons();
+                    },
+                    () -> {
+                        spModel.getMusicBoxSongPlayer().getApiPlayer().setVolume((byte) (spModel.getMusicBoxSongPlayer().getApiPlayer().getVolume()-5));
+                        if (spModel.getMusicBoxSongPlayer() instanceof PlayerSongPlayer) {
+                            ((PlayerSongPlayer) spModel.getMusicBoxSongPlayer()).getModel().getWrapper().setVolume(spModel.getMusicBoxSongPlayer().getApiPlayer().getVolume());
+                        }
+                        updateControlButtons();
+                    }));
+            gui.addItem(22, GUIActions.getStopStack(), new ClickAction(player::destroy));
         }
     }
 
