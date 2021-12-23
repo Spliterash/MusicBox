@@ -42,11 +42,8 @@ public class PlayerPlayerModel {
         double progress = (double) current / (double) all;
         if (current == 0) {
             Song song = model.getMusicBoxSongPlayer().getApiPlayer().getSong();
-            if (model.getPlayList().getNextSongs(1).get(0).getSong() == song) {
-                model.getPlayList().next();
-                if (model.getControlGUI() != null) {
-                    model.getControlGUI().refresh();
-                }
+            if (model.getControlGUI() != null) {
+                model.getControlGUI().refresh();
             }
             title = song.getTitle();
             wrapper.setBarTitle(Lang.CURRENT_PLAYNING.toString("{song}", title));
