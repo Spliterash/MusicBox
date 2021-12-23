@@ -521,6 +521,15 @@ public enum Lang {
                     "&7Left Click -> volume + &a5",
                     "&7Right Click -> volume - &c5"
             )
+    ),
+    REPEAT_ALL(
+            "&eRepeat playlist songs"
+    ),
+    REPEAT_NO(
+            "&eNo repeat"
+    ),
+    REPEAT_ONE(
+            "&eRepeat one song"
     );
 
 

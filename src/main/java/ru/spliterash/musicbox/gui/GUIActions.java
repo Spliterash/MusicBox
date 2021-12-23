@@ -193,15 +193,15 @@ public class GUIActions {
                 List<String> lore;
                 if (wrapper.canSwitchRepeat()) {
                     String status = "null";
-                    switch(wrapper.getRepeatMode()) { //TODO: translate
+                    switch(wrapper.getRepeatMode()) {
                         case ALL:
-                            status = ChatColor.YELLOW + "Repeat playlist songs";
+                            status = Lang.REPEAT_ALL.toString();
                             break;
                         case NO:
-                            status = ChatColor.YELLOW + "No repeat";
+                            status = Lang.REPEAT_NO.toString();
                             break;
                         case ONE:
-                            status = ChatColor.YELLOW + "Repeat one song";
+                            status = Lang.REPEAT_ONE.toString();
                             break;
                     }
                     lore = Lang.SWITH_REPEAT_MODE_LORE.toList("{status}", status);
