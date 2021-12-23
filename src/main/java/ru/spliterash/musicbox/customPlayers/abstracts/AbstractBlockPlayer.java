@@ -29,6 +29,7 @@ public abstract class AbstractBlockPlayer extends PositionSongPlayer implements 
 
     public AbstractBlockPlayer(IPlayList list, Location location, int range) {
         super(list.getCurrent().getSong());
+        if (MusicBox.getInstance().getConfigObject().isExtendedOctavesRange()) this.setEnable10Octave(true);
         this.location = BukkitUtils.centerBlock(location);
         setRange(range);
         setTargetLocation(BukkitUtils.centerBlock(location));

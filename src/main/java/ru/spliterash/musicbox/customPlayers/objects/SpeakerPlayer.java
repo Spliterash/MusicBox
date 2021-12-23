@@ -34,6 +34,7 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
 
     public SpeakerPlayer(IPlayList list, PlayerWrapper wrapper) {
         super(list.getCurrent().getSong());
+        if (MusicBox.getInstance().getConfigObject().isExtendedOctavesRange()) this.setEnable10Octave(true);
         this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         this.rangeModel = new RangePlayerModel(musicBoxModel);

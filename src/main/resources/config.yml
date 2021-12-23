@@ -43,3 +43,5 @@ jukeboxRadius: 64
 # Enable or disable autodestroy range player if nobody hear him (Speaker mode, Sign,Jukeboxes) Time in seconds(0 disable)
 # Включить или выключить автоуничтожение проигрывателей если никто их не слышит в течении N секунд
 autoDestroy: 60
+
+extendedOctavesRange: false
