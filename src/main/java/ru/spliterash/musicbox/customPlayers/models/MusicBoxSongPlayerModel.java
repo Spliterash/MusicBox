@@ -125,7 +125,7 @@ public class MusicBoxSongPlayerModel {
      * Вызывается из event'a
      */
     public void onSongEnd() {
-        if (!(this instanceof PlayerSongPlayer)) startNext();
+        if (!(this.getMusicBoxSongPlayer() instanceof PlayerSongPlayer)) startNext();
     }
 
     private boolean nextCreated = false;
