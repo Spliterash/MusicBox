@@ -518,8 +518,8 @@ public enum Lang {
     ),
     VOLUME_LORE(
             Arrays.asList(
-                    "&7Right Click -> volume - &c5",
-                    "&7Left Click -> volume + &a5"
+                    "&7Left Click -> volume + &a5",
+                    "&7Right Click -> volume - &c5"
             )
     );
 
