@@ -7,6 +7,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.spliterash.musicbox.Lang;
+import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
@@ -105,16 +106,30 @@ public class SPControlGUI {
             {
                 List<String> lore;
                 String status = "null";
-                switch(spModel.getMusicBoxSongPlayer().getApiPlayer().getRepeatMode()) {
-                    case ALL:
-                        status = Lang.REPEAT_ALL.toString();
-                        break;
-                    case NO:
-                        status = Lang.REPEAT_NO.toString();
-                        break;
-                    case ONE:
-                        status = Lang.REPEAT_ONE.toString();
-                        break;
+                if (spModel.getMusicBoxSongPlayer() instanceof AbstractBlockPlayer) {
+                    switch(((AbstractBlockPlayer) spModel.getMusicBoxSongPlayer()).getRepeatModeValue()) {
+                        case ALL:
+                            status = Lang.REPEAT_ALL.toString();
+                            break;
+                        case NO:
+                            status = Lang.REPEAT_NO.toString();
+                            break;
+                        case ONE:
+                            status = Lang.REPEAT_ONE.toString();
+                            break;
+                    }
+                } else {
+                    switch(spModel.getMusicBoxSongPlayer().getApiPlayer().getRepeatMode()) {
+                        case ALL:
+                            status = Lang.REPEAT_ALL.toString();
+                            break;
+                        case NO:
+                            status = Lang.REPEAT_NO.toString();
+                            break;
+                        case ONE:
+                            status = Lang.REPEAT_ONE.toString();
+                            break;
+                    }
                 }
                 lore = Lang.SWITH_REPEAT_MODE_LORE.toList("{status}", status);
                 repeatButton = ItemUtils.createStack(XMaterial.NOTE_BLOCK, Lang.REPEAT_MODE.toString(), lore);
@@ -123,16 +138,16 @@ public class SPControlGUI {
                 if (p.hasPermission("musicbox.repeat")) {
                     if (spModel.getMusicBoxSongPlayer() instanceof PlayerSongPlayer) {
                         PlayerWrapper.getInstance(p).switchRepeatMode();
-                    } else {
-                        switch(spModel.getMusicBoxSongPlayer().getApiPlayer().getRepeatMode()){
+                    } else if (spModel.getMusicBoxSongPlayer() instanceof AbstractBlockPlayer){
+                        switch(((AbstractBlockPlayer) spModel.getMusicBoxSongPlayer()).getRepeatModeValue()){
                             case NO:
-                                spModel.getMusicBoxSongPlayer().getApiPlayer().setRepeatMode(RepeatMode.ALL);
+                                ((AbstractBlockPlayer) spModel.getMusicBoxSongPlayer()).setRepeatModeValue(RepeatMode.ALL);
                                 break;
                             case ALL:
-                                spModel.getMusicBoxSongPlayer().getApiPlayer().setRepeatMode(RepeatMode.ONE);
+                                ((AbstractBlockPlayer) spModel.getMusicBoxSongPlayer()).setRepeatModeValue(RepeatMode.ONE);
                                 break;
                             case ONE:
-                                spModel.getMusicBoxSongPlayer().getApiPlayer().setRepeatMode(RepeatMode.NO);
+                                ((AbstractBlockPlayer) spModel.getMusicBoxSongPlayer()).setRepeatModeValue(RepeatMode.NO);
                                 break;
                         }
                     }
@@ -151,7 +166,11 @@ public class SPControlGUI {
                 playNow
         ), new ClickAction(() -> {
             spModel.getPlayList().setSong(song);
-            spModel.playSong(songNum);
+            if (spModel.getMusicBoxSongPlayer() instanceof AbstractBlockPlayer) {
+                spModel.createNextPlayer();
+            } else {
+                spModel.playSong(songNum);
+            }
         }));
     }
 

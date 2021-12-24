@@ -27,9 +27,10 @@ public abstract class AbstractBlockPlayer extends PositionSongPlayer implements 
     private final MusicBoxSongPlayerModel musicBoxModel;
     private final RangePlayerModel rangePlayerModel;
     private final Location location;
+    private RepeatMode repeatModeValue = RepeatMode.NO;
 
     public AbstractBlockPlayer(IPlayList list, Location location, int range) {
-        super(list.getCurrent().getSong());
+        super(list.getPlayList());
         if (MusicBox.getInstance().getConfigObject().isExtendedOctavesRange()) this.setEnable10Octave(true);
         this.location = BukkitUtils.centerBlock(location);
         setRange(range);
@@ -132,4 +133,13 @@ public abstract class AbstractBlockPlayer extends PositionSongPlayer implements 
      * Вызывается в случае нормального завершения музыки
      */
     protected abstract void songEnd();
+
+    public void setRepeatModeValue(RepeatMode repeatMode) {
+        this.repeatModeValue = repeatMode;
+        if (repeatMode == RepeatMode.ONE) {
+            getApiPlayer().setRepeatMode(RepeatMode.ONE);
+        } else {
+            getApiPlayer().setRepeatMode(RepeatMode.NO);
+        }
+    }
 }

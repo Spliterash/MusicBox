@@ -1,7 +1,9 @@
 package ru.spliterash.musicbox.customPlayers.models;
 
+import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import lombok.Getter;
+import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.customPlayers.interfaces.PlayerSongPlayer;
@@ -117,6 +119,13 @@ public class MusicBoxSongPlayerModel {
      */
     private void acceptNext() {
         MusicBoxSongPlayer nextPlayer = nextSongRunnable.apply(playList);
+        if (getMusicBoxSongPlayer() instanceof AbstractBlockPlayer) {
+            RepeatMode repeatMode = ((AbstractBlockPlayer) getMusicBoxSongPlayer()).getRepeatModeValue();
+            ((AbstractBlockPlayer) nextPlayer).setRepeatModeValue(repeatMode);
+        } else {
+            nextPlayer.getApiPlayer().setRepeatMode(getMusicBoxSongPlayer().getApiPlayer().getRepeatMode());
+        }
+        nextPlayer.getApiPlayer().setVolume(getMusicBoxSongPlayer().getApiPlayer().getVolume());
         if (nextPlayer != null && controlGUI != null)
             controlGUI.openNext(nextPlayer.getMusicBoxModel());
     }
@@ -151,8 +160,30 @@ public class MusicBoxSongPlayerModel {
 
     public void startNext() {
         if (playList.tryNext()) {
-            playSong(playList.getSongNum(playList.getCurrent()));
+            if (getMusicBoxSongPlayer() instanceof AbstractBlockPlayer) {
+                RepeatMode repeatMode = ((AbstractBlockPlayer) getMusicBoxSongPlayer()).getRepeatModeValue();
+                switch(repeatMode) {
+                    case ALL:
+                        createNextPlayer();
+                        break;
+                    case ONE:
+                        getMusicBoxSongPlayer().getApiPlayer().setTick((short) 0);
+                        break;
+                    case NO:
+                        playList.back(1);
+                        getMusicBoxSongPlayer().destroy();
+                        break;
+                }
+            } else {
+                playSong(playList.getSongNum(playList.getCurrent()));
+            }
         } else
             getMusicBoxSongPlayer().destroy();
+    }
+
+    public void createNextPlayer() {
+        nextCreated = true;
+        acceptNext();
+        getMusicBoxSongPlayer().destroy();
     }
 }
