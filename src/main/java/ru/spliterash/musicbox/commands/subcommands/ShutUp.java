@@ -1,6 +1,7 @@
 package ru.spliterash.musicbox.commands.subcommands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import ru.spliterash.musicbox.Lang;
@@ -13,31 +14,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AdminExecutor implements SubCommand {
+public class ShutUp implements SubCommand {
     private final MusicBoxExecutor parent;
 
-    public AdminExecutor(MusicBoxExecutor parent) {
+    public ShutUp(MusicBoxExecutor parent) {
         this.parent = parent;
     }
 
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(CommandSender player, String[] args) {
         if (args.length == 0) {
             parent.sendHelp(player);
             return;
         }
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (args[0]) {
-            case "shutup":
-                if (args.length == 2) {
-                    shutUp(player, args);
-                } else {
-                    parent.sendHelp(player);
-                    return;
-                }
-                break;
-        }
-
+        shutUp(player, args);
     }
 
     @Override
@@ -57,21 +47,22 @@ public class AdminExecutor implements SubCommand {
         return Collections.emptyList();
     }
 
-    public void shutUp(Player player, String[] args) {
-        Player p = Bukkit.getPlayer(args[1]);
+    public void shutUp(CommandSender sender, String[] args) {
+        Player p = Bukkit.getPlayer(args[0]);
         if (p == null) {
-            player.sendMessage(Lang.PLAYER_OFLLINE.toString("{player}", args[1]));
+            sender.sendMessage(Lang.PLAYER_OFLLINE.toString("{player}", args[0]));
             return;
         }
         PlayerWrapper
                 .getInstanceOptional(p)
                 .ifPresent(PlayerWrapper::destroyActivePlayer);
-        player.sendMessage(Lang.SHUT_UPPED.toString("{player}", player.getName()));
+
+        sender.sendMessage(Lang.SHUT_UPPED.toString("{player}", p.getName()));
 
     }
 
     @Override
     public String getPex() {
-        return "musicbox.admin";
+        return "musicbox.shutup";
     }
 }
