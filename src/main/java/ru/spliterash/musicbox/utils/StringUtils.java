@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.utils;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 import ru.spliterash.musicbox.Lang;
 import sun.security.util.IOUtils;
 
@@ -11,9 +12,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @UtilityClass
 public class StringUtils {
@@ -91,5 +94,19 @@ public class StringUtils {
 
     public String strip(String str) {
         return ChatColor.stripColor(str);
+    }
+
+    @NotNull
+    public static List<String> tabCompletePrepare(String[] args, Stream<String> stream) {
+        if (args.length < 1) {
+            return stream.collect(Collectors.toList());
+        } else if (args.length == 1) {
+            String start = args[0].toLowerCase();
+            return stream
+                    .filter(s -> s.toLowerCase().startsWith(start))
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

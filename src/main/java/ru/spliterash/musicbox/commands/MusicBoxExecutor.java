@@ -26,6 +26,7 @@ public class MusicBoxExecutor implements TabExecutor {
         subs.put("admin", new AdminExecutor(this));
         subs.put("reload", new ReloadExecutor());
         subs.put("test", new TestExecutor());
+        subs.put("silent", new SilentExecutor());
     }
 
     @Override
@@ -34,40 +35,40 @@ public class MusicBoxExecutor implements TabExecutor {
             sender.sendMessage(ChatColor.RED + "Plugin not loaded, please wait or check console if wait too long");
             return true;
         }
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(Lang.ONLY_PLAYERS.toString());
+
+        if (!sender.hasPermission("musicbox.use")) {
+            sender.sendMessage(Lang.NO_PEX.toString());
             return true;
         }
-        Player player = (Player) sender;
-        if (!player.hasPermission("musicbox.use")) {
-            player.sendMessage(Lang.NO_PEX.toString());
-            return true;
-        }
+
         if (args.length == 0) {
-            GUIActions.openDefaultInventory(PlayerWrapper.getInstance(player));
+            if (sender instanceof Player)
+                GUIActions.openDefaultInventory(PlayerWrapper.getInstance((Player) sender));
+            else
+                sendHelp(sender);
             return true;
         }
         SubCommand executor = subs.get(args[0]);
         if (executor == null) {
-            sendHelp(player);
-        } else if (executor.getPex() == null || player.hasPermission(executor.getPex())) {
-            executor.execute(player, ArrayUtils.removeFirst(String.class, args));
+            sendHelp(sender);
+        } else if (executor.getPex() == null || sender.hasPermission(executor.getPex())) {
+            executor.execute(sender, ArrayUtils.removeFirst(String.class, args));
         } else {
-            player.sendMessage(Lang.NO_PEX.toString());
+            sender.sendMessage(Lang.NO_PEX.toString());
         }
         return true;
     }
 
-    public void sendHelp(Player player) {
-        player.sendMessage(Lang.COMMAND_HELP.toArray());
-        if (player.hasPermission("musicbox.shop")) {
-            player.sendMessage(Lang.COMMAND_HELP_SHOP.toString());
+    public void sendHelp(CommandSender sender) {
+        sender.sendMessage(Lang.COMMAND_HELP.toArray());
+        if (sender.hasPermission("musicbox.shop")) {
+            sender.sendMessage(Lang.COMMAND_HELP_SHOP.toString());
         }
-        if (player.hasPermission("musicbox.get")) {
-            player.sendMessage(Lang.COMMAND_HELP_GET.toString());
+        if (sender.hasPermission("musicbox.get")) {
+            sender.sendMessage(Lang.COMMAND_HELP_GET.toString());
         }
-        if (player.hasPermission("musicbox.admin")) {
-            player.sendMessage(Lang.ADMIN_HELP.toArray());
+        if (sender.hasPermission("musicbox.admin")) {
+            sender.sendMessage(Lang.ADMIN_HELP.toArray());
         }
     }
 
@@ -89,6 +90,7 @@ public class MusicBoxExecutor implements TabExecutor {
                 tabComplete.add("get");
             if (player.hasPermission("musicbox.admin"))
                 tabComplete.add("admin");
+            tabComplete.add("silent");
             if (args.length == 1)
                 return tabComplete
                         .stream()

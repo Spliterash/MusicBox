@@ -43,3 +43,9 @@ jukeboxRadius: 64
 # Enable or disable autodestroy range player if nobody hear him (Speaker mode, Sign,Jukeboxes) Time in seconds(0 disable)
 # Включить или выключить автоуничтожение проигрывателей если никто их не слышит в течении N секунд
 autoDestroy: 60
+# Нужно ли проверять пекс musicbox.hear. По дефолту он не проверяется и все могут слышать музыку,
+# но вдруг вам сильно приспичило и надо прям, тогда ставим true и теперь никто без этого пекса слышать музыку не может
+# ----
+# Whether it is necessary to check the pex of musicbox.hear. By default, it is not checked and everyone can hear music
+# but if you need it, then set to true and now no one can hear music without this pex
+hearPermissionsCheck: false

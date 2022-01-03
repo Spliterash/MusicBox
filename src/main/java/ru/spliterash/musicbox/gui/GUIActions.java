@@ -54,6 +54,8 @@ public class GUIActions {
             BarButton[] defaultBar = new BarButton[6];
             // Кнопка открытия панели
             defaultBar[0] = controlPanelButton();
+            // Кнопка тихого режима
+            defaultBar[1] = silentButton();
             // Кнопка остановки, просто чтобы не лезть каждый раз в панель
             defaultBar[2] = stopButton();
             // Редактор плейлистов
@@ -88,6 +90,27 @@ public class GUIActions {
                     .extraContainerLore(GUIActions::playerGetAllContainerLore)
                     .build();
         }
+    }
+
+    private static BarButton silentButton() {
+        return new BarButton() {
+
+            @Override
+            public ItemStack getItemStack(PlayerWrapper wrapper) {
+                String status = wrapper.isSilent() ? Lang.ENABLE.toString() : Lang.DISABLE.toString();
+                return ItemUtils.createStack(XMaterial.FIREWORK_STAR, Lang.SILENT_MODE.toString(), Lang.SILENT_MODE_LORE.toList("{status}", status));
+            }
+
+            @Override
+            public InventoryAction getAction(PlayerWrapper wrapper, SongContainerGUI.SongGUIData<Void> data) {
+                return new ClickAction(() -> {
+                    wrapper.setSilent(!wrapper.isSilent());
+                    data.refreshInventory();
+                });
+            }
+
+
+        };
     }
 
     private static List<String> playerPlayAllContainer(SongContainerGUI.SongGUIData<FullSongContainer> data) {

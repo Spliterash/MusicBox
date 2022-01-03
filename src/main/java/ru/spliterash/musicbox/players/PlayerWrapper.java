@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.players;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -41,6 +42,14 @@ public class PlayerWrapper {
      * Поскольку с этим может возникнуть много проблем
      */
     private boolean speaker;
+    /**
+     * Тихий режим
+     * Игрок не слышит никого и ничего
+     * <p>
+     * Автоматически выключается при включении игроком какой-то музычки
+     */
+    @Setter
+    private boolean silent = false;
     /**
      * Активный проигрыватель(если есть)
      */
@@ -157,7 +166,6 @@ public class PlayerWrapper {
             startRadio(playList);
         if (tick > -1)
             activePlayer.getApiPlayer().setTick(tick);
-
     }
 
     public void startSpeaker(IPlayList playList) {
@@ -214,5 +222,12 @@ public class PlayerWrapper {
         }
     }
 
-
+    public boolean canHearMusic() {
+        if (silent)
+            return false;
+        else if (!MusicBox.getInstance().getConfigObject().isHearPermissionsCheck())
+            return true;
+        else
+            return player.hasPermission("musicbox.hear");
+    }
 }

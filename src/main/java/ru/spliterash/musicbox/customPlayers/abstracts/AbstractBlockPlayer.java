@@ -4,8 +4,8 @@ import com.xxmicloxx.NoteBlockAPI.songplayer.PositionSongPlayer;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
@@ -109,7 +109,11 @@ public abstract class AbstractBlockPlayer extends PositionSongPlayer implements 
     @Override
     public void destroy() {
         if (!isDestroyed()) {
-            super.destroy();
+            try {
+                super.destroy();
+            } catch (IllegalPluginAccessException ex) {
+                // ПОФИК
+            }
             players.values().remove(this);
             boolean normalEnd = musicBoxModel.isSongEndNormal();
             if (normalEnd)

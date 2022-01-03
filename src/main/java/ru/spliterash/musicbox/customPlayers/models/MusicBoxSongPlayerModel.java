@@ -96,7 +96,7 @@ public class MusicBoxSongPlayerModel {
     public void setPlayers(Collection<UUID> players) {
         try {
             Map<UUID, Boolean> map = getPlayers();
-            if (map.keySet().containsAll(players))
+            if (map.keySet().containsAll(players) && !players.isEmpty())
                 return;
             Lock lock = getLock();
             lock.lock();

@@ -494,10 +494,23 @@ public enum Lang {
                     "but don't worry, we'll convert it to the new one. Click again, but now with a new disc",
             "&6Похоже это диск от старой версии плагина, но не волнуйся, " +
                     "мы переделаем его в новый. Кликни ещё раз, но теперь новым диском, он должен быть где то у тебя в инвентаре"
+    ),
+    SILENT_MODE_LORE(
+            Arrays.asList(
+                    "&7In silent mode you can hear &bonly self songs&7.",
+                    "&7No any other songplayers from player speakers, jukeboxs or signs",
+                    "&7Status: {status}"
+            ),
+            Arrays.asList(
+                    "&7В тихом режиме вы можете слышать &bтолько свою музыку&7.",
+                    "&7Никаких других проигрывателей от игроков с колокной, дисков или табличек",
+                    "&7Статус: {status}"
+            )
+    ),
+    SILENT_MODE(
+            "&6Silent mode",
+            "&6Тихий режим"
     );
-
-
-
     /**
      * Оригинальные переводы
      * 0 индекс - англиский

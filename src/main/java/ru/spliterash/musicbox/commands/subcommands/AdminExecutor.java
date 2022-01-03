@@ -45,13 +45,13 @@ public class AdminExecutor implements SubCommand {
         if (args.length <= 1) {
             //noinspection ArraysAsListWithZeroOrOneArgument
             return Arrays.asList("shutup");
-        } else if (args[0].toLowerCase().equals("shutup")) {
+        } else if (args[0].equalsIgnoreCase("shutup")) {
             String startWith = args[1];
             return Bukkit
                     .getOnlinePlayers()
                     .stream()
                     .map(HumanEntity::getName)
-                    .filter(p->p.startsWith(startWith))
+                    .filter(p -> p.startsWith(startWith))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
@@ -64,7 +64,7 @@ public class AdminExecutor implements SubCommand {
             return;
         }
         PlayerWrapper
-                .getInstanceOptional(player)
+                .getInstanceOptional(p)
                 .ifPresent(PlayerWrapper::destroyActivePlayer);
         player.sendMessage(Lang.SHUT_UPPED.toString("{player}", player.getName()));
 

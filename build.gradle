@@ -14,7 +14,7 @@ allprojects {
     apply from: new File(rootProject.rootDir, '/scripts/compileSub.gradle')
 
     group = 'ru.spliterash'
-    version = '2.0.6'
+    version = '2.0.7'
 
 
     sourceCompatibility = '1.8'

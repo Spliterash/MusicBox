@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import ru.spliterash.musicbox.MusicBox;
@@ -17,9 +18,6 @@ import ru.spliterash.musicbox.customPlayers.models.RangePlayerModel;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.utils.SongUtils;
 
-import java.util.Set;
-import java.util.UUID;
-
 /**
  * Проигрыватель для игрока
  * Но его слышат все вокруг
@@ -31,14 +29,17 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
     private final PlayerPlayerModel model;
     private final RangePlayerModel rangeModel;
     private final BukkitTask task;
+    private final PlayerWrapper owner;
 
     public SpeakerPlayer(IPlayList list, PlayerWrapper wrapper) {
         super(list.getCurrent().getSong());
         this.musicBoxModel = new MusicBoxSongPlayerModel(this, list, SongUtils.nextPlayerSong(wrapper));
         this.model = new PlayerPlayerModel(wrapper, musicBoxModel);
         this.rangeModel = new RangePlayerModel(musicBoxModel);
+        this.owner = wrapper;
         setEntity(wrapper.getPlayer());
         setRange(MusicBox.getInstance().getConfigObject().getSpeakerRadius());
+
         musicBoxModel.runPlayer();
         task = new BukkitRunnable() {
             @Override
@@ -60,7 +61,11 @@ public class SpeakerPlayer extends EntitySongPlayer implements PlayerSongPlayer,
     @Override
     public void destroy() {
         if (!isDestroyed()) {
-            super.destroy();
+            try {
+                super.destroy();
+            } catch (IllegalPluginAccessException ex) {
+                // ПОФИК
+            }
             rangeModel.destroy();
             model.destroy();
             musicBoxModel.destroy();

@@ -10,7 +10,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.spliterash.musicbox.MusicBox;
 
@@ -18,9 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @UtilityClass
 public class BukkitUtils {
@@ -47,7 +44,7 @@ public class BukkitUtils {
     public void runSyncTask(Runnable runnable) {
         if (Bukkit.isPrimaryThread())
             runnable.run();
-        else
+        else if (MusicBox.getInstance().isEnabled())
             Bukkit.getScheduler().runTask(MusicBox.getInstance(), runnable);
     }
 

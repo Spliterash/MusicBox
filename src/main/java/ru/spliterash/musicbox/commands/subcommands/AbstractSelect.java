@@ -5,10 +5,9 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.commands.SubCommand;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 import ru.spliterash.musicbox.song.MusicBoxSongManager;
+import ru.spliterash.musicbox.utils.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractSelect implements SubCommand {
@@ -51,15 +50,6 @@ public abstract class AbstractSelect implements SubCommand {
                 .stream()
                 .map(MusicBoxSong::getName)
                 .map(s -> s.replace(' ', '_'));
-        if (args.length < 1) {
-            return stream.collect(Collectors.toList());
-        } else if (args.length == 1) {
-            String start = args[0].toLowerCase();
-            return stream
-                    .filter(s -> s.toLowerCase().startsWith(start))
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
+        return StringUtils.tabCompletePrepare(args, stream);
     }
 }
