@@ -6,6 +6,6 @@ def _compileSub(Project project) {
     project.subprojects.each { sub -> _compileSub(sub) }
 
     dependencies {
-        compile project
+        api project
     }
 }

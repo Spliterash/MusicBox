@@ -2,13 +2,13 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocatio
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'java'
+    id 'java-library'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id "io.freefair.lombok" version "5.1.1"
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 allprojects {
-    apply plugin: 'java';
+    apply plugin: 'java-library';
     apply plugin: "io.freefair.lombok"
 
     apply from: new File(rootProject.rootDir, '/scripts/compileSub.gradle')
@@ -56,9 +56,9 @@ dependencies {
     compileOnly 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
     compileOnly fileTree("libs")
 
-    compile 'com.github.cryptomorin:XSeries:8.4.0'
-    compile 'com.github.BananaPuncher714:NBTEditor:master-SNAPSHOT'
-    compile 'org.bstats:bstats-bukkit:2.2.1'
+    api 'com.github.cryptomorin:XSeries:8.4.0'
+    api 'com.github.BananaPuncher714:NBTEditor:master-SNAPSHOT'
+    api 'org.bstats:bstats-bukkit:2.2.1'
 }
 
 //noinspection GroovyAssignabilityCheck
