@@ -3,7 +3,6 @@ package ru.spliterash.musicbox;
 import com.xxmicloxx.NoteBlockAPI.event.SongEndEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,12 +25,36 @@ import ru.spliterash.musicbox.events.SourcedBlockRedstoneEvent;
 import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.minecraft.nms.versionutils.VersionUtilsFactory;
 import ru.spliterash.musicbox.players.PlayerWrapper;
-import ru.spliterash.musicbox.utils.*;
+import ru.spliterash.musicbox.utils.FaceUtils;
+import ru.spliterash.musicbox.utils.RedstoneUtils;
+import ru.spliterash.musicbox.utils.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Handler implements Listener {
+    private static Consumer<ChunkUnloadEvent> chunkCanceller;
+
+    static {
+        try {
+            //noinspection JavaReflectionMemberAccess
+            Method method = ChunkUnloadEvent.class.getMethod("setCancelled", boolean.class);
+
+            chunkCanceller = event -> {
+                try {
+                    method.invoke(event, true);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+        } catch (NoSuchMethodException e) {
+            chunkCanceller = event -> event.getChunk().load();
+        }
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onExit(PlayerQuitEvent e) {
         PlayerWrapper
@@ -82,7 +105,7 @@ public class Handler implements Listener {
             if (player instanceof SignPlayer) {
                 SignPlayer signPlayer = (SignPlayer) player;
                 if (signPlayer.isPreventDestroy()) {
-                    e.setCancelled(true);
+                    chunkCanceller.accept(e);
                     return;
                 }
             }

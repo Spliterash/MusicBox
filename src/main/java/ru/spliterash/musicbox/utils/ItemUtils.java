@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class ItemUtils {
-    private final Enchantment enchantment = XEnchantment.PROTECTION_EXPLOSIONS.parseEnchantment();
+    private final Enchantment enchantment = XEnchantment.PROTECTION_EXPLOSIONS.getEnchant();
 
     public ItemStack glow(ItemStack stack) {
         ItemMeta meta = stack.getItemMeta();
