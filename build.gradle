@@ -14,7 +14,7 @@ allprojects {
     apply from: new File(rootProject.rootDir, '/scripts/compileSub.gradle')
 
     group = 'ru.spliterash'
-    version = '2.0.8'
+    version = '2.0.9'
 
 
     sourceCompatibility = '1.8'
@@ -56,7 +56,7 @@ dependencies {
     compileOnly 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
     compileOnly fileTree("libs")
 
-    api 'com.github.cryptomorin:XSeries:8.7.0'
+    api 'com.github.cryptomorin:XSeries:8.8.0'
     api 'com.github.BananaPuncher714:NBTEditor:master-SNAPSHOT'
     api 'org.bstats:bstats-bukkit:3.0.0'
 }

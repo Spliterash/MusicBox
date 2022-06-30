@@ -2,11 +2,11 @@ name: MusicBox
 version: @version@
 main: ru.spliterash.musicbox.MusicBox
 author: Spliterash
-depends:
+depend:
   - NoteBlockAPI
-softpend:
+softdepend:
   - Vault
   - ProtocolLib
 api-version: 1.13
 commands:
-  musicbox: null
+  musicbox: {}
