@@ -1,10 +1,9 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java-library'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id "io.freefair.lombok" version "5.1.1"
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "io.freefair.lombok" version "6.5.1"
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 allprojects {
@@ -38,6 +37,9 @@ allprojects {
             name = 'sonatype'
             url = 'https://oss.sonatype.org/content/groups/public/'
         }
+        maven {
+            url "https://repo.clojars.org/"
+        }
     }
     processResources {
         filesMatching("*.yml") {
@@ -53,11 +55,11 @@ allprojects {
 dependencies {
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
-    compileOnly 'com.github.koca2000:NoteBlockAPI:-SNAPSHOT'
+    compileOnly 'com.github.koca2000:NoteBlockAPI:1.6.1'
     compileOnly fileTree("libs")
 
-    api 'com.github.cryptomorin:XSeries:8.8.0'
-    api 'com.github.BananaPuncher714:NBTEditor:master-SNAPSHOT'
+    api 'com.github.cryptomorin:XSeries:9.1.0'
+    api 'io.github.bananapuncher714:nbteditor:7.18.3'
     api 'org.bstats:bstats-bukkit:3.0.0'
 }
 
