@@ -1,7 +1,11 @@
 rootProject.name = 'MusicBox'
 
+include "plugin"
 include "nms:shared"
 include "nms:versions:12"
 include "nms:versions:13-16"
 include "nms:versions:17"
 include "nms:versions:18"
+include "nms:versions:19_2"
+include "nms:versions:19_3"
+include "nms:versions:19_4"

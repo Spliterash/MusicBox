@@ -2,31 +2,58 @@ package ru.spliterash.musicbox.minecraft.nms.jukebox;
 
 import org.bukkit.block.Jukebox;
 import ru.spliterash.musicbox.minecraft.nms.NMSUtils;
-import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V12;
-import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V13_16;
-import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V17;
-import ru.spliterash.musicbox.minecraft.nms.jukebox.versions.V18;
 
 import java.lang.reflect.InvocationTargetException;
 
 public class JukeboxFactory {
+    private static final String START_PATH = "ru.spliterash.musicbox.minecraft.nms.jukebox.versions.";
     private static final Class<? extends IJukebox> clazz;
 
     static {
-        int iV = NMSUtils.getVersion();
-        if (iV >= 18)
-            clazz = V18.class;
+        String raw = NMSUtils.getRawVersion();
+        int iV = NMSUtils.parseMajorVersion(raw);
+
+        String className;
+        if (iV == 19) {
+            switch (raw) {
+                case "1.19.2":
+                    className = START_PATH + "V19_2";
+                    break;
+                case "1.19.3":
+                    className = START_PATH + "V19_3";
+                    break;
+                case "1.19.4":
+                    className = START_PATH + "V19_4";
+                    break;
+                default:
+                    className = null;
+                    break;
+            }
+        } else if (iV == 18)
+            className = START_PATH + "V18";
         else if (iV == 17)
-            clazz = V17.class;
+            className = START_PATH + "V17";
         else if (iV >= 13)
-            clazz = V13_16.class;
+            className = START_PATH + "V13_16";
+        else if (iV == 12)
+            className = START_PATH + "V12";
         else
-            clazz = V12.class;
+            className = null;
+
+        if (className == null)
+            throw new IllegalArgumentException("Unsupported version: " + raw);
+
+        try {
+            //noinspection unchecked
+            clazz = (Class<? extends IJukebox>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static IJukebox getJukebox(Jukebox jukebox) {
         try {
-            return clazz.getDeclaredConstructor(Jukebox.class).newInstance(jukebox);
+            return clazz.getConstructor(Jukebox.class).newInstance(jukebox);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

@@ -4,6 +4,18 @@ import org.bukkit.Bukkit;
 
 public class NMSUtils {
 
+    public static int parseMajorVersion(String raw) {
+        int firstDotIndex = raw.indexOf(".");
+
+        raw = raw.substring(firstDotIndex + 1);
+
+        int secondDotIndex = raw.indexOf(".");
+
+        if (secondDotIndex != -1)
+            raw = raw.substring(0, secondDotIndex);
+
+        return Integer.parseInt(raw);
+    }
 
     public static String getRawVersion() {
         String strVersion = Bukkit.getVersion();
@@ -20,17 +32,6 @@ public class NMSUtils {
     }
 
     public static int getVersion() {
-        String raw = getRawVersion();
-
-        int firstDotIndex = raw.indexOf(".");
-
-        raw = raw.substring(firstDotIndex + 1);
-
-        int secondDotIndex = raw.indexOf(".");
-
-        if (secondDotIndex != -1)
-            raw = raw.substring(0, secondDotIndex);
-
-        return Integer.parseInt(raw);
+        return parseMajorVersion(getRawVersion());
     }
 }
