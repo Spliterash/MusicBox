@@ -14,7 +14,16 @@ public class JukeboxFactory {
         int iV = NMSUtils.parseMajorVersion(raw);
 
         String className;
-        if (iV == 19) {
+        if (iV == 20) {
+            switch (raw) {
+                case "1.20":
+                case "1.20.1":
+                default:
+                    className = START_PATH + "V20_1";
+                    break;
+
+            }
+        } else if (iV == 19) {
             switch (raw) {
                 case "1.19.2":
                     className = START_PATH + "V19_2";
@@ -54,7 +63,8 @@ public class JukeboxFactory {
     public static IJukebox getJukebox(Jukebox jukebox) {
         try {
             return clazz.getConstructor(Jukebox.class).newInstance(jukebox);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }

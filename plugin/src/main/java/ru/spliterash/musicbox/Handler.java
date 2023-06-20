@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.block.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -142,7 +143,7 @@ public class Handler implements Listener {
         Block b = e.getClickedBlock();
         if (b.getState() instanceof Sign) {
             Sign sign = (Sign) b.getState();
-            processSignClick(e.getPlayer(), sign);
+            processSignClick(e.getPlayer(), sign, e);
         } else if (b.getState() instanceof Jukebox) {
             Jukebox jukebox = (Jukebox) b.getState();
             ItemStack item = e.getItem();
@@ -157,10 +158,16 @@ public class Handler implements Listener {
         }
     }
 
-    private void processSignClick(Player player, Sign sign) {
-        Optional<AbstractBlockPlayer> infoSign = AbstractBlockPlayer
-                .findByInfoSign(sign.getLocation());
-        infoSign.ifPresent(a -> openControl(player, a));
+    private void processSignClick(Player player, Sign sign, Cancellable e) {
+        AbstractBlockPlayer infoSign = AbstractBlockPlayer
+                .findByInfoSign(sign.getLocation())
+                .orElse(null);
+        if (infoSign != null) {
+            openControl(player, infoSign);
+            e.setCancelled(true);
+
+            return;
+        }
 
         String lineTwo = sign.getLine(1);
         if (!StringUtils.strip(lineTwo).equalsIgnoreCase("[music]"))
@@ -173,10 +180,11 @@ public class Handler implements Listener {
             } else {
                 player.sendMessage(Lang.NO_PEX.toString());
             }
+            e.setCancelled(true);
         } else if (songId.startsWith(ChatColor.AQUA.toString())) {
             SignPlayer signPlayer = AbstractBlockPlayer.findByLocation(sign.getLocation());
             openControl(player, signPlayer);
-
+            e.setCancelled(true);
         }
     }
 
