@@ -11,11 +11,13 @@ import java.lang.reflect.Constructor;
 @UtilityClass
 public class YamlSupportUtils {
     @SneakyThrows
+    @SuppressWarnings("JavaReflectionMemberAccess")
     public static CustomClassLoaderConstructor createCustomClassLoaderConstructor() {
-        Constructor<?> constructor = CustomClassLoaderConstructor.class.getConstructors()[1];
-        if (constructor.getParameterCount() == 2)
+        try {
+            Constructor<?> constructor = CustomClassLoaderConstructor.class.getConstructor(Class.class, ClassLoader.class);
             return (CustomClassLoaderConstructor) constructor.newInstance(MusicBoxConfig.class, MusicBoxConfig.class.getClassLoader());
-        else
+        } catch (NoSuchMethodException e){
             return new CustomClassLoaderConstructor(MusicBoxConfig.class, MusicBoxConfig.class.getClassLoader(), new LoaderOptions());
+        }
     }
 }
