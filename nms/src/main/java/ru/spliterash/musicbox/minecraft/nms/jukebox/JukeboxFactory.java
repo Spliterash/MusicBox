@@ -18,10 +18,14 @@ public class JukeboxFactory {
             switch (raw) {
                 case "1.20":
                 case "1.20.1":
-                default:
                     className = START_PATH + "V20_1";
                     break;
-
+                case "1.20.2":
+                    className = START_PATH + "V20_2";
+                    break;
+                default:
+                    className = null;
+                    break;
             }
         } else if (iV == 19) {
             switch (raw) {

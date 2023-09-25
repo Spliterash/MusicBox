@@ -24,7 +24,7 @@ allprojects {
     apply(plugin = "java-library");
     apply(plugin = "io.freefair.lombok")
 
-    version = "2.0.12"
+    version = "2.0.13"
 
     repositories {
         mavenCentral()
@@ -64,4 +64,5 @@ dependencies {
     api(project(":nms:versions:19_3", "reobf"))
     api(project(":nms:versions:19_4", "reobf"))
     api(project(":nms:versions:20_1", "reobf"))
+    api(project(":nms:versions:20_2", "reobf"))
 }
