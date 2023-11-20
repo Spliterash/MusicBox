@@ -21,6 +21,7 @@ public class MusicBoxExecutor implements TabExecutor {
     public MusicBoxExecutor() {
         subs.put("shop", new ShopExecutor());
         subs.put("get", new GetExecutor());
+        subs.put("give", new GiveExecutor());
         subs.put("playlist", new PlaylistExecutor(this));
         subs.put("play", new PlayExecutor(this));
         subs.put("shutup", new ShutUp(this));
@@ -66,6 +67,9 @@ public class MusicBoxExecutor implements TabExecutor {
         if (sender.hasPermission("musicbox.get")) {
             sender.sendMessage(Lang.COMMAND_HELP_GET.toString());
         }
+        if (sender.hasPermission("musicbox.give")) {
+            sender.sendMessage(Lang.COMMAND_HELP_GIVE.toString());
+        }
         if (sender.hasPermission("musicbox.admin")) {
             sender.sendMessage(Lang.ADMIN_HELP.toArray());
         }
@@ -87,6 +91,8 @@ public class MusicBoxExecutor implements TabExecutor {
                 tabComplete.add("shop");
             if (player.hasPermission("musicbox.get"))
                 tabComplete.add("get");
+            if (player.hasPermission("musicbox.give"))
+                tabComplete.add("give");
             if (player.hasPermission("musicbox.admin")) {
                 tabComplete.add("admin");
                 tabComplete.add("shutup");

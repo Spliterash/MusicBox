@@ -92,6 +92,10 @@ public enum Lang {
             "&b/musicbox get (name)&6- Open get disc GUI or get disc with name",
             "&b/musicbox get (name)&6- Открыть инвентарь получения дисков или получить диск с именем"
     ),
+    COMMAND_HELP_GIVE(
+            "&b/musicbox give [player] [name]&6- Give disc with name to the player",
+            "&b/musicbox give [player] [name]&6- Передача диска с именем игрока"
+    ),
     COMMAND_HELP(
             Arrays.asList(
                     "&b/musicbox &6- Open music gui",
