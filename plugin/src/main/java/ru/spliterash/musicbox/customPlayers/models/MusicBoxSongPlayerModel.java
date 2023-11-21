@@ -2,6 +2,7 @@ package ru.spliterash.musicbox.customPlayers.models;
 
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import lombok.Getter;
+import ru.spliterash.musicbox.MusicBox;
 import ru.spliterash.musicbox.customPlayers.interfaces.IPlayList;
 import ru.spliterash.musicbox.customPlayers.interfaces.MusicBoxSongPlayer;
 import ru.spliterash.musicbox.gui.song.SPControlGUI;
@@ -44,6 +45,9 @@ public class MusicBoxSongPlayerModel {
     public void runPlayer() {
         if (!run) {
             SongPlayer songPlayer = this.musicBoxSongPlayer.getApiPlayer();
+            if (MusicBox.getInstance().getConfigObject().isEnable10octave()) {
+                songPlayer.setEnable10Octave(true);
+            }
             songPlayer.setPlaying(true);
             run = true;
         }

@@ -49,3 +49,6 @@ autoDestroy: 60
 # Whether it is necessary to check the pex of musicbox.hear. By default, it is not checked and everyone can hear music
 # but if you need it, then set to true and now no one can hear music without this pex
 hearPermissionsCheck: false
+# Enables support for octaves outside minecraft's default 2, which requires a resource pack to hear.
+# If false, notes outisde of the octave range are automatically transposed into it
+enable10octave: false
