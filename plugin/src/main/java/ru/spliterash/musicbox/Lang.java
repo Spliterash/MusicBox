@@ -23,6 +23,7 @@ public enum Lang {
             "&6Похоже у тебя нет разрешения на это действие"),
     // В консоли русский вариант будет смотреться... да никак не будет, UTF-8 👍👍👍
     ONLY_PLAYERS("Sry, but only players can execute this command"),
+    SPECIFY_PLAYER("Sry, but command can be executed only at players. Specify player to execute at"),
     SONG_NAME("&6{song}"),
     SONG_LORE(
             Arrays.asList(
@@ -87,19 +88,36 @@ public enum Lang {
     ),
     COMMAND_HELP_SHOP(
             "&b/musicbox shop (name)&6- Open disc shop or buy disc with name",
-            "&b/musicbox shop (name)&6- Открыть магазин дисков или купить пластинку с именем"),
-    COMMAND_HELP_GET(
-            "&b/musicbox get (name)&6- Open get disc GUI or get disc with name",
-            "&b/musicbox get (name)&6- Открыть инвентарь получения дисков или получить диск с именем"
+            "&b/musicbox shop (name)&6- Открыть магазин дисков или купить пластинку с именем"
+    ),
+    COMMAND_HELP_GIVE(
+            "&b/musicbox give (name)&6- Give disc",
+            "&b/musicbox give (name)&6- Выдать диск"
     ),
     COMMAND_HELP(
             Arrays.asList(
-                    "&b/musicbox &6- Open music gui",
-                    "&b/musicbox play [song_name] &6- Play song with name"
+                    "&b/musicbox &6- Open music gui"
             ),
             Arrays.asList(
-                    "&b/musicbox &6- Открыть инвентарь с музыкой",
-                    "&b/musicbox play [имя] &6- Воспроизвести трек"
+                    "&b/musicbox &6- Открыть инвентарь с музыкой"
+            )
+    ),
+    ADMIN_HELP(
+            Arrays.asList(
+                    "&b/musicbox shop [name] [player]&6- Open disc shop or buy disc with name for player",
+                    "&b/musicbox give [name] [player]&6- Give disc with name to the player",
+                    "&b/musicbox play [name] [player]&6- Play sound to player",
+                    "&b/musicbox silent [on,off,switch] [player] &6- Change player silent mode",
+                    "&b/musicbox shutup [player] &6- off player SongPlayer",
+                    "&b/musicbox reload &6- reload plugin with all music"
+            ),
+            Arrays.asList(
+                    "&b/musicbox shop [name] [player]&6- Открыть магазин дисков или купить пластинку с именем для игрока",
+                    "&b/musicbox give [name] [player]&6- Выдать диск игроку",
+                    "&b/musicbox play [name] [player]&6- Включить игроку определённую музыку",
+                    "&b/musicbox silent [on,off,switch] [player] &6- Сменить тихий режим игрока",
+                    "&b/musicbox shutup [player] &6- выключить проигрыватель игрока",
+                    "&b/musicbox reload &6- перезагрузить плагин со всей музыкой"
             )
     ),
     BUY_MUSIC_LORE(
@@ -364,14 +382,6 @@ public enum Lang {
     SHUT_UPPED(
             "&6Player &b{player}&6 has ben muted",
             "&6Игрок &b{player}&6 больше не воспроизводит музыку"),
-    ADMIN_HELP(
-            Arrays.asList(
-                    "&b/musicbox admin shutup [player] &6- off player SongPlayer"
-            ),
-            Arrays.asList(
-                    "&b/musicbox admin shutup [player] &6- выключить проигрыватель игрока"
-            )
-    ),
     SIGN_PLAYLIST_LORE(
             Arrays.asList(
                     "",
@@ -510,6 +520,10 @@ public enum Lang {
     SILENT_MODE(
             "&6Silent mode",
             "&6Тихий режим"
+    ),
+    SILENT_MODE_RESPONSE(
+            "&6Set &b{player}&6 silent mode to {state}",
+            "&6Тихий режим установлен в состояние {state}&6 для игрока &b{player}"
     );
     /**
      * Оригинальные переводы

@@ -19,10 +19,13 @@ public class MusicBoxExecutor implements TabExecutor {
     private final Map<String, SubCommand> subs = new HashMap<>();
 
     public MusicBoxExecutor() {
+        GiveExecutor giveExecutor = new GiveExecutor();
+
         subs.put("shop", new ShopExecutor());
-        subs.put("get", new GetExecutor());
-        subs.put("playlist", new PlaylistExecutor(this));
-        subs.put("play", new PlayExecutor(this));
+        subs.put("get", giveExecutor); // backward compatibility
+        subs.put("give", giveExecutor);
+        subs.put("playlist", new PlaylistExecutor());
+        subs.put("play", new PlayExecutor());
         subs.put("shutup", new ShutUp(this));
         subs.put("reload", new ReloadExecutor());
         subs.put("silent", new SilentExecutor());
@@ -50,7 +53,9 @@ public class MusicBoxExecutor implements TabExecutor {
         SubCommand executor = subs.get(args[0]);
         if (executor == null) {
             sendHelp(sender);
-        } else if (executor.getPex() == null || sender.hasPermission(executor.getPex())) {
+            return true;
+        }
+        if (executor.canExecute(sender)) {
             executor.execute(sender, ArrayUtils.removeFirst(String.class, args));
         } else {
             sender.sendMessage(Lang.NO_PEX.toString());
@@ -63,8 +68,8 @@ public class MusicBoxExecutor implements TabExecutor {
         if (sender.hasPermission("musicbox.shop")) {
             sender.sendMessage(Lang.COMMAND_HELP_SHOP.toString());
         }
-        if (sender.hasPermission("musicbox.get")) {
-            sender.sendMessage(Lang.COMMAND_HELP_GET.toString());
+        if (sender.hasPermission("musicbox.give")) {
+            sender.sendMessage(Lang.COMMAND_HELP_GIVE.toString());
         }
         if (sender.hasPermission("musicbox.admin")) {
             sender.sendMessage(Lang.ADMIN_HELP.toArray());
@@ -73,25 +78,22 @@ public class MusicBoxExecutor implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (!(sender instanceof Player)) {
-            return Collections.emptyList();
-        }
-        Player player = (Player) sender;
         if (args.length <= 1) {
             List<String> tabComplete = new LinkedList<>();
-            if (player.hasPermission("musicbox.use")) {
+            if (sender.hasPermission("musicbox.use")) {
                 tabComplete.add("play");
-                tabComplete.add("playlist");
+                tabComplete.add("silent");
+                if (sender instanceof Player)
+                    tabComplete.add("playlist");
             }
-            if (player.hasPermission("musicbox.shop"))
+            if (sender.hasPermission("musicbox.shop"))
                 tabComplete.add("shop");
-            if (player.hasPermission("musicbox.get"))
-                tabComplete.add("get");
-            if (player.hasPermission("musicbox.admin")) {
-                tabComplete.add("admin");
+            if (sender.hasPermission("musicbox.give"))
+                tabComplete.add("give");
+            if (sender.hasPermission("musicbox.admin")) {
                 tabComplete.add("shutup");
+                tabComplete.add("reload");
             }
-            tabComplete.add("silent");
             if (args.length == 1)
                 return tabComplete
                         .stream()
@@ -102,8 +104,8 @@ public class MusicBoxExecutor implements TabExecutor {
         } else {
             SubCommand executor = subs.get(args[0].toLowerCase());
             if (executor != null) {
-                if (executor.getPex() == null || player.hasPermission(executor.getPex()))
-                    return executor.tabComplete(player, ArrayUtils.removeFirst(String.class, args));
+                if (executor.canExecute(sender))
+                    return executor.tabComplete(sender, ArrayUtils.removeFirst(String.class, args));
             }
         }
         return Collections.emptyList();

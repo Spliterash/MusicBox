@@ -95,12 +95,16 @@ public class StringUtils {
         return ChatColor.stripColor(str);
     }
 
-    @NotNull
     public static List<String> tabCompletePrepare(String[] args, Stream<String> stream) {
-        if (args.length < 1) {
+
+        return tabCompletePrepare(args, 1, stream);
+    }
+    @NotNull
+    public static List<String> tabCompletePrepare(String[] args, int position, Stream<String> stream) {
+        if (args.length < position) {
             return stream.collect(Collectors.toList());
-        } else if (args.length == 1) {
-            String start = args[0].toLowerCase();
+        } else if (args.length == position) {
+            String start = args[position - 1].toLowerCase();
             return stream
                     .filter(s -> s.toLowerCase().startsWith(start))
                     .collect(Collectors.toList());

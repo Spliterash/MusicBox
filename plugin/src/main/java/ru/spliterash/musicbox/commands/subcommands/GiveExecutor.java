@@ -6,18 +6,16 @@ import ru.spliterash.musicbox.gui.GUIActions;
 import ru.spliterash.musicbox.players.PlayerWrapper;
 import ru.spliterash.musicbox.song.MusicBoxSong;
 
-public class ShopExecutor extends AbstractSelect {
-    public ShopExecutor() {
-        super("musicbox.shop");
+public class GiveExecutor extends AbstractSelect {
+    public GiveExecutor() {
+        super("musicbox.give");
     }
-
     @Override
     protected void noArgs(CommandSender sender, Player player) {
-        GUIActions.openShopInventory(PlayerWrapper.getInstance(player));
+        GUIActions.openGetInventory(PlayerWrapper.getInstance(player));
     }
-
     @Override
-    protected void processSong(CommandSender sender, Player player, MusicBoxSong song, String[] args) {
-        GUIActions.playerBuyMusic(PlayerWrapper.getInstance(player), song);
+    protected void processSong(CommandSender sender, Player target, MusicBoxSong song, String[] args) {
+        GUIActions.giveDisc(PlayerWrapper.getInstance(target), song);
     }
 }

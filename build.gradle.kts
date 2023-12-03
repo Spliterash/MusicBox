@@ -24,7 +24,7 @@ allprojects {
     apply(plugin = "java-library");
     apply(plugin = "io.freefair.lombok")
 
-    version = "2.0.13"
+    version = "2.0.14"
 
     repositories {
         mavenCentral()

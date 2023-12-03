@@ -8,11 +8,10 @@ import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
 import ru.spliterash.musicbox.commands.SubCommand;
 import ru.spliterash.musicbox.players.PlayerWrapper;
+import ru.spliterash.musicbox.utils.StringUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ShutUp implements SubCommand {
     private final MusicBoxExecutor parent;
@@ -22,29 +21,29 @@ public class ShutUp implements SubCommand {
     }
 
     @Override
-    public void execute(CommandSender player, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            parent.sendHelp(player);
+            parent.sendHelp(sender);
             return;
         }
-        shutUp(player, args);
+
+        shutUp(sender, args);
     }
 
     @Override
-    public List<String> tabComplete(Player player, String[] args) {
+    public boolean canExecute(CommandSender sender) {
+        return sender.hasPermission("musicbox.shutup");
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String[] args) {
         if (args.length <= 1) {
-            //noinspection ArraysAsListWithZeroOrOneArgument
-            return Arrays.asList("shutup");
-        } else if (args[0].equalsIgnoreCase("shutup")) {
-            String startWith = args[1];
-            return Bukkit
+            return StringUtils.tabCompletePrepare(args, Bukkit
                     .getOnlinePlayers()
                     .stream()
-                    .map(HumanEntity::getName)
-                    .filter(p -> p.startsWith(startWith))
-                    .collect(Collectors.toList());
-        }
-        return Collections.emptyList();
+                    .map(HumanEntity::getName));
+        } else
+            return Collections.emptyList();
     }
 
     public void shutUp(CommandSender sender, String[] args) {
@@ -59,10 +58,5 @@ public class ShutUp implements SubCommand {
 
         sender.sendMessage(Lang.SHUT_UPPED.toString("{player}", p.getName()));
 
-    }
-
-    @Override
-    public String getPex() {
-        return "musicbox.shutup";
     }
 }
