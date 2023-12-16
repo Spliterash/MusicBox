@@ -23,6 +23,10 @@ public class JukeboxFactory {
                 case "1.20.2":
                     className = START_PATH + "V20_2";
                     break;
+                case "1.20.3":
+                case "1.20.4":
+                    className = START_PATH + "V20_3";
+                    break;
                 default:
                     className = null;
                     break;
