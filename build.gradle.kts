@@ -65,4 +65,5 @@ dependencies {
     api(project(":nms:versions:19_4", "reobf"))
     api(project(":nms:versions:20_1", "reobf"))
     api(project(":nms:versions:20_2", "reobf"))
+    api(project(":nms:versions:20_3", "reobf"))
 }
