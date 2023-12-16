@@ -87,12 +87,12 @@ public enum Lang {
             Arrays.asList("&bЛевый клик&7 чтобы добавить эту мелодию в плейлист")
     ),
     COMMAND_HELP_SHOP(
-            "&b/musicbox shop (name)&6- Open disc shop or buy disc with name",
-            "&b/musicbox shop (name)&6- Открыть магазин дисков или купить пластинку с именем"
+            "&b/musicbox shop&6 - Open disc shop",
+            "&b/musicbox shop&6 - Открыть магазин дисков"
     ),
     COMMAND_HELP_GIVE(
-            "&b/musicbox give (name)&6- Give disc",
-            "&b/musicbox give (name)&6- Выдать диск"
+            "&b/musicbox give&6 - Give disc",
+            "&b/musicbox give&6 - Выдать диск"
     ),
     COMMAND_HELP(
             Arrays.asList(
@@ -104,17 +104,19 @@ public enum Lang {
     ),
     ADMIN_HELP(
             Arrays.asList(
-                    "&b/musicbox shop [name] [player]&6- Open disc shop or buy disc with name for player",
-                    "&b/musicbox give [name] [player]&6- Give disc with name to the player",
-                    "&b/musicbox play [name] [player]&6- Play sound to player",
-                    "&b/musicbox silent [on,off,switch] [player] &6- Change player silent mode",
+                    "&b/musicbox shop [player] (name)&6 - Open disc shop or buy disc with name for player",
+                    "&b/musicbox give [player] (name)&6 - Open give disc gui or give song with name to the player",
+                    "&b/musicbox give_single [player]&6 - Open give GUI to player, but he can only select 1 disc",
+                    "&b/musicbox play [player] [name]&6 - Play sound to player",
+                    "&b/musicbox silent [on,off,switch] (player) &6- Change player silent mode",
                     "&b/musicbox shutup [player] &6- off player SongPlayer",
                     "&b/musicbox reload &6- reload plugin with all music"
             ),
             Arrays.asList(
-                    "&b/musicbox shop [name] [player]&6- Открыть магазин дисков или купить пластинку с именем для игрока",
-                    "&b/musicbox give [name] [player]&6- Выдать диск игроку",
-                    "&b/musicbox play [name] [player]&6- Включить игроку определённую музыку",
+                    "&b/musicbox shop [player] (name)&6 - Открыть магазин дисков или купить пластинку с именем для игрока",
+                    "&b/musicbox give [player] (name)&6 - Выдать диск игроку",
+                    "&b/musicbox give_single [player]&6 - Открыть GUI выдачи игроку, но выбрать можно только 1 диск",
+                    "&b/musicbox play [player] [name]&6 - Включить игроку определённую музыку",
                     "&b/musicbox silent [on,off,switch] [player] &6- Сменить тихий режим игрока",
                     "&b/musicbox shutup [player] &6- выключить проигрыватель игрока",
                     "&b/musicbox reload &6- перезагрузить плагин со всей музыкой"

@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import ru.spliterash.musicbox.utils.YamlSupportUtils;
 
@@ -23,7 +22,6 @@ public class MusicBoxConfig {
     private boolean printNewInstrument;
     private EconomySetting economy;
     private BossBarSetting bossbar;
-    private HoloSetting holo;
     private int speakerRadius;
     private int jukeboxRadius;
     private String lang;
@@ -31,7 +29,6 @@ public class MusicBoxConfig {
     private boolean bStats;
     private boolean hearPermissionsCheck;
     private boolean enable10octave;
-
     @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BossBarSetting {
@@ -39,13 +36,6 @@ public class MusicBoxConfig {
         private String color;
         private String style;
 
-    }
-
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class HoloSetting {
-        private boolean enable;
-        private double height;
     }
 
     @Getter

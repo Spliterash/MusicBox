@@ -44,7 +44,8 @@ import static ru.spliterash.musicbox.gui.song.SongContainerGUI.SongGUIParams;
 public class GUIActions {
 
 
-    public SongGUIParams GET_MODE;
+    public SongGUIParams GET_MODE_MANY;
+    public SongGUIParams GET_MODE_SINGLE;
     public SongGUIParams DEFAULT_MODE;
     public SongGUIParams SHOP_MODE;
 
@@ -82,7 +83,15 @@ public class GUIActions {
         }
         // Получение пластинок
         {
-            GET_MODE = SongGUIParams
+            GET_MODE_SINGLE = SongGUIParams
+                    .builder()
+                    .onSongLeftClick((wrapper, data) -> {
+                        giveDisc(wrapper, data);
+                        wrapper.getPlayer().closeInventory();
+                    })
+                    .extraSongLore(GUIActions::playerGetSongLore)
+                    .build();
+            GET_MODE_MANY = SongGUIParams
                     .builder()
                     .onSongLeftClick(GUIActions::giveDisc)
                     .extraSongLore(GUIActions::playerGetSongLore)
@@ -375,9 +384,13 @@ public class GUIActions {
         gui.openPage(0, GUIActions.SHOP_MODE);
     }
 
-    public void openGetInventory(PlayerWrapper wrapper) {
+    public void openGiveInventoryMany(PlayerWrapper wrapper) {
         SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
-        gui.openPage(0, GUIActions.GET_MODE);
+        gui.openPage(0, GUIActions.GET_MODE_MANY);
+    }
+    public void openGiveInventorySingle(PlayerWrapper wrapper) {
+        SongContainerGUI gui = MusicBoxSongManager.getRootContainer().createGUI(wrapper);
+        gui.openPage(0, GUIActions.GET_MODE_SINGLE);
     }
 
     /**

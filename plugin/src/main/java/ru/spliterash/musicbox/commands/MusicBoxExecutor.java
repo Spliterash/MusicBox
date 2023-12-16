@@ -19,11 +19,10 @@ public class MusicBoxExecutor implements TabExecutor {
     private final Map<String, SubCommand> subs = new HashMap<>();
 
     public MusicBoxExecutor() {
-        GiveExecutor giveExecutor = new GiveExecutor();
 
         subs.put("shop", new ShopExecutor());
-        subs.put("get", giveExecutor); // backward compatibility
-        subs.put("give", giveExecutor);
+        subs.put("give", new GiveExecutor());
+        subs.put("give_single", new GiveSingleExecutor());
         subs.put("playlist", new PlaylistExecutor());
         subs.put("play", new PlayExecutor());
         subs.put("shutup", new ShutUp(this));
@@ -91,6 +90,7 @@ public class MusicBoxExecutor implements TabExecutor {
             if (sender.hasPermission("musicbox.give"))
                 tabComplete.add("give");
             if (sender.hasPermission("musicbox.admin")) {
+                tabComplete.add("give_single");
                 tabComplete.add("shutup");
                 tabComplete.add("reload");
             }
