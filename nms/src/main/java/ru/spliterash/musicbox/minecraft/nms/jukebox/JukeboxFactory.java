@@ -27,8 +27,10 @@ public class JukeboxFactory {
                 case "1.20.4":
                     className = START_PATH + "V20_3";
                     break;
+                case "1.20.5":
+                case "1.20.6":
                 default:
-                    className = null;
+                    className = START_PATH + "V20_5";
                     break;
             }
         } else if (iV == 19) {

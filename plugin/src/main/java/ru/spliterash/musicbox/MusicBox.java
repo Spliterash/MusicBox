@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.spliterash.musicbox.commands.MusicBoxExecutor;
 import ru.spliterash.musicbox.customPlayers.abstracts.AbstractBlockPlayer;
@@ -80,7 +81,7 @@ public final class MusicBox extends JavaPlugin {
         PlayerWrapper.clearAll();
         MusicBoxSongManager.reload(new File(getDataFolder(), "songs"));
         GUIActions.reloadGUI();
-
+        ItemStack stack;
 
 
         if (configObject.isBStats() && bStats == null) {
