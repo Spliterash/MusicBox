@@ -2,7 +2,6 @@ package ru.spliterash.musicbox.utils;
 
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class ItemUtils {
-    private final Enchantment enchantment = XEnchantment.PROTECTION_EXPLOSIONS.getEnchant();
+    private final Enchantment enchantment = XEnchantment.BLAST_PROTECTION.getEnchant();
 
     public ItemStack glow(ItemStack stack) {
         ItemMeta meta = stack.getItemMeta();

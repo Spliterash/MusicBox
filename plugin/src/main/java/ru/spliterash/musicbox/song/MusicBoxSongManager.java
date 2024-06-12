@@ -1,16 +1,15 @@
 package ru.spliterash.musicbox.song;
 
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import ru.spliterash.musicbox.Lang;
-import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
 import ru.spliterash.musicbox.song.songContainers.SongContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.factory.FolderContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.factory.ListContainerFactory;
 import ru.spliterash.musicbox.song.songContainers.factory.SingletonContainerFactory;
+import ru.spliterash.musicbox.song.songContainers.types.SongContainer;
+import ru.spliterash.musicbox.utils.nbt.NBTFactory;
+import ru.spliterash.musicbox.utils.nbt.NbtConstants;
 
 import java.io.File;
 import java.util.*;
@@ -20,10 +19,6 @@ import java.util.*;
 
 public class MusicBoxSongManager {
     public final String MASTER_CONTAINER = "MASTER";
-    /**
-     * NBT тег чтобы определить является ли пластинка кастомной
-     */
-    public final String NBT_NAME = "musicBoxSongHash";
     private final Set<SongContainerFactory<?>> factorySet = new HashSet<>();
     @Getter
     private final SongContainer masterContainer = new MasterContainer();
@@ -82,7 +77,7 @@ public class MusicBoxSongManager {
     public Optional<MusicBoxSong> findByItem(ItemStack stack) {
         if (stack == null)
             return Optional.empty();
-        int hash = NBTEditor.getInt(stack, NBT_NAME);
+        int hash = NBTFactory.NBT_HANDLER.getNbt(stack, NbtConstants.NBT_NAME);
         if (hash != 0)
             return findSongByHash(hash);
         else
@@ -92,25 +87,6 @@ public class MusicBoxSongManager {
     public Optional<MusicBoxSongContainer> findContainerById(int id) {
         return Optional.of(rootContainer.findById(id));
     }
-
-    public boolean tryReplaceLegacyItem(Player player, ItemStack stack) {
-        if (stack == null)
-            return false;
-        String musicBoxLegacyTagValue = NBTEditor.getString(stack, "musicbox");
-        if (musicBoxLegacyTagValue == null)
-            return false;
-        MusicBoxSong song = findByName(musicBoxLegacyTagValue).orElse(null);
-        if (song == null) {
-            player.sendMessage(Lang.LEGACY_DISC_NOT_FOUND.toString("{song}", musicBoxLegacyTagValue));
-        } else {
-            player.getInventory().remove(stack);
-            player.getInventory().addItem(song.getSongStack());
-            player.sendMessage(Lang.LEGACY_DISC_REPLACE.toString());
-        }
-        return true;
-    }
-
-    // Ломбук не умеет на лету обрабатывать UtilityClass
 
     /**
      * Имплементация контейнера, содержащая всё что только есть

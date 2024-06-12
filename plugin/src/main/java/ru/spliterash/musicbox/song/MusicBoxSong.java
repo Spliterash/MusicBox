@@ -3,12 +3,13 @@ package ru.spliterash.musicbox.song;
 import com.cryptomorin.xseries.XMaterial;
 import com.xxmicloxx.NoteBlockAPI.model.Song;
 import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.spliterash.musicbox.Lang;
 import ru.spliterash.musicbox.utils.*;
+import ru.spliterash.musicbox.utils.nbt.NBTFactory;
+import ru.spliterash.musicbox.utils.nbt.NbtConstants;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -27,14 +28,12 @@ public class MusicBoxSong {
     private final short length;
     private final float speed;
     private transient WeakReference<Song> songReference;
-    private final boolean newInstruments;
     private final int hash;
 
     MusicBoxSong(File songFile, MusicBoxSongContainer container) {
         this.file = songFile;
         this.container = container;
         Song song = getSong();
-        this.newInstruments = SongUtils.containsNewInstrument(song);
         this.name = StringUtils.t(StringUtils.getOrEmpty(song.getTitle(), () -> FileUtils.getFilename(file.getName())));
         this.length = song.getLength();
         this.speed = song.getSpeed();
@@ -43,7 +42,7 @@ public class MusicBoxSong {
         hoverMap.put("{length}", time);
         hoverMap.put("{author}", song.getAuthor());
         hoverMap.put("{original_author}", song.getOriginalAuthor());
-        hoverMap.put("{name}",getName());
+        hoverMap.put("{name}", getName());
     }
 
     public int getDuration() {
@@ -67,13 +66,10 @@ public class MusicBoxSong {
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(itemName);
         List<String> list = ArrayUtils.replaceOrRemove(Lang.SONG_LORE.toList(), hoverMap);
-        if (newInstruments) {
-            list.add(Lang.NEW_INSTRUMENT.toString());
-        }
         list.addAll(extraLines);
         meta.setLore(list);
         stack.setItemMeta(meta);
-        stack = NBTEditor.set(stack, getHash(), MusicBoxSongManager.NBT_NAME);
+        stack = NBTFactory.NBT_HANDLER.setNbt(stack, NbtConstants.NBT_NAME, getHash());
         if (glow)
             stack = ItemUtils.glow(stack);
         return stack;

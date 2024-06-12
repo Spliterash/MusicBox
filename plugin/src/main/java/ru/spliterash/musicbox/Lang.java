@@ -37,9 +37,6 @@ public enum Lang {
                     "&7Оригинальный автор: &b{original_author}"
             )
     ),
-    NEW_INSTRUMENT(
-            "&cThis song contains instrument, available in 1.14",
-            "&cЭта музыка содержит инструменты, доступные только в 1.14"),
     GUI_TITLE("&l&3MusicBox &8{container} &0{page}&7/&0{last_page}"),
     FOLDER_FORMAT("&e{folder}"),
     CURRENT_PLAYNING(

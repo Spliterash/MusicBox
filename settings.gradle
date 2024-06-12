@@ -1,7 +1,6 @@
 rootProject.name = 'MusicBox'
 
 include "plugin"
-include "modern_plugin"
 include "nms:shared"
 include "nms:versions:12"
 include "nms:versions:13-16"
