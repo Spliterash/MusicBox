@@ -14,7 +14,9 @@ public class JukeboxFactory {
         int iV = NMSUtils.parseMajorVersion(raw);
 
         String className;
-        if (iV == 20) {
+        if (iV == 21) {
+            className = START_PATH + "V21";
+        } else if (iV == 20) {
             switch (raw) {
                 case "1.20":
                 case "1.20.1":
