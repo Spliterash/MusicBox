@@ -523,6 +523,10 @@ public enum Lang {
     SILENT_MODE_RESPONSE(
             "&6Set &b{player}&6 silent mode to {state}",
             "&6Тихий режим установлен в состояние {state}&6 для игрока &b{player}"
+    ),
+    JUKEBOX_NOT_SUPPORTED(
+            "&cCurrent version not support for jukebox play",
+            "&cТекущая версия плагина не поддерживает воспроизведение пластинок"
     );
     /**
      * Оригинальные переводы

@@ -15,7 +15,19 @@ public class JukeboxFactory {
 
         String className;
         if (iV == 21) {
-            className = START_PATH + "V21";
+            switch (raw) {
+                case "1.21":
+                case "1.21.1":
+                    className = START_PATH + "V21";
+                    break;
+                case "1.21.2":
+                case "1.21.3":
+                    className = START_PATH + "V21_2";
+                    break;
+                default:
+                    className = null;
+                    break;
+            }
         } else if (iV == 20) {
             switch (raw) {
                 case "1.20":
@@ -63,13 +75,19 @@ public class JukeboxFactory {
 
         if (className == null)
             throw new IllegalArgumentException("Unsupported version: " + raw);
-
+        Class<? extends IJukebox> tmpClass = null;
         try {
             //noinspection unchecked
-            clazz = (Class<? extends IJukebox>) Class.forName(className);
+            tmpClass = (Class<? extends IJukebox>) Class.forName(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        } finally {
+            clazz = tmpClass;
         }
+    }
+
+    public static boolean jukeboxAvailable() {
+        return clazz != null;
     }
 
     public static IJukebox getJukebox(Jukebox jukebox) {
